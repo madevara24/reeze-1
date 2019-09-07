@@ -1,17 +1,13 @@
 package main
 
 import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"github.com/reeze-project/reeze/config"
+	"github.com/reeze-project/reeze/controller"
 )
 
 func main() {
-	router := gin.Default()
+	config.SetupConfig()
+	r := controller.SetupRouter()
 
-	router.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "hello")
-	})
-
-	router.Run(":8000")
+	r.Run(":8000")
 }

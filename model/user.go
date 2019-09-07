@@ -16,14 +16,14 @@ func GetUser() {
 
 }
 
-func main() {
-	db, err := gorm.Open("mysql", "user:password@/dbname?charset=utf8&parseTime=True&loc=Local")
-	errCheck(err)
-	defer db.Close()
-}
-
 func errCheck(err error) {
 	if err != nil {
 		log.Fatalf("Error %v", err)
 	}
+}
+
+func main() {
+	db, err := gorm.Open("mysql", "user:password@/dbname?charset=utf8&parseTime=True&loc=Local")
+	errCheck(err)
+	defer db.Close()
 }
