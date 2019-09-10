@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/go-github/github"
 	"github.com/reeze-project/reeze/config"
+	"github.com/reeze-project/reeze/helper"
 	"golang.org/x/oauth2"
 )
 
@@ -49,12 +49,13 @@ func githubCallback(c *gin.Context) {
 
 func createBranch(c *gin.Context) {
 	ctx := context.Background()
-	user, client, err := verifyUser(c)
+	user, client, err := helper.VerifyUser(c)
 	if err != nil {
 		log.Fatalf("error %s", err)
 	}
 	master, _, err := client.Git.GetRef(ctx, *user.Login, "rental-girlfriend-laravel", "refs/heads/master")
-	s := "refs/heads/test-create-branch"
+	branchName := c.Request.FormValue("branch_name")
+	s := "refs/heads/" + branchName
 
 	ref := &github.Reference{
 		Ref:    github.String(s),
@@ -63,11 +64,16 @@ func createBranch(c *gin.Context) {
 
 	serv, _, err := client.Git.CreateRef(ctx, *user.Login, "rental-girlfriend-laravel", ref)
 	fmt.Printf("References created: %s\n", serv.GetURL())
+	if err != nil {
+		log.Fatalf("error %s", err)
+	} else {
+		c.JSON(http.StatusOK, "Branch "+branchName+" is successfully created")
+	}
 }
 
 func createPullRequest(c *gin.Context) {
 	ctx := context.Background()
-	user, client, err := verifyUser(c)
+	user, client, err := helper.VerifyUser(c)
 	if err != nil {
 		log.Fatalf("error %s", err)
 	}
@@ -81,38 +87,4 @@ func createPullRequest(c *gin.Context) {
 
 	pr, _, err := client.PullRequests.Create(ctx, *user.Login, "rental-girlfriend-laravel", newPR)
 	fmt.Printf("PR created: %s\n", pr.GetHTMLURL())
-}
-
-func verifyUser(c *gin.Context) (*github.User, *github.Client, error) {
-	ctx := context.Background()
-	jsonToken := c.Request.Header.Get("token")
-	token, err := tokenFromJSON(jsonToken)
-	if err != nil {
-		log.Fatalf("error %s", err)
-	}
-	oauthClient := config.OauthConf.Client(oauth2.NoContext, token)
-	client := github.NewClient(oauthClient)
-	user, _, err := client.Users.Get(ctx, "")
-	if err != nil {
-		fmt.Printf("client.Users.Get() faled with '%s'\n", err)
-		c.Redirect(http.StatusTemporaryRedirect, "/")
-		return nil, nil, err
-	}
-	return user, client, nil
-}
-
-func tokenToJSON(token *oauth2.Token) (string, error) {
-	if tkn, err := json.Marshal(token); err != nil {
-		return "", err
-	} else {
-		return string(tkn), nil
-	}
-}
-
-func tokenFromJSON(jsonToken string) (*oauth2.Token, error) {
-	var token oauth2.Token
-	if err := json.Unmarshal([]byte(jsonToken), &token); err != nil {
-		return nil, err
-	}
-	return &token, nil
 }

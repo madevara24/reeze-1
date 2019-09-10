@@ -42,7 +42,7 @@ func SetupConfig() *oauth2.Config {
 	return &oauth2.Config{
 		ClientID:     os.Getenv("ClientID"),
 		ClientSecret: os.Getenv("ClientSecret"),
-		Scopes:       []string{"user", "repo"},
+		Scopes:       []string{"read:user", "repo", "admin:org_hook"},
 		Endpoint:     githuboauth.Endpoint,
 	}
 }
