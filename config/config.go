@@ -36,7 +36,7 @@ func randStringRunes(n int) string {
 func SetupConfig() *oauth2.Config {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file!")
+		log.Print("Error loading .env file!")
 	}
 
 	return &oauth2.Config{

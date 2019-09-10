@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -50,9 +49,6 @@ func githubCallback(c *gin.Context) {
 func createBranch(c *gin.Context) {
 	ctx := context.Background()
 	user, client, err := helper.VerifyUser(c)
-	if err != nil {
-		log.Fatalf("error %s", err)
-	}
 	master, _, err := client.Git.GetRef(ctx, *user.Login, "rental-girlfriend-laravel", "refs/heads/master")
 	branchName := c.Request.FormValue("branch_name")
 	s := "refs/heads/" + branchName
@@ -63,10 +59,10 @@ func createBranch(c *gin.Context) {
 	}
 
 	serv, _, err := client.Git.CreateRef(ctx, *user.Login, "rental-girlfriend-laravel", ref)
-	fmt.Printf("References created: %s\n", serv.GetURL())
 	if err != nil {
-		log.Fatalf("error %s", err)
+		c.JSON(http.StatusBadRequest, err)
 	} else {
+		fmt.Printf("References created: %s\n", serv.GetRef())
 		c.JSON(http.StatusOK, "Branch "+branchName+" is successfully created")
 	}
 }
@@ -75,16 +71,33 @@ func createPullRequest(c *gin.Context) {
 	ctx := context.Background()
 	user, client, err := helper.VerifyUser(c)
 	if err != nil {
-		log.Fatalf("error %s", err)
+		c.Redirect(http.StatusUnauthorized, "/")
 	}
+	//create new pull request
 	newPR := &github.NewPullRequest{
-		Title:               github.String("My awesome pull request"),
-		Head:                github.String("test-pr"),
-		Base:                github.String("master"),
-		Body:                github.String("This is the description of the PR created with the package `github.com/google/go-github/github`"),
-		MaintainerCanModify: github.Bool(true),
+		Title: github.String("Test PR"),
+		Head:  github.String("refs/heads/test-branch"),
+		Base:  github.String("refs/heads/feature/make_role_permission_system"),
+		Body:  github.String("This is the description of the PR created with the package `github.com/google/go-github/github`"),
 	}
 
 	pr, _, err := client.PullRequests.Create(ctx, *user.Login, "rental-girlfriend-laravel", newPR)
-	fmt.Printf("PR created: %s\n", pr.GetHTMLURL())
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+	} else {
+		fmt.Printf("PR created: %s\n", pr.GetHTMLURL())
+	}
+
+	//get list pull request
+	prList, _, err := client.PullRequests.List(ctx, *user.Login, "rental-girlfriend-laravel", nil)
+	for _, list := range prList {
+		//merge pull request
+		merge, _, err := client.PullRequests.Merge(ctx, *user.Login, "rental-girlfriend-laravel", list.GetNumber(), "Merge", nil)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, err)
+		} else {
+			//fmt.Printf("PR created: %s\n", pr.GetHTMLURL())
+			fmt.Printf("Branch merged : %s\n", merge.GetMessage())
+		}
+	}
 }

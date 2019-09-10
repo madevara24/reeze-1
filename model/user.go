@@ -18,7 +18,7 @@ func GetUser() {
 
 func errCheck(err error) {
 	if err != nil {
-		log.Fatalf("Error %v", err)
+		log.Printf("Error %v", err)
 	}
 }
 
