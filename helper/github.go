@@ -13,6 +13,63 @@ import (
 	"golang.org/x/oauth2"
 )
 
+func CreateBranch(c *gin.Context, branchName string) (*github.Reference, *github.Response, error) {
+	ctx := context.Background()
+	user, client, err := VerifyUser(c)
+	master, _, err := client.Git.GetRef(ctx, *user.Login, "rental-girlfriend-laravel", "refs/heads/master")
+
+	s := "refs/heads/" + branchName
+
+	ref := &github.Reference{
+		Ref:    github.String(s),
+		Object: master.GetObject(),
+	}
+
+	if err != nil {
+		c.Redirect(http.StatusUnauthorized, "/")
+	}
+	return client.Git.CreateRef(ctx, *user.Login, "rental-girlfriend-laravel", ref)
+}
+
+func CreatePullRequest(c *gin.Context) (*github.PullRequest, *github.Response, error) {
+	ctx := context.Background()
+	user, client, err := VerifyUser(c)
+	if err != nil {
+		c.Redirect(http.StatusUnauthorized, "/")
+	}
+
+	newPR := &github.NewPullRequest{
+		Title: github.String("Test PR"),
+		Head:  github.String("refs/heads/test-branch"),
+		Base:  github.String("refs/heads/feature/make_role_permission_system"),
+		Body:  github.String("This is the description of the PR created with the package `github.com/google/go-github/github`"),
+	}
+	if err != nil {
+		c.Redirect(http.StatusUnauthorized, "/")
+	}
+	return client.PullRequests.Create(ctx, *user.Login, "rental-girlfriend-laravel", newPR)
+}
+
+func GetPullRequestsList(c *gin.Context) ([]*github.PullRequest, *github.Response, error) {
+	ctx := context.Background()
+	user, client, err := VerifyUser(c)
+	if err != nil {
+		c.Redirect(http.StatusUnauthorized, "/")
+	}
+
+	return client.PullRequests.List(ctx, *user.Login, "rental-girlfriend-laravel", nil)
+}
+
+func MergePullRequest(c *gin.Context, list *github.PullRequest) (*github.PullRequestMergeResult, *github.Response, error) {
+	ctx := context.Background()
+	user, client, err := VerifyUser(c)
+	if err != nil {
+		c.Redirect(http.StatusUnauthorized, "/")
+	}
+
+	return client.PullRequests.Merge(ctx, *user.Login, "rental-girlfriend-laravel", list.GetNumber(), "Merge", nil)
+}
+
 func VerifyUser(c *gin.Context) (*github.User, *github.Client, error) {
 	ctx := context.Background()
 	jsonToken := c.Request.Header.Get("token")
