@@ -34,7 +34,6 @@ func createPullRequest(c *gin.Context) {
 		if err != nil {
 			c.JSON(res.StatusCode, err)
 		} else {
-			//fmt.Printf("PR created: %s\n", pr.GetHTMLURL())
 			fmt.Printf("Branch merged : %s\n", merge.GetMessage())
 		}
 	}
