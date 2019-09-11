@@ -69,18 +69,32 @@ func MergePullRequest(c *gin.Context, list *github.PullRequest) (*github.PullReq
 	return client.PullRequests.Merge(ctx, *user.Login, "rental-girlfriend-laravel", list.GetNumber(), "Merge", nil)
 }
 
-func VerifyUser(c *gin.Context) (*github.User, *github.Client, error) {
+func CreateClient(token *oauth2.Token) *github.Client {
+	oauthClient := config.OauthConf.Client(oauth2.NoContext, token)
+	client := github.NewClient(oauthClient)
+	return client
+}
+
+func GetUser(client *github.Client) (*github.User, *github.Response, error) {
 	ctx := context.Background()
+	user, res, err := client.Users.Get(ctx, "")
+	if err != nil {
+		fmt.Printf("client.Users.Get() failed with '%s'\n", err)
+		return nil, nil, err
+	}
+	return user, res, nil
+}
+
+func VerifyUser(c *gin.Context) (*github.User, *github.Client, error) {
 	jsonToken := c.Request.Header.Get("token")
 	token, err := TokenFromJSON(jsonToken)
 	if err != nil {
 		log.Fatalf("error %s", err)
 	}
-	oauthClient := config.OauthConf.Client(oauth2.NoContext, token)
-	client := github.NewClient(oauthClient)
-	user, _, err := client.Users.Get(ctx, "")
+
+	client := CreateClient(token)
+	user, _, err := GetUser(client)
 	if err != nil {
-		fmt.Printf("client.Users.Get() faled with '%s'\n", err)
 		c.Redirect(http.StatusTemporaryRedirect, "/")
 		return nil, nil, err
 	}

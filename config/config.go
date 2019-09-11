@@ -18,6 +18,9 @@ var (
 	//OauthStateString is a variable to store oauth state
 	OauthStateString = randStringRunes(30)
 	letterRunes      = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+	databaseName     string
+	databaseUsername string
+	databasePassword string
 )
 
 func init() {
@@ -40,9 +43,27 @@ func SetupConfig() *oauth2.Config {
 	}
 
 	return &oauth2.Config{
-		ClientID:     os.Getenv("ClientID"),
-		ClientSecret: os.Getenv("ClientSecret"),
+		ClientID:     os.Getenv("CLIENT_ID"),
+		ClientSecret: os.Getenv("CLIENT_SECRET"),
 		Scopes:       []string{"read:user", "repo", "admin:org_hook"},
 		Endpoint:     githuboauth.Endpoint,
 	}
+}
+
+func SetupDatabase() {
+	databaseName = os.Getenv("DB_NAME")
+	databaseUsername = os.Getenv("DB_USERNAME")
+	databasePassword = os.Getenv("DB_PASSWORD")
+}
+
+func GetDatabaseName() string {
+	return databaseName
+}
+
+func GetDatabaseUsername() string {
+	return databaseUsername
+}
+
+func GetDatabasePassword() string {
+	return databasePassword
 }

@@ -1,7 +1,6 @@
 package model
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -20,5 +19,5 @@ type Card struct {
 	Point          uint
 	Owner          User
 	Type           string `sql:"enum('feature', 'bug', 'chore')"`
-	BranchName     sql.NullString
+	BranchName     string `gorm:"type:varchar(100);default:null"`
 }
