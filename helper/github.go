@@ -42,7 +42,6 @@ func CreatePullRequest(c *gin.Context) (*github.PullRequest, *github.Response, e
 		Title: github.String("Test PR"),
 		Head:  github.String("refs/heads/test-branch"),
 		Base:  github.String("refs/heads/feature/make_role_permission_system"),
-		Body:  github.String("This is the description of the PR created with the package `github.com/google/go-github/github`"),
 	}
 	if err != nil {
 		c.Redirect(http.StatusUnauthorized, "/")
@@ -86,14 +85,6 @@ func VerifyUser(c *gin.Context) (*github.User, *github.Client, error) {
 		return nil, nil, err
 	}
 	return user, client, nil
-}
-
-func TokenToJSON(token *oauth2.Token) (string, error) {
-	if tkn, err := json.Marshal(token); err != nil {
-		return "", err
-	} else {
-		return string(tkn), nil
-	}
 }
 
 func TokenFromJSON(jsonToken string) (*oauth2.Token, error) {
