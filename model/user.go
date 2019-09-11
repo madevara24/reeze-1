@@ -2,11 +2,12 @@ package model
 
 import (
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 type User struct {
 	gorm.Model
+	Username string `gorm:"type:varchar(100)"`
+	Email    string `gorm:"type:varchar(100);unique_index"`
 	GithubID uint
 }
 
