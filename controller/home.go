@@ -47,7 +47,7 @@ func githubCallback(c *gin.Context) {
 	if err != nil {
 		fmt.Printf("failed to get user with error : %s", err)
 	} else {
-		newUser := model.User{Username: *user.Login, GithubID: *user.ID}
+		newUser := model.User{Username: *user.Login, Fullname: *user.Name, GithubID: *user.ID}
 		model.User.CreateUser(newUser)
 	}
 	c.JSON(http.StatusOK, token)

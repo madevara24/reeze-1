@@ -1,29 +1,43 @@
 package model
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/jinzhu/gorm"
 	"github.com/reeze-project/reeze/config"
 )
 
-func Database() (*gorm.DB, error) {
-	var dbName string = config.GetDatabaseName()
-	var dbUsername string = config.GetDatabaseUsername()
-	var dbPassword string = config.GetDatabasePassword()
-	db, err := gorm.Open("mysql", dbUsername+":"+dbPassword+"@/"+dbName+"?charset=utf8&parseTime=True&loc=Local")
+var (
+	migration  *gorm.DB
+	db         *sql.DB
+	dbName     string
+	dbUsername string
+	dbPassword string
+	dbURL      string
+)
+
+func SchemaAutoMigrate() {
+	dbName = config.GetDatabaseName()
+	dbUsername = config.GetDatabaseUsername()
+	dbPassword = config.GetDatabasePassword()
+	dbURL = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True&loc=Local", dbUsername, dbPassword, dbName)
+
+	var err error
+	migration, err = gorm.Open("mysql", dbURL)
+
 	if err != nil {
 		fmt.Println(err)
-		return nil, err
 	}
-	defer db.Close()
-	return db, nil
+	defer migration.Close()
+	migration.AutoMigrate(&User{}, &Card{})
 }
 
-func InitDatabase() {
-	db, err := Database()
+func InitDatabase() (*sql.DB, error) {
+	var err error
+	db, err = sql.Open("mysql", dbURL)
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
-	db.AutoMigrate(&User{})
+	return db, nil
 }

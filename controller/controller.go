@@ -10,7 +10,16 @@ func SetupRouter() *gin.Engine {
 	r.GET("/", homeIndex)
 	r.GET("/login", loginGithub)
 	r.GET("/github-callback", githubCallback)
-	r.POST("/create-branch", createBranch)
-	r.POST("/create-pr", createPullRequest)
+
+	api := r.Group("/api")
+	{
+		v1 := api.Group("/v1")
+		{
+			v1.POST("/create-branch", createBranch)
+			v1.POST("/create-pr", createPullRequest)
+		}
+
+	}
+
 	return r
 }

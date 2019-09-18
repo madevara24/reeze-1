@@ -20,6 +20,7 @@ var (
 	letterRunes      = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 	databaseName     string
 	databaseUsername string
+	databaseHost     string
 	databasePassword string
 )
 
@@ -53,6 +54,7 @@ func SetupConfig() *oauth2.Config {
 func SetupDatabase() {
 	databaseName = os.Getenv("DB_NAME")
 	databaseUsername = os.Getenv("DB_USERNAME")
+	databaseHost = os.Getenv("DB_HOST")
 	databasePassword = os.Getenv("DB_PASSWORD")
 }
 
@@ -62,6 +64,10 @@ func GetDatabaseName() string {
 
 func GetDatabaseUsername() string {
 	return databaseUsername
+}
+
+func GetDatabaseHost() string {
+	return databaseHost
 }
 
 func GetDatabasePassword() string {
