@@ -1,0 +1,2 @@
+time="2019-09-19T13:58:03+07:00" level=error msg="Error 1062: Duplicate entry '25766182' for key 'uix_users_github_id'"
+time="2019-09-19T13:58:03+07:00" level=info msg="User with id 1 is success"

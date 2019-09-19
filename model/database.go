@@ -11,6 +11,7 @@ import (
 var (
 	migration  *gorm.DB
 	db         *sql.DB
+	log        *config.Logger
 	dbName     string
 	dbUsername string
 	dbPassword string
@@ -33,8 +34,10 @@ func SchemaAutoMigrate() {
 	migration.AutoMigrate(&User{}, &Card{})
 }
 
-func InitDatabase() (*sql.DB, error) {
+func InitDatabase(confLogger *config.Logger) (*sql.DB, error) {
 	var err error
+	log = confLogger
+
 	db, err = sql.Open("mysql", dbURL)
 	if err != nil {
 		return nil, err

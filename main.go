@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/reeze-project/reeze/config"
 	"github.com/reeze-project/reeze/controller"
 	"github.com/reeze-project/reeze/model"
@@ -11,13 +9,16 @@ import (
 )
 
 func main() {
+	log := &config.Logger{}
+	log.InitLogger()
+
 	config.SetupConfig()
 	config.SetupDatabase()
 	model.SchemaAutoMigrate()
-	db, err := model.InitDatabase()
+	db, err := model.InitDatabase(log)
 	defer db.Close()
 	if err != nil {
-		fmt.Println(err)
+		log.LogError(err)
 	}
 
 	r := controller.SetupRouter()

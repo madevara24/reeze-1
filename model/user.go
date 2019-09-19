@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -14,9 +14,28 @@ type User struct {
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
-func (u User) CreateUser() {
+func (u *User) GetUserById(uid uint64) (*User, error) {
+	stmt, err := db.Prepare("SELECT * FROM users WHERE id = ?")
+	if err != nil {
+		log.LogError(err)
+		return nil, err
+	}
+
+	var user = u
+	err = stmt.QueryRow(uid).Scan(&user.ID, &user.Username, &user.Fullname, &user.GithubID, &user.CreatedAt, &user.UpdatedAt)
+	if err != nil {
+		log.LogError(err)
+		return nil, err
+	}
+	log.LogInfo("User with id " + strconv.FormatUint(uid, 10) + " is success")
+	return user, nil
+}
+
+func (u *User) CreateUser() error {
 	_, err := db.Exec("INSERT INTO users (username, fullname, github_id) VALUES(?, ?, ?)", u.Username, u.Fullname, u.GithubID)
 	if err != nil {
-		fmt.Println(err)
+		log.LogError(err)
+		return err
 	}
+	return nil
 }

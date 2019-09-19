@@ -18,7 +18,6 @@ func SetupRouter() *gin.Engine {
 			v1.POST("/create-branch", createBranch)
 			v1.POST("/create-pr", createPullRequest)
 		}
-
 	}
 
 	return r
