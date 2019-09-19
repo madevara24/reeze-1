@@ -5,36 +5,42 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/reeze-project/reeze/helper"
+	"github.com/reeze-project/reeze/helpers"
 )
 
 func createBranch(c *gin.Context) {
 	branchName := c.Request.FormValue("branch_name")
-	ref, _, err := helper.CreateBranch(c, branchName)
+	ref, _, err := helpers.CreateBranch(c, branchName)
 	if err != nil {
+		log.LogError(err)
 		c.JSON(http.StatusBadRequest, err)
 	} else {
-		fmt.Printf("References created: %s\n", ref.GetRef())
+		info := fmt.Sprintf("References created: %s\n", ref.GetRef())
+		log.LogInfo(info)
 		c.JSON(http.StatusOK, "Branch "+branchName+" is successfully created")
 	}
 }
 
 func createPullRequest(c *gin.Context) {
-	pr, res, err := helper.CreatePullRequest(c)
+	pr, res, err := helpers.CreatePullRequest(c)
 	if err != nil {
+		log.LogError(err)
 		c.JSON(res.StatusCode, err)
 	} else {
-		fmt.Printf("Pull request created %s", pr.GetURL())
+		info := fmt.Sprintf("Pull request created %s", pr.GetURL())
+		log.LogInfo(info)
 	}
 
-	prList, _, err := helper.GetPullRequestsList(c)
+	prList, _, err := helpers.GetPullRequestsList(c)
 
 	for _, list := range prList {
-		merge, res, err := helper.MergePullRequest(c, list)
+		merge, res, err := helpers.MergePullRequest(c, list)
 		if err != nil {
+			log.LogError(err)
 			c.JSON(res.StatusCode, err)
 		} else {
-			fmt.Printf("Branch merged : %s\n", merge.GetMessage())
+			info := fmt.Sprintf("Branch merged : %s\n", merge.GetMessage())
+			log.LogInfo(info)
 		}
 	}
 }

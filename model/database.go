@@ -28,7 +28,7 @@ func SchemaAutoMigrate() {
 	migration, err = gorm.Open("mysql", dbURL)
 
 	if err != nil {
-		fmt.Println(err)
+		log.LogError(err)
 	}
 	defer migration.Close()
 	migration.AutoMigrate(&User{}, &Card{})
