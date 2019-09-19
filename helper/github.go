@@ -3,8 +3,6 @@ package helper
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -63,7 +61,7 @@ func MergePullRequest(c *gin.Context, list *github.PullRequest) (*github.PullReq
 	ctx := context.Background()
 	user, client, err := VerifyUser(c)
 	if err != nil {
-		c.Redirect(http.StatusUnauthorized, "/")
+		return nil, nil, err
 	}
 
 	return client.PullRequests.Merge(ctx, *user.Login, "rental-girlfriend-laravel", list.GetNumber(), "Merge", nil)
@@ -79,7 +77,6 @@ func GetUser(client *github.Client) (*github.User, *github.Response, error) {
 	ctx := context.Background()
 	user, res, err := client.Users.Get(ctx, "")
 	if err != nil {
-		fmt.Printf("client.Users.Get() failed with '%s'\n", err)
 		return nil, nil, err
 	}
 	return user, res, nil
@@ -89,13 +86,12 @@ func VerifyUser(c *gin.Context) (*github.User, *github.Client, error) {
 	jsonToken := c.Request.Header.Get("token")
 	token, err := TokenFromJSON(jsonToken)
 	if err != nil {
-		log.Fatalf("error %s", err)
+		return nil, nil, err
 	}
 
 	client := CreateClient(token)
 	user, _, err := GetUser(client)
 	if err != nil {
-		c.Redirect(http.StatusTemporaryRedirect, "/")
 		return nil, nil, err
 	}
 	return user, client, nil
