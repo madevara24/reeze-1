@@ -2,9 +2,14 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/reeze-project/reeze/config"
 )
 
-func SetupRouter() *gin.Engine {
+var log *config.Logger
+
+func SetupRouter(confLogger *config.Logger) *gin.Engine {
+	log = confLogger
+
 	r := gin.Default()
 
 	r.GET("/", homeIndex)

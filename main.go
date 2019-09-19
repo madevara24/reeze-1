@@ -15,13 +15,9 @@ func main() {
 	config.SetupConfig()
 	config.SetupDatabase()
 	model.SchemaAutoMigrate()
-	db, err := model.InitDatabase(log)
+	db, _ := model.InitDatabase(log)
 	defer db.Close()
-	if err != nil {
-		log.LogError(err)
-	}
-
-	r := controller.SetupRouter()
+	r := controller.SetupRouter(log)
 
 	r.Run(":8000")
 }

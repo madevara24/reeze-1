@@ -34,13 +34,10 @@ func SchemaAutoMigrate() {
 	migration.AutoMigrate(&User{}, &Card{})
 }
 
-func InitDatabase(confLogger *config.Logger) (*sql.DB, error) {
-	var err error
+func InitDatabase(confLogger *config.Logger) *sql.DB {
 	log = confLogger
 
-	db, err = sql.Open("mysql", dbURL)
-	if err != nil {
-		return nil, err
-	}
-	return db, nil
+	db, _ = sql.Open("mysql", dbURL)
+
+	return db
 }

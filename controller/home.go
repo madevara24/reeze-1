@@ -29,7 +29,8 @@ func loginGithub(c *gin.Context) {
 func githubCallback(c *gin.Context) {
 	state := c.Request.FormValue("state")
 	if state != config.OauthStateString {
-		fmt.Printf("invalid oauth state, expected '%s', got '%s'\n", config.OauthStateString, state)
+		err := fmt.Errorf("invalid oauth state, expected '%s', got '%s'", config.OauthStateString, state)
+		log.LogError(err)
 		c.Redirect(http.StatusTemporaryRedirect, "/")
 		return
 	}
@@ -37,7 +38,8 @@ func githubCallback(c *gin.Context) {
 	code := c.Request.FormValue("code")
 	token, err := config.OauthConf.Exchange(oauth2.NoContext, code)
 	if err != nil {
-		fmt.Printf("oauthConf.Exchange() failed with '%s'\n", err)
+		err = fmt.Errorf("oauthConf.Exchange() failed with '%s'", err)
+		log.LogError(err)
 		c.Redirect(http.StatusTemporaryRedirect, "/")
 		return
 	}
@@ -45,7 +47,8 @@ func githubCallback(c *gin.Context) {
 	user, _, err := helper.GetUser(client)
 
 	if err != nil {
-		fmt.Printf("failed to get user with error : %s", err)
+		err = fmt.Errorf("failed to get user with error : %s", err)
+		log.LogError(err)
 	} else {
 		newUser := &model.User{Username: *user.Login, Fullname: *user.Name, GithubID: *user.ID}
 		newUser.CreateUser()
