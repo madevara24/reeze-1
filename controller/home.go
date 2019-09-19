@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/reeze-project/reeze/config"
-	"github.com/reeze-project/reeze/helper"
+	"github.com/reeze-project/reeze/helpers"
 	"github.com/reeze-project/reeze/model"
 	"golang.org/x/oauth2"
 )
@@ -43,8 +43,8 @@ func githubCallback(c *gin.Context) {
 		c.Redirect(http.StatusTemporaryRedirect, "/")
 		return
 	}
-	client := helper.CreateClient(token)
-	user, _, err := helper.GetUser(client)
+	client := helpers.CreateClient(token)
+	user, _, err := helpers.GetUser(client)
 
 	if err != nil {
 		err = fmt.Errorf("failed to get user with error : %s", err)
