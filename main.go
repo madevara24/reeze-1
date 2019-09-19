@@ -15,7 +15,7 @@ func main() {
 	config.SetupConfig()
 	config.SetupDatabase()
 	model.SchemaAutoMigrate()
-	db, _ := model.InitDatabase(log)
+	db := model.InitDatabase(log)
 	defer db.Close()
 	r := controller.SetupRouter(log)
 
