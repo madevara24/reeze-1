@@ -15,3 +15,4 @@
 *.out
 
 logger.log
+.tmp

@@ -2,8 +2,11 @@ package helpers
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/go-github/github"
@@ -103,4 +106,24 @@ func TokenFromJSON(jsonToken string) (*oauth2.Token, error) {
 		return nil, err
 	}
 	return &token, nil
+}
+
+func TokenToJSON(token *oauth2.Token) (string, error) {
+	if d, err := json.Marshal(token); err != nil {
+		return "", err
+	} else {
+		return string(d), nil
+	}
+}
+
+func GenerateStateOauthCookie(c *gin.Context) string {
+	var expiration = time.Now().Add(30 * 24 * time.Hour)
+
+	b := make([]byte, 16)
+	rand.Read(b)
+	state := base64.URLEncoding.EncodeToString(b)
+	cookie := http.Cookie{Name: "login", Value: state, Expires: expiration}
+	http.SetCookie(c.Writer, &cookie)
+
+	return state
 }

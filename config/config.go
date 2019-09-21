@@ -2,9 +2,7 @@ package config
 
 import (
 	"log"
-	"math/rand"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
@@ -13,11 +11,7 @@ import (
 
 var (
 	//OauthConf is a variable to store oauth config
-	OauthConf = SetupConfig()
-
-	//OauthStateString is a variable to store oauth state
-	OauthStateString = randStringRunes(30)
-	letterRunes      = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+	OauthConf        = SetupConfig()
 	databaseName     string
 	databaseUsername string
 	databaseHost     string
@@ -25,15 +19,7 @@ var (
 )
 
 func init() {
-	rand.Seed(time.Now().UnixNano())
-}
-
-func randStringRunes(n int) string {
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letterRunes[rand.Intn(len(letterRunes))]
-	}
-	return string(b)
+	SetupDatabase()
 }
 
 //SetupConfig is a function to setup an oauth config

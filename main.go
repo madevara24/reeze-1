@@ -12,7 +12,6 @@ func main() {
 	log := &config.Logger{}
 	log.InitLogger()
 
-	config.SetupConfig()
 	config.SetupDatabase()
 	model.SchemaAutoMigrate()
 	db := model.InitDatabase(log)
