@@ -5,7 +5,7 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/reeze-project/reeze/config"
-	csrf "github.com/utrack/gin-csrf"
+	"github.com/reeze-project/reeze/controller/auth"
 )
 
 var log *config.Logger
@@ -19,15 +19,16 @@ func SetupRouter(confLogger *config.Logger) *gin.Engine {
 
 	r.Use(sessions.Sessions("user_session", store))
 
-	r.Use(csrf.Middleware(csrf.Options{
-		Secret: "reeze_project_csrf",
-		ErrorFunc: func(c *gin.Context) {
-			c.JSON(400, "CSRF Token Mismatch")
-			c.Abort()
-		},
-	}))
+	// r.Use(csrf.Middleware(csrf.Options{
+	// 	Secret: "reeze_project_csrf",
+	// 	ErrorFunc: func(c *gin.Context) {
+	// 		c.JSON(400, "CSRF Token Mismatch")
+	// 		c.Abort()
+	// 	},
+	// }))
 
 	r.GET("/", homeIndex)
+	r.POST("/signup", auth.RegisterUser)
 	r.GET("/login", loginGithub)
 	r.GET("/logout", logout)
 	r.GET("/github-callback", githubCallback)

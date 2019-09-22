@@ -34,7 +34,7 @@ func (u *User) GetUserById(uid uint64) (*User, error) {
 }
 
 func (u *User) CreateUser() error {
-	_, err := db.Exec("INSERT INTO users (username, email, password, fullname, github_id) VALUES(?, ?, ?, ?, ?) ", u.Username, u.Email, u.Password, u.Fullname, u.GithubID)
+	_, err := db.Exec("INSERT INTO users (username, email, password, fullname) VALUES(?, ?, ?, ?) ", u.Username, u.Email, u.Password, u.Fullname)
 	if err != nil {
 		log.LogError(err)
 		return err
