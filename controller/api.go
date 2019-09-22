@@ -29,7 +29,7 @@ func SetupRouter(confLogger *config.Logger) *gin.Engine {
 
 	r.GET("/", homeIndex)
 	r.GET("/login", loginGithub)
-	// r.GET("/logout", logout)
+	r.GET("/logout", logout)
 	r.GET("/github-callback", githubCallback)
 
 	api := r.Group("/api")

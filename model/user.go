@@ -20,14 +20,14 @@ func (u *User) GetUserById(uid uint64) (*User, error) {
 	user := u
 	if err != nil {
 		log.LogError(err)
-		return user, err
+		return nil, err
 	}
 
 	err = stmt.QueryRow(uid).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Fullname, &user.GithubID, &user.CreatedAt, &user.UpdatedAt)
 
 	if err != nil {
 		log.LogError(err)
-		return user, err
+		return nil, err
 	}
 
 	return user, nil
