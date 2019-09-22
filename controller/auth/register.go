@@ -20,7 +20,7 @@ func RegisterUser(c *gin.Context) {
 	if err != nil {
 		log.LogError(err)
 	}
-	register := RegisteredUser{}
+	register := &RegisteredUser{}
 	err = json.Unmarshal(res, &register)
 	if err != nil {
 		log.LogError(err)

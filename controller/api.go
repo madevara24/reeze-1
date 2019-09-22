@@ -28,8 +28,9 @@ func SetupRouter(confLogger *config.Logger) *gin.Engine {
 	// }))
 
 	r.GET("/", homeIndex)
-	r.POST("/signup", auth.RegisterUser)
-	r.GET("/login", loginGithub)
+	r.POST("/login", auth.Login)
+	r.POST("/register", auth.RegisterUser)
+	r.GET("/login-github", loginGithub)
 	r.GET("/logout", logout)
 	r.GET("/github-callback", githubCallback)
 

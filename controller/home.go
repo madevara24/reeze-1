@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -94,7 +95,7 @@ func githubCallback(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 	}
 
-	newUser := &model.User{Username: *user.Login, GithubID: *user.ID}
+	newUser := &model.User{Username: *user.Login, GithubID: sql.NullInt64{Int64: *user.ID, Valid: true}}
 	err = newUser.CreateUser()
 	if err != nil {
 		log.LogError(err)

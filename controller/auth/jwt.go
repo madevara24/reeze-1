@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
-
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/reeze-project/reeze/config"
 )
 
 var log *config.Logger
+
+func init() {
+	log = &config.Logger{}
+	log.InitLogger()
+}
 
 type M map[string]interface{}
 
@@ -22,8 +24,7 @@ type JWTClaims struct {
 	Email    string `json:"email"`
 }
 
-func ClaimToken(c *gin.Context) {
-	session := sessions.Default(c)
+func ClaimToken() (string, error) {
 	claims := JWTClaims{
 		StandardClaims: jwt.StandardClaims{
 			Issuer:    config.ApplicationName,
@@ -39,10 +40,10 @@ func ClaimToken(c *gin.Context) {
 		log.LogError(err)
 	}
 
-	tokenString, _ := json.MarshalIndent(M{"token": signedToken}, "", " ")
-	session.Set("jwt_token", tokenString)
-	err = session.Save()
+	tokenString, err := json.MarshalIndent(M{"token": signedToken}, "", " ")
 	if err != nil {
 		log.LogError(err)
+		return "", err
 	}
+	return string(tokenString), nil
 }
