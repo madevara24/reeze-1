@@ -38,13 +38,13 @@ func homeIndex(c *gin.Context) {
 
 }
 
-func logout(c *gin.Context) {
-	session := sessions.Default(c)
-	session.Clear()
-	fmt.Println("berhasil menghapus session")
-	c.Writer.WriteHeader(http.StatusOK)
-	c.Writer.Write([]byte(logOut))
-}
+// func logout(c *gin.Context) {
+// 	session := sessions.Default(c)
+// 	session.Clear()
+// 	fmt.Println("berhasil menghapus session")
+// 	c.Writer.WriteHeader(http.StatusOK)
+// 	c.Writer.Write([]byte(logOut))
+// }
 
 func loginGithub(c *gin.Context) {
 	state := helpers.GenerateStateOauthCookie(c)
