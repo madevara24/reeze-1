@@ -1,13 +1,10 @@
 package controller
 
 import (
-	b64 "encoding/base64"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/reeze-project/reeze/config"
 	"github.com/reeze-project/reeze/helpers"
 	"golang.org/x/oauth2"
 )
@@ -20,7 +17,7 @@ Logged in with <a href="/login-github">GitHub</a>
 `
 
 const loggedIn = `<html><body>
-Hello user! 
+Hello user!
 <form action="/logout" method="POST">
 	<button type="submit">LogOut</button>
 </form>
@@ -38,14 +35,6 @@ func homeIndex(c *gin.Context) {
 		c.Writer.WriteHeader(http.StatusOK)
 		c.Writer.Write([]byte(htmlIndex))
 	}
-	// oauthState, _ := c.Request.Cookie("login")
-	// if oauthState == nil {
-	// 	c.Writer.WriteHeader(http.StatusOK)
-	// 	c.Writer.Write([]byte(htmlIndex))
-	// } else {
-	// 	c.Writer.WriteHeader(http.StatusOK)
-	// 	c.Writer.Write([]byte(loggedIn))
-	// }
 }
 
 func logoutUser(c *gin.Context) {
@@ -58,20 +47,7 @@ func logoutUser(c *gin.Context) {
 		false,
 		true,
 	)
-	token.Expiry = time.Now().Add(time.Second * 1)
-	var client = &http.Client{}
-	apiURL := "https://api.github.com/applications/"
-	url := apiURL + config.OauthConf.ClientID + "/grants/" + token.AccessToken
-
-	request, err := http.NewRequest("DELETE", url, nil)
-	headerTokenRaw := config.OauthConf.ClientID + ":" + config.OauthConf.ClientSecret
-	basic := b64.StdEncoding.EncodeToString([]byte(headerTokenRaw))
-
-	request.Header.Set("Authorization", "Basic "+basic)
-	if err != nil {
-		log.LogError(err)
-	}
-	_, err = client.Do(request)
+	err := helpers.LogoutGithub(token)
 	if err != nil {
 		log.LogError(err)
 	}
@@ -81,9 +57,7 @@ func logoutUser(c *gin.Context) {
 }
 
 func loginGithub(c *gin.Context) {
-	state := helpers.GenerateStateOauthCookie(c)
-	url := config.OauthConf.AuthCodeURL(state, oauth2.AccessTypeOnline)
-
+	url := helpers.GenerateOauthURL(c)
 	c.Redirect(http.StatusTemporaryRedirect, url)
 }
 
@@ -102,12 +76,9 @@ func githubCallback(c *gin.Context) {
 		return
 	}
 
-	code := c.Request.FormValue("code")
-	token, err = config.OauthConf.Exchange(oauth2.NoContext, code)
-	token.Expiry = time.Now().Add(time.Hour * 24)
+	token, err = helpers.ExchangeToken(c)
 	if err != nil {
 		log.LogError(err)
-		c.Redirect(http.StatusTemporaryRedirect, "/")
 	}
 
 	client := helpers.CreateClient(token)

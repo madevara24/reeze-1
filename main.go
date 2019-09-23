@@ -13,7 +13,6 @@ func main() {
 	log.InitLogger()
 
 	config.SetupDatabase()
-	model.SchemaAutoMigrate()
 	db := model.InitDatabase(log)
 	defer db.Close()
 	r := controller.SetupRouter(log)

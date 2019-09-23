@@ -101,6 +101,22 @@ func VerifyUser(c *gin.Context) (*github.User, *github.Client, error) {
 	return user, client, nil
 }
 
+func GenerateOauthURL(c *gin.Context) string {
+	state := GenerateStateOauthCookie(c)
+	url := config.OauthConf.AuthCodeURL(state, oauth2.AccessTypeOnline)
+	return url
+}
+
+func ExchangeToken(c *gin.Context) (*oauth2.Token, error) {
+	code := c.Request.FormValue("code")
+	token, err := config.OauthConf.Exchange(oauth2.NoContext, code)
+	token.Expiry = time.Now().Add(time.Hour * 24)
+	if err != nil {
+		return nil, err
+	}
+	return token, nil
+}
+
 func TokenFromJSON(jsonToken string) (*oauth2.Token, error) {
 	var token oauth2.Token
 	if err := json.Unmarshal([]byte(jsonToken), &token); err != nil {
@@ -127,4 +143,25 @@ func GenerateStateOauthCookie(c *gin.Context) string {
 	http.SetCookie(c.Writer, &cookie)
 
 	return state
+}
+
+func LogoutGithub(token *oauth2.Token) error {
+	token.Expiry = time.Now().Add(time.Second * 1)
+	var client = &http.Client{}
+	apiURL := "https://api.github.com/applications/"
+	url := apiURL + config.OauthConf.ClientID + "/grants/" + token.AccessToken
+
+	request, err := http.NewRequest("DELETE", url, nil)
+	headerTokenRaw := config.OauthConf.ClientID + ":" + config.OauthConf.ClientSecret
+	basic := base64.StdEncoding.EncodeToString([]byte(headerTokenRaw))
+
+	request.Header.Set("Authorization", "Basic "+basic)
+	if err != nil {
+		return err
+	}
+	_, err = client.Do(request)
+	if err != nil {
+		return err
+	}
+	return nil
 }

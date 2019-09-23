@@ -5,7 +5,6 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/reeze-project/reeze/config"
-	"github.com/reeze-project/reeze/controller/auth"
 )
 
 var log *config.Logger
@@ -28,8 +27,6 @@ func SetupRouter(confLogger *config.Logger) *gin.Engine {
 	// }))
 
 	r.GET("/", homeIndex)
-	r.POST("/login", auth.Login)
-	r.POST("/register", auth.RegisterUser)
 	r.POST("/logout", logoutUser)
 
 	r.GET("/login-github", loginGithub)

@@ -3,9 +3,7 @@ package config
 import (
 	"log"
 	"os"
-	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 	githuboauth "golang.org/x/oauth2/github"
@@ -13,22 +11,15 @@ import (
 
 var (
 	//OauthConf is a variable to store oauth config
-	OauthConf = SetupConfig()
-	//JWTSigningMethod is JWT Signing Method
-	JWTSigningMethod *jwt.SigningMethodHMAC
-	//JWTSignatureKey is  JWT Signature Key
-	JWTSignatureKey         []byte
-	ApplicationName         string
-	LoginExpirationDuration time.Duration
-	databaseName            string
-	databaseUsername        string
-	databaseHost            string
-	databasePassword        string
+	OauthConf        = SetupConfig()
+	databaseName     string
+	databaseUsername string
+	databaseHost     string
+	databasePassword string
 )
 
 func init() {
 	SetupDatabase()
-	SetupJWT()
 }
 
 //SetupConfig is a function to setup an oauth config
@@ -46,16 +37,8 @@ func SetupConfig() *oauth2.Config {
 	}
 }
 
-func SetupJWT() {
-	JWTSigningMethod = jwt.SigningMethodHS256
-	var secret string = os.Getenv("JWT_SECRET")
-	JWTSignatureKey = []byte(secret)
-	ApplicationName = "Reeze"
-	LoginExpirationDuration = time.Duration(1) * time.Hour
-}
-
 func SetupDatabase() {
-	databaseName = os.Getenv("DB_NAME")
+	databaseName = os.Getenv("DB_DATABASE")
 	databaseUsername = os.Getenv("DB_USERNAME")
 	databaseHost = os.Getenv("DB_HOST")
 	databasePassword = os.Getenv("DB_PASSWORD")
