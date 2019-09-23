@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 )
 
@@ -77,4 +78,8 @@ func (u *User) CreateUser() error {
 		return err
 	}
 	return nil
+}
+
+func (u *User) UpdateUser() error {
+	return errors.New("Function is not implemented yet")
 }

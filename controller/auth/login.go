@@ -2,7 +2,6 @@ package auth
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -26,7 +25,7 @@ func Login(c *gin.Context) {
 	if err != nil {
 		log.LogError(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 	}
 	input := &model.User{Email: creds.Email}
@@ -35,22 +34,25 @@ func Login(c *gin.Context) {
 	result, err = input.GetPasswordByEmail(input.Email)
 	if err != nil {
 		log.LogError(err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err,
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Invalid Email and/or Password.",
 		})
 	}
 
-	inputPassword := []byte(creds.Password)
-	comparePassword := []byte(result.Password)
-	fmt.Println(creds.Password)
-	err = bcrypt.CompareHashAndPassword(comparePassword, inputPassword)
-	if err != nil {
-		log.LogError(err)
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": err,
-		})
+	if result != nil {
+		inputPassword := []byte(creds.Password)
+		comparePassword := []byte(result.Password)
+
+		err = bcrypt.CompareHashAndPassword(comparePassword, inputPassword)
+		if err != nil {
+			log.LogError(err)
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"error": "Invalid Email and/or Password.",
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"success": "Logged in",
+			})
+		}
 	}
-	c.JSON(200, gin.H{
-		"success": "Logged in",
-	})
 }

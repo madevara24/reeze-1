@@ -94,6 +94,7 @@ func VerifyUser(c *gin.Context) (*github.User, *github.Client, error) {
 
 	client := CreateClient(token)
 	user, _, err := GetUser(client)
+
 	if err != nil {
 		return nil, nil, err
 	}
@@ -122,7 +123,7 @@ func GenerateStateOauthCookie(c *gin.Context) string {
 	b := make([]byte, 16)
 	rand.Read(b)
 	state := base64.URLEncoding.EncodeToString(b)
-	cookie := http.Cookie{Name: "login", Value: state, Expires: expiration}
+	cookie := http.Cookie{Name: "login", Value: state, Expires: expiration, HttpOnly: true, MaxAge: 3600 * 24 * 30}
 	http.SetCookie(c.Writer, &cookie)
 
 	return state
