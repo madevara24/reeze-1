@@ -101,12 +101,6 @@ func VerifyUser(c *gin.Context) (*github.User, *github.Client, error) {
 	return user, client, nil
 }
 
-func GenerateOauthURL(c *gin.Context) string {
-	state := GenerateStateOauthCookie(c)
-	url := config.OauthConf.AuthCodeURL(state, oauth2.AccessTypeOnline)
-	return url
-}
-
 func ExchangeToken(c *gin.Context) (*oauth2.Token, error) {
 	code := c.Request.FormValue("code")
 	token, err := config.OauthConf.Exchange(oauth2.NoContext, code)
@@ -131,6 +125,12 @@ func TokenToJSON(token *oauth2.Token) (string, error) {
 	} else {
 		return string(d), nil
 	}
+}
+
+func GenerateOauthURL(c *gin.Context) string {
+	state := GenerateStateOauthCookie(c)
+	url := config.OauthConf.AuthCodeURL(state, oauth2.AccessTypeOnline)
+	return url
 }
 
 func GenerateStateOauthCookie(c *gin.Context) string {

@@ -13,8 +13,7 @@ var token *oauth2.Token
 
 const htmlIndex = `<html><body>
 Logged in with <a href="/login-github">GitHub</a>
-</body></html>
-`
+</body></html>`
 
 const loggedIn = `<html><body>
 Hello user!

@@ -10,7 +10,7 @@ require (
 	github.com/alecthomas/units v0.0.0-20190910110746-680d30ca3117 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20190910235433-dd40567e5238 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/eapache/go-resiliency v1.2.0 // indirect
 	github.com/gin-contrib/sessions v0.0.1
 	github.com/gin-contrib/sse v0.1.0 // indirect
@@ -48,9 +48,9 @@ require (
 	github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271 // indirect
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/ugorji/go v1.1.7 // indirect
-	github.com/utrack/gin-csrf v0.0.0-20190424104817-40fb8d2c8fca
+	github.com/utrack/gin-csrf v0.0.0-20190424104817-40fb8d2c8fca // indirect
 	go.opencensus.io v0.22.1 // indirect
-	golang.org/x/crypto v0.0.0-20190911031432-227b76d455e7
+	golang.org/x/crypto v0.0.0-20190911031432-227b76d455e7 // indirect
 	golang.org/x/exp v0.0.0-20190829153037-c13cbed26979 // indirect
 	golang.org/x/image v0.0.0-20190910094157-69e4b8554b2a // indirect
 	golang.org/x/lint v0.0.0-20190909230951-414d861bb4ac // indirect

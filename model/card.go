@@ -1,25 +1,20 @@
 package model
 
-import (
-	"time"
-)
+import "time"
 
 type Card struct {
-	ID uint64 `json:"id"`
-	// ProjectID      uint64     `json:"project_id"`
-	// Project        Project    `gorm:"foreignkey:ProjectID" sql:"-" json:"-"`
-	Title          string     `json:"title"`
-	Description    string     `json:"description"`
-	State          string     `json:"state"`
-	MovedToBacklog *time.Time `json:"moved_to_backlog_at"`
-	Started        *time.Time `json:"started_at"`
-	Finished       *time.Time `json:"finished_at"`
-	Released       *time.Time `json:"released_at"`
-	Requestor      User       `json:"requestor"`
-	Point          uint       `json:"point"`
-	Owner          User       `json:"owner"`
-	Type           string     `json:"type"`
-	BranchName     string     `json:"branch_name"`
-	CreatedAt      *time.Time `json:"created_at"`
-	UpdatedAt      *time.Time `json:"updated_at"`
+	ID               uint64     `json:"id"`
+	ProjectID        uint64     `json:"project_id"`
+	Project          Project    `json:"project"`
+	OwnerID          uint64     `json:"owner_id"`
+	Owner            User       `json:"owner"`
+	RequesterID      uint64     `json:"requester_id"`
+	Requester        User       `json:"requester"`
+	GithubBranchName string     `json:"github_branch_name"`
+	Description      string     `json:"description"`
+	Points           uint8      `json:"points"`
+	Iteration        uint8      `json:"iteration"`
+	Type             string     `json:"type"`
+	CreatedAt        *time.Time `json:"created_at"`
+	UpdatedAt        *time.Time `json:"updated_at"`
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateA extends Migration
+class CreateProjectsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,13 @@ class CreateA extends Migration
      */
     public function up()
     {
-        Schema::create('a', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('repository');
+            $table->longText('description');
+            $table->integer('sprint_duration');
+            $table->integer('sprint_start_day');
             $table->timestamps();
         });
     }
@@ -26,6 +31,6 @@ class CreateA extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('a');
+        Schema::dropIfExists('projects');
     }
 }
