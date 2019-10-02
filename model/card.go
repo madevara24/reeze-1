@@ -5,11 +5,8 @@ import "time"
 type Card struct {
 	ID               uint64     `json:"id"`
 	ProjectID        uint64     `json:"project_id"`
-	Project          Project    `json:"project"`
 	OwnerID          uint64     `json:"owner_id"`
-	Owner            User       `json:"owner"`
 	RequesterID      uint64     `json:"requester_id"`
-	Requester        User       `json:"requester"`
 	GithubBranchName string     `json:"github_branch_name"`
 	Description      string     `json:"description"`
 	Points           uint8      `json:"points"`
@@ -17,4 +14,19 @@ type Card struct {
 	Type             string     `json:"type"`
 	CreatedAt        *time.Time `json:"created_at"`
 	UpdatedAt        *time.Time `json:"updated_at"`
+}
+
+func (c *Card) CreateCard() error {
+	_, err := db.Exec(`INSERT INTO cards (project_id, owner, requester, github_branch_name, description, points, iteration, type)
+					 VALUES(?, ?, ?, ?, ?, ?, ?, ?) `,
+		c.ProjectID, c.OwnerID, c.RequesterID, c.GithubBranchName, c.Description, c.Points, c.Iteration, c.Type)
+	if err != nil {
+		log.LogError(err)
+		return err
+	}
+	return nil
+}
+
+func (c *Card) GetCardByProject(pid uint64) (*[]Card, error) {
+	return &[]Card{}, nil
 }

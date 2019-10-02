@@ -18,27 +18,17 @@ func SetupRouter(confLogger *config.Logger) *gin.Engine {
 
 	r.Use(sessions.Sessions("user_session", store))
 
-	// r.Use(csrf.Middleware(csrf.Options{
-	// 	Secret: "reeze_project_csrf",
-	// 	ErrorFunc: func(c *gin.Context) {
-	// 		c.JSON(400, "CSRF Token Mismatch")
-	// 		c.Abort()
-	// 	},
-	// }))
-
 	r.GET("/", homeIndex)
 	r.POST("/logout", logoutUser)
 
 	r.GET("/login-github", loginGithub)
 	r.GET("/github-callback", githubCallback)
 
-	api := r.Group("/api")
+	api := r.Group("/api/v1")
 	{
-		v1 := api.Group("/v1")
-		{
-			v1.POST("/create-branch", createBranch)
-			v1.POST("/create-pr", createPullRequest)
-		}
+		api.GET("/test", testAPI)
+		api.POST("/create-branch", createBranch)
+		api.POST("/create-pr", createPullRequest)
 	}
 
 	return r

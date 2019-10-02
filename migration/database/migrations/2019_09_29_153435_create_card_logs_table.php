@@ -26,7 +26,8 @@ class CreateCardLogsTable extends Migration
             $table->dateTime('finished_at');
             $table->dateTime('released_at');
 
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

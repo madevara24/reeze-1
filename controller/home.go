@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/reeze-project/reeze/helpers"
+	"github.com/reeze-project/reeze/model"
 	"golang.org/x/oauth2"
 )
 
@@ -25,6 +26,12 @@ Hello user!
 const logOut = `<html><body>
 Berhasil Log out, <a href="/login-github">Login Kembali</a>
 </body></html>`
+
+func testAPI(c *gin.Context) {
+	user := &model.User{}
+	users, _ := user.GetAllUser()
+	c.JSON(http.StatusOK, users)
+}
 
 func homeIndex(c *gin.Context) {
 	if token.Valid() {
