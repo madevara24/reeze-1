@@ -16,6 +16,14 @@ type Card struct {
 	UpdatedAt        *time.Time `json:"updated_at"`
 }
 
+func (c *Card) GetCardByProject(pid uint64) (*[]Card, error) {
+	return &[]Card{}, nil
+}
+
+func (c *Card) GetCardById(cid uint64) string {
+	return "card"
+}
+
 func (c *Card) CreateCard() error {
 	_, err := db.Exec(`INSERT INTO cards (project_id, owner, requester, github_branch_name, description, points, iteration, type)
 					 VALUES(?, ?, ?, ?, ?, ?, ?, ?) `,
@@ -27,6 +35,10 @@ func (c *Card) CreateCard() error {
 	return nil
 }
 
-func (c *Card) GetCardByProject(pid uint64) (*[]Card, error) {
-	return &[]Card{}, nil
+func (c *Card) UpdateCard() string {
+	return "updated"
+}
+
+func (c *Card) DeleteCard() string {
+	return "deleted"
 }

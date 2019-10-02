@@ -14,3 +14,23 @@ type Project struct {
 	CreatedAt      *time.Time `json:"created_at"`
 	UpdatedAt      *time.Time `json:"updated_at"`
 }
+
+func (p *Project) GetAllProject() (*[]Project, error) {
+	return &[]Project{}, nil
+}
+
+func (p *Project) GetProjectById(pid uint64) (*Project, error) {
+	return &Project{}, nil
+}
+
+func (p *Project) CreateProject() string {
+	return "created"
+}
+
+func (p *Project) UpdateProject(pid uint64, update Project) string {
+	return "updated"
+}
+
+func (p *Project) DeleteProject(pid uint64) string {
+	return "deleted"
+}
