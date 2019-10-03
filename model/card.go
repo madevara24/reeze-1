@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type Card struct {
 	ID               uint64     `json:"id"`
@@ -16,8 +18,32 @@ type Card struct {
 	UpdatedAt        *time.Time `json:"updated_at"`
 }
 
-func (c *Card) GetCardByProject(pid uint64) (*[]Card, error) {
-	return &[]Card{}, nil
+func (c *Card) GetCardByProject(pid uint64) ([]*Card, error) {
+	rows, err := db.Query("SELECT * FROM cards WHERE project_id = ?", pid)
+
+	if err != nil {
+		log.LogError(err)
+		return []*Card{}, err
+	}
+
+	defer rows.Close()
+
+	var result []*Card
+
+	for rows.Next() {
+		var each = &Card{}
+		var err = rows.Scan(&each.ID, &each.ProjectID, &each.OwnerID, &each.RequesterID,
+			&each.GithubBranchName, &each.Description, &each.Points, &each.Iteration, &each.Type,
+			&each.CreatedAt, &each.UpdatedAt)
+		if err != nil {
+			log.LogError(err)
+			return []*Card{}, err
+		}
+
+		result = append(result, each)
+	}
+
+	return result, nil
 }
 
 func (c *Card) GetCardById(cid uint64) string {

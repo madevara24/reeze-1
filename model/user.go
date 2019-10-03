@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+//User is Struct of User
 type User struct {
 	ID        uint64     `json:"id"`
 	Username  string     `json:"username"`
@@ -16,6 +17,7 @@ func (u *User) GetAllUser() ([]*User, error) {
 	rows, err := db.Query("SELECT * FROM users")
 	if err != nil {
 		log.LogError(err)
+		return []*User{}, err
 	}
 
 	defer rows.Close()
@@ -27,6 +29,7 @@ func (u *User) GetAllUser() ([]*User, error) {
 		var err = rows.Scan(&each.ID, &each.Username, &each.CreatedAt, &each.UpdatedAt)
 		if err != nil {
 			log.LogError(err)
+			return []*User{}, err
 		}
 
 		result = append(result, each)
@@ -37,42 +40,40 @@ func (u *User) GetAllUser() ([]*User, error) {
 
 func (u *User) GetUserById(uid uint64) (*User, error) {
 	stmt, err := db.Prepare("SELECT * FROM users WHERE id = ?")
-	user := u
 	if err != nil {
 		log.LogError(err)
-		return nil, err
+		return &User{}, err
 	}
 
-	err = stmt.QueryRow(uid).Scan(&user.ID, &user.Username, &user.CreatedAt, &user.UpdatedAt)
+	err = stmt.QueryRow(uid).Scan(&u.ID, &u.Username, &u.CreatedAt, &u.UpdatedAt)
 
 	if err != nil {
 		log.LogError(err)
-		return nil, err
+		return &User{}, err
 	}
 
-	return user, nil
+	return u, nil
 }
 
 func (u *User) GetUserByEmail(email string) (*User, error) {
 	stmt, err := db.Prepare("SELECT * FROM users WHERE email = ?")
-	user := u
 	if err != nil {
 		log.LogError(err)
-		return nil, err
+		return &User{}, err
 	}
 
-	err = stmt.QueryRow(email).Scan(&user.ID, &user.Username, &user.CreatedAt, &user.UpdatedAt)
+	err = stmt.QueryRow(email).Scan(&u.ID, &u.Username, &u.CreatedAt, &u.UpdatedAt)
 
 	if err != nil {
 		log.LogError(err)
-		return nil, err
+		return &User{}, err
 	}
 
-	return user, nil
+	return u, nil
 }
 
 func (u *User) CreateUser() error {
-	_, err := db.Exec("INSERT INTO users (username, email, password, fullname) VALUES(?, ?, ?, ?) ", u.Username)
+	_, err := db.Exec("INSERT INTO users (username) VALUES(?)", u.Username)
 	if err != nil {
 		log.LogError(err)
 		return err

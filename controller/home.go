@@ -28,9 +28,13 @@ Berhasil Log out, <a href="/login-github">Login Kembali</a>
 </body></html>`
 
 func testAPI(c *gin.Context) {
-	user := &model.User{}
-	users, _ := user.GetAllUser()
-	c.JSON(http.StatusOK, users)
+	user := &model.Card{}
+	users, err := user.GetCardByProject(1)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, users)
+	}
 }
 
 func homeIndex(c *gin.Context) {
