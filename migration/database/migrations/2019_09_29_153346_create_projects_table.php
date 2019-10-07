@@ -20,7 +20,7 @@ class CreateProjectsTable extends Migration
             $table->longText('description');
             $table->integer('sprint_duration');
             $table->integer('sprint_start_day');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('created_at');
             $table->timestamp('updated_at')->useCurrent();
         });
     }

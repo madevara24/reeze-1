@@ -18,29 +18,51 @@ type Card struct {
 	UpdatedAt        *time.Time `json:"updated_at"`
 }
 
-func (c *Card) GetCardByProject(pid uint64) ([]*Card, error) {
-	rows, err := db.Query("SELECT * FROM cards WHERE project_id = ?", pid)
+type Result struct {
+	Requester *User
+	Owner     *User
+	Projects  *Project
+	Cards     *Card
+}
+
+func (c *Card) GetCardsByProject(pid uint64) ([]*Result, error) {
+	rows, err := db.Query(`SELECT cards.id,
+                    projects.name,
+                    req.username as 'req',
+                    own.username as 'own',
+                    github_branch_name,
+                    cards.description,
+                    points,
+                    iteration,
+                    type
+                    FROM cards
+                    JOIN users req on cards.requester = req.id
+                    JOIN users own ON cards.owner = own.id
+                    JOIN projects on cards.project_id = projects.id
+                    WHERE cards.project_id = ?
+                    ORDER BY cards.id ASC`, pid)
 
 	if err != nil {
 		log.LogError(err)
-		return []*Card{}, err
+		return nil, err
 	}
 
 	defer rows.Close()
-
-	var result []*Card
+	var result []*Result
 
 	for rows.Next() {
-		var each = &Card{}
-		var err = rows.Scan(&each.ID, &each.ProjectID, &each.OwnerID, &each.RequesterID,
-			&each.GithubBranchName, &each.Description, &each.Points, &each.Iteration, &each.Type,
-			&each.CreatedAt, &each.UpdatedAt)
+		var eachCard = &Card{}
+		var eachRequester = &User{}
+		var eachOwner = &User{}
+		var eachProject = &Project{}
+
+		var err = rows.Scan(&eachCard.ID, &eachProject.Name, &eachRequester.Username, &eachOwner.Username, &eachCard.GithubBranchName,
+			&eachCard.Description, &eachCard.Points, &eachCard.Iteration, &eachCard.Type)
 		if err != nil {
 			log.LogError(err)
-			return []*Card{}, err
+			return nil, err
 		}
-
-		result = append(result, each)
+		result = append(result, &Result{Requester: eachRequester, Owner: eachOwner, Projects: eachProject, Cards: eachCard})
 	}
 
 	return result, nil
@@ -51,7 +73,14 @@ func (c *Card) GetCardById(cid uint64) string {
 }
 
 func (c *Card) CreateCard() error {
-	_, err := db.Exec(`INSERT INTO cards (project_id, owner, requester, github_branch_name, description, points, iteration, type)
+	_, err := db.Exec(`INSERT INTO cards (project_id,
+                     owner,
+                     requester,
+                     github_branch_name,
+                     description,
+                     points,
+                     iteration,
+                     type)
 					 VALUES(?, ?, ?, ?, ?, ?, ?, ?) `,
 		c.ProjectID, c.OwnerID, c.RequesterID, c.GithubBranchName, c.Description, c.Points, c.Iteration, c.Type)
 	if err != nil {

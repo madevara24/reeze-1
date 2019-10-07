@@ -39,7 +39,7 @@ class CreateCardsTable extends Migration
             $table->enum('points', [1, 3, 5, 8]);
             $table->integer('iteration');
             $table->enum('type', ['feature', 'bug']);
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('created_at');
             $table->timestamp('updated_at')->useCurrent();
         });
     }

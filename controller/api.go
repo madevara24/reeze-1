@@ -5,6 +5,7 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/reeze-project/reeze/config"
+	cors "github.com/rs/cors/wrapper/gin"
 )
 
 var log *config.Logger
@@ -13,10 +14,10 @@ func SetupRouter(confLogger *config.Logger) *gin.Engine {
 	log = confLogger
 
 	r := gin.Default()
-
 	store := cookie.NewStore([]byte("reeze_project"))
 
 	r.Use(sessions.Sessions("user_session", store))
+	r.Use(cors.Default())
 
 	r.GET("/", homeIndex)
 	r.POST("/logout", logoutUser)

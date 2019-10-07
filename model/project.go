@@ -32,7 +32,7 @@ func (p *Project) GetAllProject() ([]*Project, error) {
 		var err = rows.Scan(&each.ID, &each.Name, &each.Repository, &each.Description, &each.SprintDuration, &each.SprintStartDay, &each.CreatedAt, &each.UpdatedAt)
 		if err != nil {
 			log.LogError(err)
-			return []*Project{}, err
+			return nil, err
 		}
 
 		result = append(result, each)
@@ -42,7 +42,7 @@ func (p *Project) GetAllProject() ([]*Project, error) {
 }
 
 func (p *Project) GetProjectById(pid uint64) (*Project, error) {
-	return &Project{}, nil
+	return nil, nil
 }
 
 func (p *Project) CreateProject() string {

@@ -26,7 +26,7 @@ class CreateProjectMembersTable extends Migration
                 ->on('projects')
                 ->onDelete('cascade');
 
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('created_at');
             $table->timestamp('updated_at')->useCurrent();
         });
     }

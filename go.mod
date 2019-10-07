@@ -12,6 +12,7 @@ require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20190910235433-dd40567e5238 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/eapache/go-resiliency v1.2.0 // indirect
+	github.com/gin-contrib/cors v1.3.0
 	github.com/gin-contrib/sessions v0.0.1
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.4.0
@@ -44,6 +45,7 @@ require (
 	github.com/prometheus/procfs v0.0.4 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20190826022208-cac0b30c2563 // indirect
 	github.com/rogpeppe/go-internal v1.3.2 // indirect
+	github.com/rs/cors v1.7.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271 // indirect
 	github.com/stretchr/objx v0.2.0 // indirect
@@ -61,7 +63,7 @@ require (
 	golang.org/x/sys v0.0.0-20190920190810-ef0ce1748380 // indirect
 	golang.org/x/tools v0.0.0-20190920225731-5eefd052ad72 // indirect
 	google.golang.org/api v0.10.0 // indirect
-	google.golang.org/appengine v1.6.2 // indirect
+	google.golang.org/appengine v1.6.2
 	google.golang.org/genproto v0.0.0-20190905072037-92dd089d5514 // indirect
 	google.golang.org/grpc v1.23.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect

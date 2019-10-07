@@ -1,11 +1,10 @@
 package main
 
 import (
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/reeze-project/reeze/config"
 	"github.com/reeze-project/reeze/controller"
 	"github.com/reeze-project/reeze/model"
-
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 func main() {

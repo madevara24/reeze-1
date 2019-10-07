@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/reeze-project/reeze/helpers"
@@ -29,11 +30,11 @@ Berhasil Log out, <a href="/login-github">Login Kembali</a>
 
 func testAPI(c *gin.Context) {
 	user := &model.Card{}
-	users, err := user.GetCardByProject(1)
+	users, err := user.GetCardsByProject(1)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {
-		c.JSON(http.StatusOK, users)
+		c.JSON(http.StatusOK, gin.H{"data": users})
 	}
 }
 
@@ -53,7 +54,7 @@ func logoutUser(c *gin.Context) {
 		"",
 		-1,
 		"/",
-		"127.0.0.1",
+		os.Getenv("APP_URL"),
 		false,
 		true,
 	)
@@ -92,21 +93,37 @@ func githubCallback(c *gin.Context) {
 	}
 
 	client := helpers.CreateClient(token)
-	_, _, err = helpers.GetUser(client)
+	user, _, err := helpers.GetUser(client)
 
 	if err != nil {
-		err = fmt.Errorf("failed to get user with error : %s", err)
+		err = fmt.Errorf("Failed to get user with error : %s", err)
 		log.LogError(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 	}
-	c.JSON(200, token)
 
-	// newUser := &model.User{GithubID: sql.NullInt64{Int64: *user.ID, Valid: true}}
-	// //err = newUser.UpdateUser()
-	// if err != nil {
-	// 	log.LogError(err)
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// } else {
-	// 	c.JSON(http.StatusOK, token)
-	// }
+	checkUser := &model.User{}
+	check, err := checkUser.GetUserByUsername(*user.Login)
+	if err != nil {
+		err = fmt.Errorf("User not found")
+		log.LogError(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+	}
+
+	if check == nil {
+		newUser := &model.User{Username: *user.Login}
+		err = newUser.CreateUser()
+		if err != nil {
+			err = fmt.Errorf("Cannot create user")
+			log.LogError(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		} else {
+			c.Redirect(http.StatusPermanentRedirect, "/")
+			// c.JSON(http.StatusOK, token)
+		}
+	} else {
+		fmt.Println("User logged in")
+		c.Redirect(http.StatusPermanentRedirect, "/")
+		// c.JSON(http.StatusOK, token)
+	}
+
 }
