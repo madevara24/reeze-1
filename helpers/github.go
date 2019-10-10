@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"context"
-	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
 	"net/http"
@@ -99,10 +98,12 @@ func GetUser(client *github.Client) (*github.User, *github.Response, error) {
 }
 
 func VerifyUser(c *gin.Context) (*github.User, *github.Client, error) {
-	jsonToken := c.Request.Header.Get("token")
-	token, err := TokenFromJSON(jsonToken)
-	if err != nil {
-		return nil, nil, err
+	var token *oauth2.Token
+	headerToken := c.Request.Header.Get("token")
+	if headerToken == "" {
+		token = GetToken(c)
+	} else {
+		token, _ = TokenFromJSON(headerToken)
 	}
 
 	client := CreateClient(token)
@@ -140,22 +141,23 @@ func TokenToJSON(token *oauth2.Token) (string, error) {
 	}
 }
 
+func GetToken(c *gin.Context) *oauth2.Token {
+	cookie, _ := c.Request.Cookie("user")
+	creds := new(struct {
+		UserID    uint64        `json:"user_id"`
+		UserToken *oauth2.Token `json:"user_token"`
+	})
+
+	decodedValue, _ := base64.URLEncoding.DecodeString(cookie.Value)
+	_ = json.Unmarshal(decodedValue, &creds)
+
+	return creds.UserToken
+}
+
 func GenerateOauthURL(c *gin.Context) string {
 	state := GenerateStateOauthCookie(c)
 	url := config.OauthConf.AuthCodeURL(state, oauth2.AccessTypeOnline)
 	return url
-}
-
-func GenerateStateOauthCookie(c *gin.Context) string {
-	var expiration = time.Now().Add(30 * 24 * time.Hour)
-
-	b := make([]byte, 16)
-	rand.Read(b)
-	state := base64.URLEncoding.EncodeToString(b)
-	cookie := http.Cookie{Name: "login", Value: state, Expires: expiration, HttpOnly: true, MaxAge: 3600 * 24 * 30}
-	http.SetCookie(c.Writer, &cookie)
-
-	return state
 }
 
 func LogoutGithub(token *oauth2.Token) error {

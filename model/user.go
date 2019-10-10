@@ -47,13 +47,14 @@ func (u *User) GetUserByUsername(username string) (*User, error) {
 	return u, nil
 }
 
-func (u *User) CreateUser() error {
-	_, err := db.Exec("INSERT INTO users (username) VALUES(?)", u.Username)
+func (u *User) CreateUser() (uint64, error) {
+	var lastInsertID uint64
+	err := db.QueryRow("INSERT INTO users (username) VALUES(?)", u.Username).Scan(&lastInsertID)
 	if err != nil {
 		log.LogError(err)
-		return err
+		return 0, err
 	}
-	return nil
+	return lastInsertID, nil
 }
 
 func (u *User) UpdateUser() error {

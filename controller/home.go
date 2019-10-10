@@ -3,15 +3,11 @@ package controller
 import (
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/reeze-project/reeze/helpers"
 	"github.com/reeze-project/reeze/model"
-	"golang.org/x/oauth2"
 )
-
-var token *oauth2.Token
 
 const htmlIndex = `<html><body>
 Logged in with <a href="/login-github">GitHub</a>
@@ -35,29 +31,24 @@ func testAPI(c *gin.Context) {
 }
 
 func homeIndex(c *gin.Context) {
-	if token.Valid() {
-		c.Writer.WriteHeader(http.StatusOK)
-		c.Writer.Write([]byte(loggedIn))
-	} else {
+	_, err := c.Request.Cookie("user")
+	if err != nil {
 		c.Writer.WriteHeader(http.StatusOK)
 		c.Writer.Write([]byte(htmlIndex))
+	} else {
+		c.Writer.WriteHeader(http.StatusOK)
+		c.Writer.Write([]byte(loggedIn))
 	}
 }
 
 func logoutUser(c *gin.Context) {
-	c.SetCookie(
-		"login",
-		"",
-		-1,
-		"/",
-		os.Getenv("APP_URL"),
-		false,
-		true,
-	)
+	token := helpers.GetToken(c)
 	err := helpers.LogoutGithub(token)
 	if err != nil {
 		log.LogError(err)
 	}
+	helpers.RemoveCookie(c, "login")
+	helpers.RemoveCookie(c, "user")
 
 	c.Redirect(http.StatusPermanentRedirect, "/")
 }
@@ -82,7 +73,7 @@ func githubCallback(c *gin.Context) {
 		return
 	}
 
-	token, err = helpers.ExchangeToken(c)
+	token, err := helpers.ExchangeToken(c)
 	if err != nil {
 		log.LogError(err)
 	}
@@ -99,26 +90,29 @@ func githubCallback(c *gin.Context) {
 	checkUser := &model.User{}
 	check, err := checkUser.GetUserByUsername(*user.Login)
 	if err != nil {
-		err = fmt.Errorf("User not found")
 		log.LogError(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 	}
 
 	if check == nil {
 		newUser := &model.User{Username: *user.Login}
-		err = newUser.CreateUser()
+		id, err := newUser.CreateUser()
+		helpers.SetUserCookie(c, id, token)
+
 		if err != nil {
 			err = fmt.Errorf("Cannot create user")
 			log.LogError(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		} else {
 			// c.Redirect(http.StatusPermanentRedirect, "/")
-			c.JSON(http.StatusOK, token.AccessToken)
+
+			c.JSON(http.StatusOK, token)
 		}
 	} else {
+		helpers.SetUserCookie(c, check.ID, token)
 		fmt.Println("User logged in")
+
 		// c.Redirect(http.StatusPermanentRedirect, "/")
-		c.JSON(http.StatusOK, token.AccessToken)
+		c.JSON(http.StatusOK, token)
 	}
 
 }
