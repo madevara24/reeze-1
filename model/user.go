@@ -48,13 +48,13 @@ func (u *User) GetUserByUsername(username string) (*User, error) {
 }
 
 func (u *User) CreateUser() (uint64, error) {
-	var lastInsertID uint64
-	err := db.QueryRow("INSERT INTO users (username) VALUES(?)", u.Username).Scan(&lastInsertID)
+	res, err := db.Exec("INSERT INTO users (username) VALUES(?)", u.Username)
 	if err != nil {
 		log.LogError(err)
 		return 0, err
 	}
-	return lastInsertID, nil
+	lastInsertID, _ := res.LastInsertId()
+	return uint64(lastInsertID), nil
 }
 
 func (u *User) UpdateUser() error {

@@ -22,7 +22,7 @@ class CreateCardLogsTable extends Migration
                 ->on('cards')
                 ->onDelete('cascade');
 
-            $table->enum('state', ['created', 'started', 'finished', 'released', 'rejected']);
+            $table->enum('state', ['created', 'started', 'finished', 'released', 'rejected', 'planned', 'accepted']);
 
             $table->timestamp('created_at');
             $table->timestamp('updated_at')->useCurrent();

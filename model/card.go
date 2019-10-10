@@ -6,6 +6,7 @@ import (
 
 type Card struct {
 	ID               uint64     `json:"id"`
+	Title            string     `json:"title"`
 	ProjectID        uint64     `json:"project_id"`
 	OwnerID          uint64     `json:"owner_id"`
 	RequesterID      uint64     `json:"requester_id"`
@@ -31,6 +32,7 @@ func (c *Card) GetCardsByProject(pid uint64) ([]*Result, error) {
                     req.username as 'req',
                     own.username as 'own',
                     github_branch_name,
+                    cards.title,
                     cards.description,
                     points,
                     iteration,
@@ -56,7 +58,7 @@ func (c *Card) GetCardsByProject(pid uint64) ([]*Result, error) {
 		var eachOwner = &User{}
 		var eachProject = &Project{}
 
-		var err = rows.Scan(&eachCard.ID, &eachProject.Name, &eachRequester.Username, &eachOwner.Username, &eachCard.GithubBranchName,
+		var err = rows.Scan(&eachCard.ID, &eachCard.Title, &eachProject.Name, &eachRequester.Username, &eachOwner.Username, &eachCard.GithubBranchName,
 			&eachCard.Description, &eachCard.Points, &eachCard.Iteration, &eachCard.Type)
 		if err != nil {
 			log.LogError(err)

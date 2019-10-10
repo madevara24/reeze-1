@@ -96,6 +96,7 @@ func githubCallback(c *gin.Context) {
 	if check == nil {
 		newUser := &model.User{Username: *user.Login}
 		id, err := newUser.CreateUser()
+
 		helpers.SetUserCookie(c, id, token)
 
 		if err != nil {
