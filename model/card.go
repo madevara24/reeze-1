@@ -19,10 +19,10 @@ type Card struct {
 }
 
 type Result struct {
-	Requester *User
-	Owner     *User
-	Projects  *Project
-	Cards     *Card
+	Requester *User    `json:"requester"`
+	Owner     *User    `json:"owner"`
+	Projects  *Project `json:"project"`
+	Cards     *Card    `json:"cards"`
 }
 
 func (c *Card) GetCardsByProject(pid uint64) ([]*Result, error) {

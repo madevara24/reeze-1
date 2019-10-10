@@ -14,10 +14,26 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func CreateBranch(c *gin.Context, branchName string) (*github.Reference, *github.Response, error) {
-	ctx := context.Background()
+func ListAllRepos(c *gin.Context) ([]string, error) {
 	user, client, err := VerifyUser(c)
-	master, _, err := client.Git.GetRef(ctx, *user.Login, "rental-girlfriend-laravel", "refs/heads/master")
+	if err != nil {
+		c.Redirect(http.StatusUnauthorized, "/")
+	}
+	repos, _, err := client.Repositories.List(c, *user.Login, nil)
+	if err != nil {
+		return nil, err
+	}
+	var result []string
+
+	for _, repo := range repos {
+		result = append(result, *repo.Name)
+	}
+	return result, nil
+}
+
+func CreateBranch(c *gin.Context, repositoryName string, branchName string) (*github.Reference, *github.Response, error) {
+	user, client, err := VerifyUser(c)
+	master, _, err := client.Git.GetRef(c, *user.Login, repositoryName, "refs/heads/master")
 
 	s := "refs/heads/" + branchName
 
@@ -29,11 +45,10 @@ func CreateBranch(c *gin.Context, branchName string) (*github.Reference, *github
 	if err != nil {
 		c.Redirect(http.StatusUnauthorized, "/")
 	}
-	return client.Git.CreateRef(ctx, *user.Login, "rental-girlfriend-laravel", ref)
+	return client.Git.CreateRef(c, *user.Login, repositoryName, ref)
 }
 
-func CreatePullRequest(c *gin.Context) (*github.PullRequest, *github.Response, error) {
-	ctx := context.Background()
+func CreatePullRequest(c *gin.Context, repositoryName string) (*github.PullRequest, *github.Response, error) {
 	user, client, err := VerifyUser(c)
 	if err != nil {
 		c.Redirect(http.StatusUnauthorized, "/")
@@ -47,27 +62,25 @@ func CreatePullRequest(c *gin.Context) (*github.PullRequest, *github.Response, e
 	if err != nil {
 		c.Redirect(http.StatusUnauthorized, "/")
 	}
-	return client.PullRequests.Create(ctx, *user.Login, "rental-girlfriend-laravel", newPR)
+	return client.PullRequests.Create(c, *user.Login, repositoryName, newPR)
 }
 
-func GetPullRequestsList(c *gin.Context) ([]*github.PullRequest, *github.Response, error) {
-	ctx := context.Background()
+func GetPullRequestsList(c *gin.Context, repositoryName string) ([]*github.PullRequest, *github.Response, error) {
 	user, client, err := VerifyUser(c)
 	if err != nil {
 		c.Redirect(http.StatusUnauthorized, "/")
 	}
 
-	return client.PullRequests.List(ctx, *user.Login, "rental-girlfriend-laravel", nil)
+	return client.PullRequests.List(c, *user.Login, repositoryName, nil)
 }
 
-func MergePullRequest(c *gin.Context, list *github.PullRequest) (*github.PullRequestMergeResult, *github.Response, error) {
-	ctx := context.Background()
+func MergePullRequest(c *gin.Context, list *github.PullRequest, repositoryName string) (*github.PullRequestMergeResult, *github.Response, error) {
 	user, client, err := VerifyUser(c)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return client.PullRequests.Merge(ctx, *user.Login, "rental-girlfriend-laravel", list.GetNumber(), "Merge", nil)
+	return client.PullRequests.Merge(c, *user.Login, repositoryName, list.GetNumber(), "Merge", nil)
 }
 
 func CreateClient(token *oauth2.Token) *github.Client {

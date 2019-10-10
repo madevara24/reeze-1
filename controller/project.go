@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -9,20 +10,31 @@ import (
 )
 
 func createBranch(c *gin.Context) {
-	branchName := c.Request.FormValue("branch_name")
-	ref, _, err := helpers.CreateBranch(c, branchName)
+	res, err := c.GetRawData()
+	if err != nil {
+		log.LogError(err)
+	}
+
+	data := new(struct {
+		BranchName string `json:"branch_name"`
+	})
+
+	err = json.Unmarshal(res, &data)
+	repositoryName := "rental-girlfriend-laravel"
+	ref, _, err := helpers.CreateBranch(c, repositoryName, data.BranchName)
 	if err != nil {
 		log.LogError(err)
 		c.JSON(http.StatusBadRequest, err)
 	} else {
 		info := fmt.Sprintf("References created: %s\n", ref.GetRef())
 		log.LogInfo(info)
-		c.JSON(http.StatusOK, "Branch "+branchName+" is successfully created")
+		c.JSON(http.StatusOK, "Branch "+data.BranchName+" is successfully created")
 	}
 }
 
 func createPullRequest(c *gin.Context) {
-	pr, res, err := helpers.CreatePullRequest(c)
+	repositoryName := "rental-girlfriend-laravel"
+	pr, res, err := helpers.CreatePullRequest(c, repositoryName)
 	if err != nil {
 		log.LogError(err)
 		c.JSON(res.StatusCode, err)
@@ -31,10 +43,10 @@ func createPullRequest(c *gin.Context) {
 		log.LogInfo(info)
 	}
 
-	prList, _, err := helpers.GetPullRequestsList(c)
+	prList, _, err := helpers.GetPullRequestsList(c, repositoryName)
 
 	for _, list := range prList {
-		merge, res, err := helpers.MergePullRequest(c, list)
+		merge, res, err := helpers.MergePullRequest(c, list, repositoryName)
 		if err != nil {
 			log.LogError(err)
 			c.JSON(res.StatusCode, err)
@@ -43,4 +55,9 @@ func createPullRequest(c *gin.Context) {
 			log.LogInfo(info)
 		}
 	}
+}
+
+func getListRepositories(c *gin.Context) {
+	repo, _ := helpers.ListAllRepos(c)
+	c.JSON(http.StatusOK, gin.H{"data": repo})
 }

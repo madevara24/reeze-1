@@ -24,10 +24,6 @@ Hello user!
 </form>
 </body></html>`
 
-const logOut = `<html><body>
-Berhasil Log out, <a href="/login-github">Login Kembali</a>
-</body></html>`
-
 func testAPI(c *gin.Context) {
 	user := &model.Card{}
 	users, err := user.GetCardsByProject(1)
@@ -63,8 +59,7 @@ func logoutUser(c *gin.Context) {
 		log.LogError(err)
 	}
 
-	c.Writer.WriteHeader(http.StatusOK)
-	c.Writer.Write([]byte(logOut))
+	c.Redirect(http.StatusPermanentRedirect, "/")
 }
 
 func loginGithub(c *gin.Context) {
@@ -117,13 +112,13 @@ func githubCallback(c *gin.Context) {
 			log.LogError(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		} else {
-			c.Redirect(http.StatusPermanentRedirect, "/")
-			// c.JSON(http.StatusOK, token)
+			// c.Redirect(http.StatusPermanentRedirect, "/")
+			c.JSON(http.StatusOK, token.AccessToken)
 		}
 	} else {
 		fmt.Println("User logged in")
-		c.Redirect(http.StatusPermanentRedirect, "/")
-		// c.JSON(http.StatusOK, token)
+		// c.Redirect(http.StatusPermanentRedirect, "/")
+		c.JSON(http.StatusOK, token.AccessToken)
 	}
 
 }
