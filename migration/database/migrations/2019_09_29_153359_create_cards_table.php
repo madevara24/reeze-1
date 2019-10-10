@@ -16,6 +16,8 @@ class CreateCardsTable extends Migration
         Schema::create('cards', function (Blueprint $table) {
             $table->bigIncrements('id');
 
+            $table->string('title');
+
             $table->unsignedBigInteger('project_id');
             $table->foreign('project_id')
                 ->references('id')
@@ -26,7 +28,7 @@ class CreateCardsTable extends Migration
             $table->foreign('owner')
                 ->references('id')
                 ->on('users')
-                ->onDelete('cascade');
+                ->onDelete('cascade')->nullable();
 
             $table->unsignedBigInteger('requester');
             $table->foreign('requester')
@@ -34,10 +36,10 @@ class CreateCardsTable extends Migration
                 ->on('users')
                 ->onDelete('cascade');
 
-            $table->string('github_branch_name');
-            $table->longText('description');
-            $table->enum('points', [1, 3, 5, 8]);
-            $table->integer('iteration');
+            $table->string('github_branch_name')->nullable();
+            $table->longText('description')->nullable();
+            $table->enum('points', [1, 3, 5, 8])->nullable();
+            $table->integer('iteration')->nullable();
             $table->enum('type', ['feature', 'bug']);
             $table->timestamp('created_at');
             $table->timestamp('updated_at')->useCurrent();
