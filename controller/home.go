@@ -10,7 +10,7 @@ import (
 )
 
 const htmlIndex = `<html><body>
-Logged in with <a href="/login-github">GitHub</a>
+Log in with <a href="/login-github">GitHub</a>
 </body></html>`
 
 const loggedIn = `<html><body>
@@ -31,18 +31,19 @@ func testAPI(c *gin.Context) {
 }
 
 func homeIndex(c *gin.Context) {
-	_, err := c.Request.Cookie("user")
-	if err != nil {
-		c.Writer.WriteHeader(http.StatusOK)
-		c.Writer.Write([]byte(htmlIndex))
-	} else {
+	token, _ := helpers.GetToken(c)
+
+	if token.Valid() {
 		c.Writer.WriteHeader(http.StatusOK)
 		c.Writer.Write([]byte(loggedIn))
+	} else {
+		c.Writer.WriteHeader(http.StatusOK)
+		c.Writer.Write([]byte(htmlIndex))
 	}
 }
 
 func logoutUser(c *gin.Context) {
-	token := helpers.GetToken(c)
+	token, _ := helpers.GetToken(c)
 	err := helpers.LogoutGithub(token)
 	if err != nil {
 		log.LogError(err)

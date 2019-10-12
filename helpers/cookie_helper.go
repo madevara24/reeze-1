@@ -24,11 +24,13 @@ func GenerateStateOauthCookie(c *gin.Context) string {
 	return state
 }
 
+type Credentials struct {
+	UserID    uint64        `json:"user_id"`
+	UserToken *oauth2.Token `json:"user_token"`
+}
+
 func SetUserCookie(c *gin.Context, id uint64, token *oauth2.Token) {
-	value := new(struct {
-		UserID    uint64        `json:"user_id"`
-		UserToken *oauth2.Token `json:"user_token"`
-	})
+	value := &Credentials{}
 	value.UserID = id
 	value.UserToken = token
 	jsonByte, _ := json.Marshal(value)
@@ -49,4 +51,35 @@ func RemoveCookie(c *gin.Context, cookieName string) {
 		false,
 		true,
 	)
+}
+
+func DecodeCookie(c *gin.Context) (*Credentials, error) {
+	cookie, err := c.Request.Cookie("user")
+	if err != nil {
+		return nil, err
+	}
+
+	creds := &Credentials{}
+	decodedValue, _ := base64.URLEncoding.DecodeString(cookie.Value)
+	_ = json.Unmarshal(decodedValue, creds)
+
+	return creds, nil
+}
+
+func GetToken(c *gin.Context) (*oauth2.Token, error) {
+	creds, err := DecodeCookie(c)
+	if err != nil {
+		return nil, err
+	}
+
+	return creds.UserToken, nil
+}
+
+func GetLoginUserID(c *gin.Context) (uint64, error) {
+	creds, err := DecodeCookie(c)
+	if err != nil {
+		return 0, err
+	}
+
+	return creds.UserID, nil
 }

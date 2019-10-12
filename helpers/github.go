@@ -101,7 +101,7 @@ func VerifyUser(c *gin.Context) (*github.User, *github.Client, error) {
 	var token *oauth2.Token
 	headerToken := c.Request.Header.Get("token")
 	if headerToken == "" {
-		token = GetToken(c)
+		token, _ = GetToken(c)
 	} else {
 		token, _ = TokenFromJSON(headerToken)
 	}
@@ -139,19 +139,6 @@ func TokenToJSON(token *oauth2.Token) (string, error) {
 	} else {
 		return string(d), nil
 	}
-}
-
-func GetToken(c *gin.Context) *oauth2.Token {
-	cookie, _ := c.Request.Cookie("user")
-	creds := new(struct {
-		UserID    uint64        `json:"user_id"`
-		UserToken *oauth2.Token `json:"user_token"`
-	})
-
-	decodedValue, _ := base64.URLEncoding.DecodeString(cookie.Value)
-	_ = json.Unmarshal(decodedValue, &creds)
-
-	return creds.UserToken
 }
 
 func GenerateOauthURL(c *gin.Context) string {
