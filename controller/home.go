@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/reeze-project/reeze/helpers"
-	"github.com/reeze-project/reeze/model"
+	"github.com/zainokta/reeze/helpers"
+	"github.com/zainokta/reeze/model"
 )
 
 const htmlIndex = `<html><body>

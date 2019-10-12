@@ -6,7 +6,7 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/gin-gonic/gin"
-	"github.com/reeze-project/reeze/helpers"
+	"github.com/zainokta/reeze/helpers"
 )
 
 func AuthMiddleware(c *gin.Context) {

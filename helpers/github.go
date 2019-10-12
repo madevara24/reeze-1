@@ -9,7 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/go-github/github"
-	"github.com/reeze-project/reeze/config"
+	"github.com/zainokta/reeze/config"
 	"golang.org/x/oauth2"
 )
 

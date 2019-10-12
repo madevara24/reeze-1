@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/reeze-project/reeze/helpers"
+	"github.com/zainokta/reeze/helpers"
 )
 
 func createBranch(c *gin.Context) {

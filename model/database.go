@@ -3,7 +3,7 @@ package model
 import (
 	"database/sql"
 
-	"github.com/reeze-project/reeze/config"
+	"github.com/zainokta/reeze/config"
 )
 
 var (

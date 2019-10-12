@@ -4,9 +4,9 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
-	"github.com/reeze-project/reeze/config"
-	"github.com/reeze-project/reeze/middleware"
 	cors "github.com/rs/cors/wrapper/gin"
+	"github.com/zainokta/reeze/config"
+	"github.com/zainokta/reeze/middleware"
 )
 
 var log *config.Logger
