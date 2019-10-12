@@ -20,7 +20,7 @@ func (p *Project) GetAllProject() ([]*Project, error) {
 	rows, err := db.Query("SELECT * FROM projects")
 	if err != nil {
 		log.LogError(err)
-		return []*Project{}, err
+		return nil, err
 	}
 
 	defer rows.Close()
@@ -36,6 +36,64 @@ func (p *Project) GetAllProject() ([]*Project, error) {
 		}
 
 		result = append(result, each)
+	}
+
+	return result, nil
+}
+
+type ResultUserProjects struct {
+	User    *User    `json:"user"`
+	Project *Project `json:"projects"`
+}
+
+func (p *Project) GetUserProjects(pid uint64) ([]*ResultUserProjects, error) {
+
+	rows, err := db.Query(`SELECT user.id,
+                        user.username,
+                        user.created_at,
+                        user.updated_at,
+                        projects.id,
+                        projects.name,
+                        projects.repository,
+                        projects.description,
+                        projects.sprint_duration,
+                        projects.sprint_start_day,
+                        projects.created_at,
+                        projects.updated_at
+                        FROM project_members
+                        JOIN users ON project_members.user_id = users.id
+                        JOIN projects ON project_members.project_id = projects.id
+                        WHERE project_members.user_id = ?`, pid)
+	if err != nil {
+		log.LogError(err)
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var result []*ResultUserProjects
+
+	for rows.Next() {
+		var eachUser = &User{}
+		var eachProject = &Project{}
+		var err = rows.Scan(eachUser.ID,
+			eachUser.Username,
+			eachUser.CreatedAt,
+			eachUser.UpdatedAt,
+			eachProject.ID,
+			eachProject.Name,
+			eachProject.Repository,
+			eachProject.Description,
+			eachProject.SprintDuration,
+			eachProject.SprintStartDay,
+			eachProject.CreatedAt,
+			eachProject.UpdatedAt)
+		if err != nil {
+			log.LogError(err)
+			return nil, err
+		}
+
+		result = append(result, &ResultUserProjects{User: eachUser, Project: eachProject})
 	}
 
 	return result, nil

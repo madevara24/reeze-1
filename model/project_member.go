@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type ProjectMember struct {
 	User      *User      `json:"user"`

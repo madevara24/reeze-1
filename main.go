@@ -1,7 +1,8 @@
 package main
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "database/sql"
+
 	"github.com/reeze-project/reeze/config"
 	"github.com/reeze-project/reeze/controller"
 	"github.com/reeze-project/reeze/model"
