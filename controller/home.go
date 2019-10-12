@@ -21,8 +21,8 @@ Hello user!
 </body></html>`
 
 func testAPI(c *gin.Context) {
-	user := &model.Project{}
-	users, err := user.GetUserProjects(1)
+	user := &model.Card{}
+	users, err := user.GetCardsByProject(1)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {

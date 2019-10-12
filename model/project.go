@@ -42,16 +42,15 @@ func (p *Project) GetAllProject() ([]*Project, error) {
 }
 
 type ResultUserProjects struct {
-	User    *User    `json:"user"`
-	Project *Project `json:"projects"`
+	User    *User    `json:"-"`
+	Project *Project `json:"project"`
 }
 
-func (p *Project) GetUserProjects(pid uint64) ([]*ResultUserProjects, error) {
-
-	rows, err := db.Query(`SELECT user.id,
-                        user.username,
-                        user.created_at,
-                        user.updated_at,
+func (p *Project) GetUserProjects(uid uint64) ([]*ResultUserProjects, error) {
+	rows, err := db.Query(`SELECT users.id,
+                        users.username,
+                        users.created_at,
+                        users.updated_at,
                         projects.id,
                         projects.name,
                         projects.repository,
@@ -63,7 +62,7 @@ func (p *Project) GetUserProjects(pid uint64) ([]*ResultUserProjects, error) {
                         FROM project_members
                         JOIN users ON project_members.user_id = users.id
                         JOIN projects ON project_members.project_id = projects.id
-                        WHERE project_members.user_id = ?`, pid)
+                        WHERE project_members.user_id = ?`, uid)
 	if err != nil {
 		log.LogError(err)
 		return nil, err
@@ -76,18 +75,18 @@ func (p *Project) GetUserProjects(pid uint64) ([]*ResultUserProjects, error) {
 	for rows.Next() {
 		var eachUser = &User{}
 		var eachProject = &Project{}
-		var err = rows.Scan(eachUser.ID,
-			eachUser.Username,
-			eachUser.CreatedAt,
-			eachUser.UpdatedAt,
-			eachProject.ID,
-			eachProject.Name,
-			eachProject.Repository,
-			eachProject.Description,
-			eachProject.SprintDuration,
-			eachProject.SprintStartDay,
-			eachProject.CreatedAt,
-			eachProject.UpdatedAt)
+		var err = rows.Scan(&eachUser.ID,
+			&eachUser.Username,
+			&eachUser.CreatedAt,
+			&eachUser.UpdatedAt,
+			&eachProject.ID,
+			&eachProject.Name,
+			&eachProject.Repository,
+			&eachProject.Description,
+			&eachProject.SprintDuration,
+			&eachProject.SprintStartDay,
+			&eachProject.CreatedAt,
+			&eachProject.UpdatedAt)
 		if err != nil {
 			log.LogError(err)
 			return nil, err
@@ -103,8 +102,22 @@ func (p *Project) GetProjectById(pid uint64) (*Project, error) {
 	return nil, nil
 }
 
-func (p *Project) CreateProject() string {
-	return "created"
+func (p *Project) CreateProject(uid uint64) error {
+	res, err := db.Exec(`INSERT INTO projects (name,
+        repository,
+        description,
+        sprint_duration,
+        sprint_start_day)
+        VALUES(?, ?, ?, ?, ?)`, p.Name, p.Repository, p.Description, p.SprintDuration, p.SprintStartDay)
+	if err != nil {
+		log.LogError(err)
+		return err
+	}
+	lastInsertID, _ := res.LastInsertId()
+
+	pm := &ProjectMember{}
+	pm.InsertProjectMember(uid, uint64(lastInsertID))
+	return nil
 }
 
 func (p *Project) UpdateProject(pid uint64, update Project) string {

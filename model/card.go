@@ -57,12 +57,10 @@ func (c *Card) GetCardsByProject(pid uint64) ([]*ResultProjectCards, error) {
                     own.username,
                     own.created_at,
                     own.updated_at
-                    FROM cards
-                    JOIN users req on cards.requester = req.id
-                    JOIN users own ON cards.owner = own.id
+                    FROM cards JOIN users req on cards.requester = req.id
+                    JOIN users own on cards.owner = own.id
                     JOIN projects on cards.project_id = projects.id
-                    WHERE cards.project_id = ?
-                    ORDER BY cards.id ASC`, pid)
+                    WHERE cards.project_id = ? ORDER BY cards.iteration, cards.points ASC`, pid)
 
 	if err != nil {
 		log.LogError(err)
@@ -121,7 +119,7 @@ func (c *Card) GetCardById(cid uint64) string {
 	return "card"
 }
 
-func (c *Card) CreateCard() error {
+func (c *Card) CreateCard(uid uint64) error {
 	_, err := db.Exec(`INSERT INTO cards (project_id,
                      owner,
                      requester,
@@ -131,7 +129,7 @@ func (c *Card) CreateCard() error {
                      iteration,
                      type)
 					 VALUES(?, ?, ?, ?, ?, ?, ?, ?) `,
-		c.ProjectID, c.OwnerID, c.RequesterID, c.GithubBranchName, c.Description, c.Points, c.Iteration, c.Type)
+		c.ProjectID, c.OwnerID, uid, c.GithubBranchName, c.Description, c.Points, c.Iteration, c.Type)
 	if err != nil {
 		log.LogError(err)
 		return err

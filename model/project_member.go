@@ -72,3 +72,13 @@ func (pm *ProjectMember) GetProjectMember(pid uint64) ([]*ProjectMember, error) 
 
 	return result, nil
 }
+
+func (pm *ProjectMember) InsertProjectMember(uid uint64, pid uint64) error {
+	_, err := db.Exec(`INSERT INTO cards (user_id,
+        project_id) VALUES(?, ?) `, uid, pid)
+	if err != nil {
+		log.LogError(err)
+		return err
+	}
+	return nil
+}

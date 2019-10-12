@@ -1,11 +1,10 @@
 package main
 
 import (
-	_ "database/sql"
-
-	"github.com/reeze-project/reeze/config"
-	"github.com/reeze-project/reeze/controller"
-	"github.com/reeze-project/reeze/model"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/zainokta/reeze/config"
+	"github.com/zainokta/reeze/controller"
+	"github.com/zainokta/reeze/model"
 )
 
 func main() {

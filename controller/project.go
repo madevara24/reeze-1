@@ -7,7 +7,35 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/zainokta/reeze/helpers"
+	"github.com/zainokta/reeze/model"
 )
+
+func createProject(c *gin.Context) {
+
+	res, err := c.GetRawData()
+	if err != nil {
+		log.LogError(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+	}
+
+	data := &model.Project{}
+	err = json.Unmarshal(res, data)
+	if err != nil {
+		log.LogError(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+	}
+
+	uid, err := helpers.GetLoginUserID(c)
+	if err != nil {
+		log.LogError(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please Login first"})
+	}
+	data.CreateProject(uid)
+}
+
+type DataBranch struct {
+	BranchName string `json:"branch_name"`
+}
 
 func createBranch(c *gin.Context) {
 	res, err := c.GetRawData()
@@ -15,13 +43,12 @@ func createBranch(c *gin.Context) {
 		log.LogError(err)
 	}
 
-	data := new(struct {
-		BranchName string `json:"branch_name"`
-	})
+	data := &DataBranch{}
 
-	err = json.Unmarshal(res, &data)
+	err = json.Unmarshal(res, data)
 	repositoryName := "rental-girlfriend-laravel"
 	ref, _, err := helpers.CreateBranch(c, repositoryName, data.BranchName)
+	//TODO update card branch name
 	if err != nil {
 		log.LogError(err)
 		c.JSON(http.StatusBadRequest, err)
