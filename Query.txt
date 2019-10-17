@@ -1,0 +1,42 @@
+View project member (siapa saja yang join project ini)
+SELECT users.username as 'username', projects.name as 'project name' FROM project_members JOIN users ON project_members.user_id = users.id JOIN projects ON project_members.project_id = projects.id WHERE project_members.project_id = 3
+
+View your projects (project apa saja yang anda kerjakan)
+SELECT users.username as 'username', projects.name as 'project name' FROM project_members JOIN users ON project_members.user_id = users.id JOIN projects ON project_members.project_id = projects.id WHERE project_members.user_id = 1
+
+view cards by project, iteration
+SELECT cards.id, projects.name as 'project', iteration, req.username as 'requester', own.username as 'owner', type, cards.description as 'description', points, github_branch_name as 'github branch' FROM cards JOIN users req on cards.requester = req.id join users own on cards.owner = own.id JOIN projects on cards.project_id = projects.id WHERE cards.project_id = 1 ORDER BY cards.iteration, cards.points ASC
+
+CARDS-QUERY
+
+update cards
+UPDATE cards SET id = ?, title = ?, project_id = ?, owner = ?, requester = ?, github_branch_name = ?, description = ?, points = ?, iteration = ?, type = ?, updated_at = ? WHERE id = ?
+
+delete cards
+DELETE FROM cards WHERE id = ?
+
+PROJECT MEMBERS-QUERY
+
+add project member
+INSERT INTO project_members (user_id, project_id) VALUES (?,?)
+
+delete certain project member
+DELETE FROM project_members WHERE project_id = ? AND user_id = ?
+
+delete all project from certain user
+DELETE FROM project_members WHERE user_id = ?
+
+delete all user from certain project
+DELETE FROM project_members WHERE project_id = ?
+
+PROJECTS-QUERY
+
+add project
+INSERT INTO projects (name, repository, description, sprint_duration, sprint_start_day) VALUES (?, ?, ?, ?, ?)
+
+update project
+UPDATE projects SET name = ?, repository = ?, description = ?, sprint_duration = ?, sprint_start_day = ? WHERE id = ?
+
+delete project
+DELETE FROM projects WHERE id = ?
+
