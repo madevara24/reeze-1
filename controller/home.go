@@ -20,16 +20,6 @@ Hello user!
 </form>
 </body></html>`
 
-func testAPI(c *gin.Context) {
-	user := &model.Card{}
-	users, err := user.GetCardsByProject(1)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	} else {
-		c.JSON(http.StatusOK, gin.H{"data": users})
-	}
-}
-
 func homeIndex(c *gin.Context) {
 	token, _ := helpers.GetToken(c)
 
@@ -77,6 +67,7 @@ func githubCallback(c *gin.Context) {
 	token, err := helpers.ExchangeToken(c)
 	if err != nil {
 		log.LogError(err)
+		return
 	}
 
 	client := helpers.CreateClient(token)
@@ -86,12 +77,14 @@ func githubCallback(c *gin.Context) {
 		err = fmt.Errorf("Failed to get user with error : %s", err)
 		log.LogError(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
 	}
 
 	checkUser := &model.User{}
 	check, err := checkUser.GetUserByUsername(*user.Login)
 	if err != nil {
 		log.LogError(err)
+		return
 	}
 
 	if check == nil {
@@ -104,16 +97,14 @@ func githubCallback(c *gin.Context) {
 			err = fmt.Errorf("Cannot create user")
 			log.LogError(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		} else {
-			// c.Redirect(http.StatusPermanentRedirect, "/")
-
-			c.JSON(http.StatusOK, token)
+			return
 		}
+		c.JSON(http.StatusOK, token)
+
 	} else {
 		helpers.SetUserCookie(c, check.ID, token)
 		fmt.Println("User logged in")
 
-		// c.Redirect(http.StatusPermanentRedirect, "/")
 		c.JSON(http.StatusOK, token)
 	}
 

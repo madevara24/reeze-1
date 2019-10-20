@@ -115,10 +115,6 @@ func (c *Card) GetCardsByProject(pid uint64) ([]*ResultProjectCards, error) {
 	return result, nil
 }
 
-func (c *Card) GetCardById(cid uint64) string {
-	return "card"
-}
-
 func (c *Card) CreateCard(uid uint64) error {
 	_, err := db.Exec(`INSERT INTO cards (project_id,
                      owner,
@@ -137,10 +133,31 @@ func (c *Card) CreateCard(uid uint64) error {
 	return nil
 }
 
-func (c *Card) UpdateCard() string {
-	return "updated"
+func (c *Card) UpdateCard(cid uint64) error {
+	_, err := db.Exec(`UPDATE cards SET
+                title = ?,
+                project_id = ?,
+                owner = ?,
+                requester = ?,
+                github_branch_name = ?,
+                description = ?,
+                points = ?,
+                iteration = ?,
+                type = ?,
+                updated_at = ?
+                WHERE id = ?`, c.Title, c.ProjectID, c.OwnerID, c.RequesterID, c.GithubBranchName, c.Description, c.Points, c.Iteration, c.Type, time.Now(), cid)
+	if err != nil {
+		log.LogError(err)
+		return err
+	}
+	return nil
 }
 
-func (c *Card) DeleteCard() string {
-	return "deleted"
+func (c *Card) DeleteCard(cid uint64) error {
+	_, err := db.Exec("DELETE FROM cards WHERE id = ?", cid)
+	if err != nil {
+		log.LogError(err)
+		return err
+	}
+	return nil
 }

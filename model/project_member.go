@@ -74,8 +74,35 @@ func (pm *ProjectMember) GetProjectMember(pid uint64) ([]*ProjectMember, error) 
 }
 
 func (pm *ProjectMember) InsertProjectMember(uid uint64, pid uint64) error {
-	_, err := db.Exec(`INSERT INTO cards (user_id,
+	_, err := db.Exec(`INSERT INTO project_members (user_id,
         project_id) VALUES(?, ?) `, uid, pid)
+	if err != nil {
+		log.LogError(err)
+		return err
+	}
+	return nil
+}
+
+func (pm *ProjectMember) DeleteMemberFromProject(uid uint64, pid uint64) error {
+	_, err := db.Exec(`DELETE FROM project_members WHERE project_id = ? AND user_id = ?`, pid, uid)
+	if err != nil {
+		log.LogError(err)
+		return err
+	}
+	return nil
+}
+
+func (pm *ProjectMember) DeleteAllProjectFromUser(uid uint64) error {
+	_, err := db.Exec(`DELETE FROM project_members WHERE user_id = ?`, uid)
+	if err != nil {
+		log.LogError(err)
+		return err
+	}
+	return nil
+}
+
+func (pm *ProjectMember) DeleteAllUserFromProject(pid uint64) error {
+	_, err := db.Exec(`DELETE FROM project_members WHERE project_id = ?`, pid)
 	if err != nil {
 		log.LogError(err)
 		return err

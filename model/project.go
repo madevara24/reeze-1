@@ -120,10 +120,29 @@ func (p *Project) CreateProject(uid uint64) error {
 	return nil
 }
 
-func (p *Project) UpdateProject(pid uint64, update Project) string {
-	return "updated"
+func (p *Project) UpdateProject(pid uint64) error {
+	_, err := db.Exec(`UPDATE projects SET
+            name = ?,
+            repository = ?,
+            description = ?,
+            sprint_duration = ?,
+            sprint_start_day = ?
+            WHERE id = ?`, p.Name, p.Repository, p.Description, p.SprintDuration, p.SprintStartDay, pid)
+
+	if err != nil {
+		log.LogError(err)
+		return err
+	}
+
+	return nil
 }
 
-func (p *Project) DeleteProject(pid uint64) string {
-	return "deleted"
+func (p *Project) DeleteProject(pid uint64) error {
+	_, err := db.Exec(`DELETE FROM projects WHERE id = ?`, pid)
+	if err != nil {
+		log.LogError(err)
+		return err
+	}
+
+	return nil
 }

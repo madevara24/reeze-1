@@ -4,11 +4,34 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zainokta/reeze/helpers"
 	"github.com/zainokta/reeze/model"
 )
+
+func userProjects(c *gin.Context) {
+	id, _ := helpers.GetLoginUserID(c)
+	project := &model.Project{}
+	projects, err := project.GetUserProjects(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"data": projects})
+	}
+}
+func projectMember(c *gin.Context) {
+	projectID := c.Param("project_id")
+	id, _ := strconv.ParseUint(projectID, 10, 64)
+	pm := &model.ProjectMember{}
+	pms, err := pm.GetProjectMember(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"data": pms})
+	}
+}
 
 func createProject(c *gin.Context) {
 
