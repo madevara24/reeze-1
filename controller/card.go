@@ -11,6 +11,9 @@ import (
 )
 
 func createProjectCard(c *gin.Context) {
+	projectID := c.Param("project_id")
+	pid, _ := strconv.ParseUint(projectID, 10, 64)
+
 	card := &model.Card{}
 
 	res, err := c.GetRawData()
@@ -19,14 +22,41 @@ func createProjectCard(c *gin.Context) {
 	}
 	err = json.Unmarshal(res, card)
 
-	id, err := helpers.GetLoginUserID(c)
+	uid, err := helpers.GetLoginUserID(c)
 	if err != nil {
 		log.LogError(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please Login first"})
 		return
 	}
 
-	err = card.CreateCard(id)
+	err = card.CreateCard(pid, uid)
+	if err != nil {
+		log.LogError(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating new card"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": "Card was successfully created"})
+}
+
+func updateProjectCard(c *gin.Context) {
+	cardID := c.Param("card_id")
+	cid, _ := strconv.ParseUint(cardID, 10, 64)
+
+	card := &model.Card{}
+	res, err := c.GetRawData()
+	if err != nil {
+		log.LogError(err)
+	}
+	err = json.Unmarshal(res, card)
+
+	// uid, err := helpers.GetLoginUserID(c)
+	// if err != nil {
+	// 	log.LogError(err)
+	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "Please Login first"})
+	// 	return
+	// }
+
+	err = card.UpdateCard(cid)
 	if err != nil {
 		log.LogError(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating new card"})
@@ -37,12 +67,26 @@ func createProjectCard(c *gin.Context) {
 
 func projectCards(c *gin.Context) {
 	projectID := c.Param("project_id")
-	card := &model.Card{}
 	id, _ := strconv.ParseUint(projectID, 10, 64)
+
+	card := &model.Card{}
 	cards, err := card.GetCardsByProject(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": cards})
+}
+
+func deleteProjectCard(c *gin.Context) {
+	cardID := c.Param("card_id")
+	cid, _ := strconv.ParseUint(cardID, 10, 64)
+
+	card := &model.Card{}
+	err := card.DeleteCard(cid)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": "Card was successfully deleted"})
 }

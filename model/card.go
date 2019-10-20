@@ -115,7 +115,7 @@ func (c *Card) GetCardsByProject(pid uint64) ([]*ResultProjectCards, error) {
 	return result, nil
 }
 
-func (c *Card) CreateCard(uid uint64) error {
+func (c *Card) CreateCard(pid uint64, uid uint64) error {
 	_, err := db.Exec(`INSERT INTO cards (project_id,
                      owner,
                      requester,
@@ -125,7 +125,7 @@ func (c *Card) CreateCard(uid uint64) error {
                      iteration,
                      type)
 					 VALUES(?, ?, ?, ?, ?, ?, ?, ?) `,
-		c.ProjectID, c.OwnerID, uid, c.GithubBranchName, c.Description, c.Points, c.Iteration, c.Type)
+		pid, c.OwnerID, uid, c.GithubBranchName, c.Description, c.Points, c.Iteration, c.Type)
 	if err != nil {
 		log.LogError(err)
 		return err

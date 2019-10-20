@@ -31,7 +31,13 @@ func SetupRouter(confLogger *config.Logger) *gin.Engine {
 		api.GET("/dashboard", userProjects)
 
 		//Cards
-		api.GET("/project_card/:project_id", projectCards)
+		card := r.Group("/card")
+		{
+			card.GET("/:project_id", projectCards)
+			card.PUT("/:card_id", updateProjectCard)
+            card.POST("/:project_id", createProjectCard)
+            card.DELETE("/:card_id", deleteProjectCard)
+		}
 
 		api.GET("/project_member/:project_id", projectMember)
 		api.GET("/list-repo", getListRepositories)
