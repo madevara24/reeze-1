@@ -67,6 +67,7 @@ func githubCallback(c *gin.Context) {
 	token, err := helpers.ExchangeToken(c)
 	if err != nil {
 		log.LogError(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error."})
 		return
 	}
 
@@ -74,9 +75,8 @@ func githubCallback(c *gin.Context) {
 	user, _, err := helpers.GetUser(client)
 
 	if err != nil {
-		err = fmt.Errorf("Failed to get user with error : %s", err)
 		log.LogError(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Error while fetching data from database."})
 		return
 	}
 
@@ -94,9 +94,8 @@ func githubCallback(c *gin.Context) {
 		helpers.SetUserCookie(c, id, token)
 
 		if err != nil {
-			err = fmt.Errorf("Cannot create user")
 			log.LogError(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating user."})
 			return
 		}
 		c.JSON(http.StatusOK, token)

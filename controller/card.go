@@ -25,17 +25,17 @@ func createProjectCard(c *gin.Context) {
 	uid, err := helpers.GetLoginUserID(c)
 	if err != nil {
 		log.LogError(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please Login first"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please Login first."})
 		return
 	}
 
 	err = card.CreateCard(pid, uid)
 	if err != nil {
 		log.LogError(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating new card"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating new card."})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"success": "Card was successfully created"})
+	c.JSON(http.StatusOK, gin.H{"success": "Card was successfully created."})
 }
 
 func updateProjectCard(c *gin.Context) {
@@ -62,7 +62,7 @@ func updateProjectCard(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating new card"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"success": "Card was successfully created"})
+	c.JSON(http.StatusOK, gin.H{"success": "Card was successfully created."})
 }
 
 func projectCards(c *gin.Context) {
@@ -72,7 +72,7 @@ func projectCards(c *gin.Context) {
 	card := &model.Card{}
 	cards, err := card.GetCardsByProject(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while fetching data from database."})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": cards})
@@ -85,8 +85,8 @@ func deleteProjectCard(c *gin.Context) {
 	card := &model.Card{}
 	err := card.DeleteCard(cid)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while deleting card from database."})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"success": "Card was successfully deleted"})
+	c.JSON(http.StatusOK, gin.H{"success": "Card was successfully deleted."})
 }
