@@ -30,25 +30,19 @@ func SetupRouter(confLogger *config.Logger) *gin.Engine {
 	{
 
 		//Cards
-		card := r.Group("/card")
-		{
-			card.GET("/:project_id", projectCards)
-			card.POST("/create", createProjectCard)
-			card.PUT("/:card_id", updateProjectCard)
-			card.DELETE("/:card_id", deleteProjectCard)
-		}
+		api.GET("/card/:project_id", projectCards)
+		api.POST("/card/:project_id/create", createProjectCard)
+		api.PUT("/card/:card_id/edit", updateProjectCard)
+		api.DELETE("/card/:card_id/delete", deleteProjectCard)
 
 		//Projects
-		project := r.Group("/project")
-		{
-			project.GET("/", userProjects)
-			project.GET("/project_member/:project_id", projectMember)
-			project.POST("/create", createProject)
-			project.POST("/:project_id/:card_id/create_branch", createBranch)
-			project.POST("/:project_id/create_pr", createPullRequest)
-			project.PUT("/:project_id", updateProject)
-			project.DELETE("/:project_id", deleteProject)
-		}
+		api.GET("/project/", userProjects)
+		api.GET("/project/:project_id/project_member", projectMember)
+		api.POST("/project/create", createProject)
+		api.POST("/project/merge_release/:project_id", mergeRelease)
+		api.POST("/project/create_branch/:project_id/:card_id", createBranch)
+		api.PUT("/project/:project_id/edit", updateProject)
+		api.DELETE("/project/:project_id/delete", deleteProject)
 
 		api.GET("/list-repo", getListRepositories)
 	}

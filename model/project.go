@@ -142,8 +142,10 @@ func (p *Project) UpdateProject(pid uint64) error {
             repository = ?,
             description = ?,
             sprint_duration = ?,
-            sprint_start_day = ?
-            WHERE id = ?`, p.Name, p.Repository, p.Description, p.SprintDuration, p.SprintStartDay, pid)
+            sprint_start_day = ?,
+            created_at = ?,
+            updated_at = ?
+            WHERE id = ?`, p.Name, p.Repository, p.Description, p.SprintDuration, p.SprintStartDay, p.CreatedAt, time.Now(), pid)
 
 	if err != nil {
 		log.LogError(err)

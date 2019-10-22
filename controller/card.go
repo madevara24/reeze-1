@@ -51,16 +51,26 @@ func createProjectCard(c *gin.Context) {
 func updateProjectCard(c *gin.Context) {
 	cid := helpers.GetParamID(c, "card_id")
 
-	card := &model.Card{}
+	cardModel := &model.Card{}
 	res, err := c.GetRawData()
 	if err != nil {
 		log.LogError(err)
 	}
-	err = json.Unmarshal(res, card)
+	err = json.Unmarshal(res, cardModel)
+
+	card, err := cardModel.GetCardByID(cid)
+	if err != nil {
+		log.LogError(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while fetching card from database."})
+		return
+	}
 
 	//TODO CHECK CARD STATE
+	cardModel.OwnerID = card.OwnerID
+	cardModel.ProjectID = card.ProjectID
+	cardModel.RequesterID = card.RequesterID
 
-	err = card.UpdateCard(cid)
+	err = cardModel.UpdateCard(cid)
 	if err != nil {
 		log.LogError(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while updating card"})

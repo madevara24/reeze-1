@@ -6,10 +6,10 @@ import (
 
 type Card struct {
 	ID               uint64     `json:"id"`
-	Title            string     `json:"title"`
-	ProjectID        uint64     `json:"-"`
-	OwnerID          *uint64    `json:"-"`
-	RequesterID      uint64     `json:"-"`
+	Title            *string    `json:"title"`
+	ProjectID        uint64     `json:"project_id"`
+	OwnerID          *uint64    `json:"owner_id"`
+	RequesterID      uint64     `json:"requester_id"`
 	GithubBranchName *string    `json:"github_branch_name"`
 	Description      *string    `json:"description"`
 	Points           *uint8     `json:"points"`
@@ -119,18 +119,18 @@ func (c *Card) GetCardByID(cid uint64) (*Card, error) {
 	row := db.QueryRow(`SELECT * FROM cards
                     WHERE id = ?`, cid)
 
-	var card *Card
-	err := row.Scan(card.ID,
-		card.Title,
-		card.ProjectID,
-		card.OwnerID,
-		card.RequesterID,
-		card.GithubBranchName,
-		card.Description,
-		card.Points,
-		card.Iteration,
-		card.Type,
-		card.CreatedAt, card.UpdatedAt)
+	var card = &Card{}
+	err := row.Scan(&card.ID,
+		&card.Title,
+		&card.ProjectID,
+		&card.OwnerID,
+		&card.RequesterID,
+		&card.GithubBranchName,
+		&card.Description,
+		&card.Points,
+		&card.Iteration,
+		&card.Type,
+		&card.CreatedAt, &card.UpdatedAt)
 
 	if err != nil {
 		return nil, err
@@ -141,6 +141,7 @@ func (c *Card) GetCardByID(cid uint64) (*Card, error) {
 
 func (c *Card) CreateCard(pid uint64, uid uint64) error {
 	_, err := db.Exec(`INSERT INTO cards (project_id,
+                     title,
                      owner,
                      requester,
                      github_branch_name,
@@ -148,8 +149,8 @@ func (c *Card) CreateCard(pid uint64, uid uint64) error {
                      points,
                      iteration,
                      type)
-					 VALUES(?, ?, ?, ?, ?, ?, ?, ?) `,
-		pid, c.OwnerID, uid, c.GithubBranchName, c.Description, c.Points, c.Iteration, c.Type)
+					 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) `,
+		pid, c.Title, c.OwnerID, uid, c.GithubBranchName, c.Description, c.Points, c.Iteration, c.Type)
 	if err != nil {
 		log.LogError(err)
 		return err

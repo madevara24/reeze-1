@@ -64,6 +64,7 @@ func createProject(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": "Project has successfully created."})
 }
 
+//TODO MAPPING THE REQUEST
 func updateProject(c *gin.Context) {
 	pid := helpers.GetParamID(c, "project_id")
 
@@ -128,7 +129,7 @@ func createBranch(c *gin.Context) {
 	c.JSON(http.StatusOK, "Branch "+data.BranchName+" is successfully created")
 }
 
-func createPullRequest(c *gin.Context) {
+func mergeRelease(c *gin.Context) {
 	pid := helpers.GetParamID(c, "project_id")
 	repositoryName := helpers.GetProjectRepositoryName(pid)
 	if repositoryName == nil {
@@ -136,7 +137,7 @@ func createPullRequest(c *gin.Context) {
 		return
 	}
 
-	//TODO ADD BRANCH TO MERGE
+	//TODO ADD BRANCH TO MERGE (HEAD AND BASE)
 	pr, res, err := helpers.CreatePullRequest(c, *repositoryName)
 	if err != nil {
 		log.LogError(err)

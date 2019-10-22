@@ -14,18 +14,19 @@ import (
 )
 
 func ListAllRepos(c *gin.Context) ([]string, error) {
-	user, client, err := VerifyUser(c)
+	_, client, err := VerifyUser(c)
 	if err != nil {
 		c.Redirect(http.StatusUnauthorized, "/")
 	}
-	repos, _, err := client.Repositories.List(c, *user.Login, nil)
+
+	repos, _, err := client.Repositories.List(c, "", nil)
 	if err != nil {
 		return nil, err
 	}
 	var result []string
 
 	for _, repo := range repos {
-		result = append(result, *repo.Name)
+		result = append(result, *repo.FullName)
 	}
 	return result, nil
 }

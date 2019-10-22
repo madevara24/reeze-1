@@ -76,7 +76,7 @@ func githubCallback(c *gin.Context) {
 
 	if err != nil {
 		log.LogError(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Error while fetching data from database."})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Error while creating user client."})
 		return
 	}
 
@@ -84,6 +84,7 @@ func githubCallback(c *gin.Context) {
 	check, err := checkUser.GetUserByUsername(*user.Login)
 	if err != nil {
 		log.LogError(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while fetching data from database."})
 		return
 	}
 
