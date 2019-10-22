@@ -115,6 +115,30 @@ func (c *Card) GetCardsByProject(pid uint64) ([]*ResultProjectCards, error) {
 	return result, nil
 }
 
+func (c *Card) GetCardByID(cid uint64) (*Card, error) {
+	row := db.QueryRow(`SELECT * FROM cards
+                    WHERE id = ?`, cid)
+
+	var card *Card
+	err := row.Scan(card.ID,
+		card.Title,
+		card.ProjectID,
+		card.OwnerID,
+		card.RequesterID,
+		card.GithubBranchName,
+		card.Description,
+		card.Points,
+		card.Iteration,
+		card.Type,
+		card.CreatedAt, card.UpdatedAt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return card, nil
+}
+
 func (c *Card) CreateCard(pid uint64, uid uint64) error {
 	_, err := db.Exec(`INSERT INTO cards (project_id,
                      owner,

@@ -98,8 +98,24 @@ func (p *Project) GetUserProjects(uid uint64) ([]*ResultUserProjects, error) {
 	return result, nil
 }
 
-func (p *Project) GetProjectById(pid uint64) (*Project, error) {
-	return nil, nil
+func (p *Project) GetProjectByID(pid uint64) (*Project, error) {
+	row := db.QueryRow(`SELECT * FROM projects
+                    WHERE id = ?`, pid)
+
+	var project *Project
+	err := row.Scan(project.ID,
+		project.Name,
+		project.Repository,
+		project.Description,
+		project.SprintDuration,
+		project.SprintStartDay,
+		project.CreatedAt, project.UpdatedAt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return project, nil
 }
 
 func (p *Project) CreateProject(uid uint64) error {

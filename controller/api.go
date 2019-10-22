@@ -28,21 +28,29 @@ func SetupRouter(confLogger *config.Logger) *gin.Engine {
 
 	api := r.Group("/api/v1").Use(middleware.AuthMiddleware)
 	{
-		api.GET("/dashboard", userProjects)
 
 		//Cards
 		card := r.Group("/card")
 		{
 			card.GET("/:project_id", projectCards)
+			card.POST("/create", createProjectCard)
 			card.PUT("/:card_id", updateProjectCard)
-            card.POST("/:project_id", createProjectCard)
-            card.DELETE("/:card_id", deleteProjectCard)
+			card.DELETE("/:card_id", deleteProjectCard)
 		}
 
-		api.GET("/project_member/:project_id", projectMember)
+		//Projects
+		project := r.Group("/project")
+		{
+			project.GET("/", userProjects)
+			project.GET("/project_member/:project_id", projectMember)
+			project.POST("/create", createProject)
+			project.POST("/:project_id/:card_id/create_branch", createBranch)
+			project.POST("/:project_id/create_pr", createPullRequest)
+			project.PUT("/:project_id", updateProject)
+			project.DELETE("/:project_id", deleteProject)
+		}
+
 		api.GET("/list-repo", getListRepositories)
-		api.POST("/create-branch", createBranch)
-		api.POST("/create-pr", createPullRequest)
 	}
 
 	return r
