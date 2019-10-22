@@ -40,3 +40,18 @@ UPDATE projects SET name = ?, repository = ?, description = ?, sprint_duration =
 delete project
 DELETE FROM projects WHERE id = ?
 
+select project
+SELECT name, repository, users.username as "PIC", description, sprint_duration, sprint_start_day FROM projects JOIN users as users ON projects.pic_id = users.id WHERE id = ?
+
+CARD LOGS-QUERY
+
+add log
+INSERT INTO card_logs (card_id, state) VALUES (?, ?)
+
+PROJECT LOGS-QUERY
+
+add log
+INSERT INTO project_logs (user_id, project_id, log) VALUES (?, ?, ?)
+
+select project logs
+SELECT users.username, projects.name, log FROM project_logs JOIN users ON project_logs.user_id = users.id JOIN projects ON project_logs.project_id = projects.id
