@@ -29,34 +29,10 @@ type ResultProjectCards struct {
 func (c *Card) GetCardsByProject(pid uint64) ([]*ResultProjectCards, error) {
 
 	rows, err := db.Query(`SELECT
-                    cards.id,
-                    cards.title,
-                    cards.project_id,
-                    cards.owner,
-                    cards.requester,
-                    cards.github_branch_name,
-                    cards.description,
-                    cards.points,
-                    cards.iteration,
-                    cards.type,
-                    cards.created_at,
-                    cards.updated_at,
-                    projects.id,
-                    projects.name,
-                    projects.repository,
-                    projects.description,
-                    projects.sprint_duration,
-                    projects.sprint_start_day,
-                    projects.created_at,
-                    projects.updated_at,
-                    req.id,
-                    req.username,
-                    req.created_at,
-                    req.updated_at,
-                    own.id,
-                    own.username,
-                    own.created_at,
-                    own.updated_at
+                    cards.*,
+                    projects.*,
+                    req.*,
+                    own.*
                     FROM cards JOIN users req on cards.requester = req.id
                     JOIN users own on cards.owner = own.id
                     JOIN projects on cards.project_id = projects.id
@@ -91,6 +67,7 @@ func (c *Card) GetCardsByProject(pid uint64) ([]*ResultProjectCards, error) {
 			&eachProject.ID,
 			&eachProject.Name,
 			&eachProject.Repository,
+			&eachProject.PicID,
 			&eachProject.Description,
 			&eachProject.SprintDuration,
 			&eachProject.SprintStartDay,

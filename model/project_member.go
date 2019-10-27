@@ -14,22 +14,9 @@ type ProjectMember struct {
 }
 
 func (pm *ProjectMember) GetProjectMember(pid uint64) ([]*ProjectMember, error) {
-	rows, err := db.Query(`SELECT users.id,
-                            users.username,
-                            users.created_at,
-                            users.updated_at,
-                            project_members.user_id,
-                            project_members.project_id,
-                            project_members.created_at,
-                            project_members.updated_at,
-                            projects.id,
-                            projects.name,
-                            projects.repository,
-                            projects.description,
-                            projects.sprint_duration,
-                            projects.sprint_start_day,
-                            projects.created_at,
-                            projects.updated_at
+	rows, err := db.Query(`SELECT users.*,
+                            project_members.*,
+                            projects.*
                             FROM project_members
                             JOIN users ON project_members.user_id = users.id
                             JOIN projects ON project_members.project_id = projects.id
@@ -57,6 +44,7 @@ func (pm *ProjectMember) GetProjectMember(pid uint64) ([]*ProjectMember, error) 
 			&eachProject.ID,
 			&eachProject.Name,
 			&eachProject.Repository,
+			&eachProject.PicID,
 			&eachProject.Description,
 			&eachProject.SprintDuration,
 			&eachProject.SprintStartDay,
