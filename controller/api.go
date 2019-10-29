@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"time"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
-	cors "github.com/rs/cors/wrapper/gin"
 	"github.com/zainokta/reeze/config"
 	"github.com/zainokta/reeze/middleware"
 )
@@ -15,10 +17,17 @@ func SetupRouter(confLogger *config.Logger) *gin.Engine {
 	log = confLogger
 
 	r := gin.Default()
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://127.0.0.1:8080"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Access-Control-Allow-Origin", "Content-Length", "Content-Type", "Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 	store := cookie.NewStore([]byte("reeze_project"))
 
 	r.Use(sessions.Sessions("user_session", store))
-	r.Use(cors.Default())
 
 	r.GET("/", homeIndex)
 	r.POST("/logout", logoutUser)

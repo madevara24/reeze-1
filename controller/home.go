@@ -94,13 +94,14 @@ func githubCallback(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating user."})
 			return
 		}
-		c.JSON(http.StatusOK, token)
+		// c.JSON(http.StatusOK, token)
+		c.Redirect(http.StatusFound, "http://127.0.0.1:8080/github-callback")
 
 	} else {
 		helpers.SetUserCookie(c, check.ID, token)
 		fmt.Println("User logged in")
-
-		c.JSON(http.StatusOK, token)
+		// c.JSON(http.StatusOK, token)
+		c.Redirect(http.StatusFound, "http://127.0.0.1:8080/github-callback")
 	}
 
 }
