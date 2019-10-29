@@ -64,7 +64,6 @@ func createProject(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": "Project has successfully created."})
 }
 
-//TODO MAPPING THE REQUEST
 func updateProject(c *gin.Context) {
 	pid := helpers.GetParamID(c, "project_id")
 
@@ -102,6 +101,7 @@ func createBranch(c *gin.Context) {
 	err = json.Unmarshal(res, data)
 
 	repositoryName := helpers.GetProjectRepositoryName(pid)
+
 	if repositoryName == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Repository name cannot be null."})
 		return

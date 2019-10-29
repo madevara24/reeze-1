@@ -81,12 +81,7 @@ func githubCallback(c *gin.Context) {
 	}
 
 	checkUser := &model.User{}
-	check, err := checkUser.GetUserByUsername(*user.Login)
-	if err != nil {
-		log.LogError(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while fetching data from database."})
-		return
-	}
+	check, _ := checkUser.GetUserByUsername(*user.Login)
 
 	if check == nil {
 		newUser := &model.User{Username: *user.Login}

@@ -31,9 +31,12 @@ func ListAllRepos(c *gin.Context) ([]string, error) {
 	return result, nil
 }
 
-func CreateBranch(c *gin.Context, repositoryName string, branchName string) (*github.Reference, *github.Response, error) {
-	user, client, err := VerifyUser(c)
-	master, _, err := client.Git.GetRef(c, *user.Login, repositoryName, "refs/heads/master")
+func CreateBranch(c *gin.Context, repository string, branchName string) (*github.Reference, *github.Response, error) {
+	_, client, err := VerifyUser(c)
+
+	repoOwner, repoName := SplitRepoOwnerAndName(repository)
+
+	master, _, err := client.Git.GetRef(c, repoOwner, repoName, "refs/heads/master")
 
 	s := "refs/heads/" + branchName
 
@@ -45,15 +48,18 @@ func CreateBranch(c *gin.Context, repositoryName string, branchName string) (*gi
 	if err != nil {
 		c.Redirect(http.StatusUnauthorized, "/")
 	}
-	return client.Git.CreateRef(c, *user.Login, repositoryName, ref)
+	return client.Git.CreateRef(c, repoOwner, repoName, ref)
 }
 
-func CreatePullRequest(c *gin.Context, repositoryName string) (*github.PullRequest, *github.Response, error) {
-	user, client, err := VerifyUser(c)
+func CreatePullRequest(c *gin.Context, repository string) (*github.PullRequest, *github.Response, error) {
+	_, client, err := VerifyUser(c)
 	if err != nil {
 		c.Redirect(http.StatusUnauthorized, "/")
 	}
 
+	repoOwner, repoName := SplitRepoOwnerAndName(repository)
+
+	//change head branch and base branch
 	newPR := &github.NewPullRequest{
 		Title: github.String("Test PR"),
 		Head:  github.String("refs/heads/test-branch"),
@@ -62,25 +68,28 @@ func CreatePullRequest(c *gin.Context, repositoryName string) (*github.PullReque
 	if err != nil {
 		c.Redirect(http.StatusUnauthorized, "/")
 	}
-	return client.PullRequests.Create(c, *user.Login, repositoryName, newPR)
+	return client.PullRequests.Create(c, repoOwner, repoName, newPR)
 }
 
-func GetPullRequestsList(c *gin.Context, repositoryName string) ([]*github.PullRequest, *github.Response, error) {
-	user, client, err := VerifyUser(c)
+func GetPullRequestsList(c *gin.Context, repository string) ([]*github.PullRequest, *github.Response, error) {
+	_, client, err := VerifyUser(c)
+	repoOwner, repoName := SplitRepoOwnerAndName(repository)
 	if err != nil {
 		c.Redirect(http.StatusUnauthorized, "/")
 	}
 
-	return client.PullRequests.List(c, *user.Login, repositoryName, nil)
+	return client.PullRequests.List(c, repoOwner, repoName, nil)
 }
 
-func MergePullRequest(c *gin.Context, list *github.PullRequest, repositoryName string) (*github.PullRequestMergeResult, *github.Response, error) {
-	user, client, err := VerifyUser(c)
+func MergePullRequest(c *gin.Context, list *github.PullRequest, repository string) (*github.PullRequestMergeResult, *github.Response, error) {
+	_, client, err := VerifyUser(c)
+
+	repoOwner, repoName := SplitRepoOwnerAndName(repository)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return client.PullRequests.Merge(c, *user.Login, repositoryName, list.GetNumber(), "Merge", nil)
+	return client.PullRequests.Merge(c, repoOwner, repoName, list.GetNumber(), "Merge", nil)
 }
 
 func CreateClient(token *oauth2.Token) *github.Client {
