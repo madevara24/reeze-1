@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -45,6 +46,15 @@ func createProjectCard(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating new card."})
 		return
 	}
+	pLog := &model.ProjectLog{}
+	pLogMessage := fmt.Sprintf("User %s create card %s", helpers.GetUserUsername(uid), *card.Title)
+	err = pLog.InsertProjectLog(uid, pid, pLogMessage)
+	if err != nil {
+		log.LogError(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating project log."})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"success": "Card was successfully created."})
 }
 
@@ -76,6 +86,23 @@ func updateProjectCard(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while updating card"})
 		return
 	}
+
+	uid, err := helpers.GetLoginUserID(c)
+	if err != nil {
+		log.LogError(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please Login first."})
+		return
+	}
+
+	pLog := &model.ProjectLog{}
+	pLogMessage := fmt.Sprintf("User %s update card", helpers.GetUserUsername(uid))
+	err = pLog.InsertProjectLog(uid, card.ProjectID, pLogMessage)
+	if err != nil {
+		log.LogError(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating project log."})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"success": "Card was successfully updated."})
 }
 
@@ -83,10 +110,29 @@ func deleteProjectCard(c *gin.Context) {
 	cid := helpers.GetParamID(c, "card_id")
 
 	card := &model.Card{}
+	pid := card.ProjectID
+
 	err := card.DeleteCard(cid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while deleting card from database."})
 		return
 	}
+
+	uid, err := helpers.GetLoginUserID(c)
+	if err != nil {
+		log.LogError(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please Login first."})
+		return
+	}
+
+	pLog := &model.ProjectLog{}
+	pLogMessage := fmt.Sprintf("User %s update card", helpers.GetUserUsername(uid))
+	err = pLog.InsertProjectLog(uid, pid, pLogMessage)
+	if err != nil {
+		log.LogError(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating project log."})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"success": "Card was successfully deleted."})
 }

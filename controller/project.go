@@ -182,3 +182,13 @@ func getListRepositories(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": repo})
 }
+
+func getProjectLogs(c *gin.Context) {
+	projectLogsModel := &model.ProjectLog{}
+	projectLogs, err := projectLogsModel.GetProjectLogs()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while getting list of project logs."})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": projectLogs})
+}

@@ -30,3 +30,9 @@ func SplitRepoOwnerAndName(repository string) (string, string) {
 
 	return repoOwner, repositoryName
 }
+
+func GetUserUsername(uid uint64) string {
+	user := &model.User{}
+	user.GetUserById(uid)
+	return user.Username
+}

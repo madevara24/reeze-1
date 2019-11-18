@@ -47,6 +47,7 @@ func SetupRouter(confLogger *config.Logger) *gin.Engine {
 		//Projects
 		api.GET("/project/", userProjects)
 		api.GET("/project/:project_id/project_member", projectMember)
+		api.GET("/project_logs", getProjectLogs)
 		api.POST("/project/create", createProject)
 		api.POST("/project/merge_release/:project_id", mergeRelease)
 		api.POST("/project/create_branch/:project_id/:card_id", createBranch)
