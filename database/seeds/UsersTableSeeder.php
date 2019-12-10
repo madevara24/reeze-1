@@ -12,14 +12,14 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            ['username' => 'zainokta'],
-            ['username' => 'madevara24'],
-            ['username' => 'subosko'],
-            ['username' => 'sendiki'],
-            ['username' => 'masjul'],
-            ['username' => 'surobit'],
-            ['username' => 'saipul'],
-            ['username' => 'gay_depok'],
+            ['name' => 'zainokta'],
+            ['name' => 'madevara24'],
+            ['name' => 'subosko'],
+            ['name' => 'sendiki'],
+            ['name' => 'masjul'],
+            ['name' => 'surobit'],
+            ['name' => 'saipul'],
+            ['name' => 'gay_depok'],
             ]
         );
     }

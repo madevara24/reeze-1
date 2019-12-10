@@ -15,9 +15,13 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('username');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->string('name');
+            $table->string('email')->nullable();
+            $table->string('github_token')->nullable();
+            $table->string('password', 60)->nullable();
+            $table->string('github_id')->nullable();
+            $table->rememberToken();
+            $table->timestamps();
         });
     }
 
