@@ -51,13 +51,6 @@ class LoginController extends Controller
         return redirect('/home');
     }
 
-    /**
-     * If a user has registered before using social auth, return the user
-     * else, create a new user object.
-     * @param  $user Socialite user object
-     * @param $provider Social auth provider
-     * @return  User
-     */
     public function findOrCreateUser($user)
     {
         $authUser = User::where('github_id', $user->id)->first();

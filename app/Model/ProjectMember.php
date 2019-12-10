@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProjectMember extends Model
 {
     protected $table = 'project_members';
+    protected $fillable = ['user_id'];
 
     public function user()
     {
@@ -15,6 +16,6 @@ class ProjectMember extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class, 'project', 'id');
+        return $this->belongsTo(Project::class, 'project_id', 'id');
     }
 }

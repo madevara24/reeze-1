@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Github;
-use Illuminate\Support\Facades\Config;
-use Socialite;
 
 class HomeController extends Controller
 {
@@ -27,11 +25,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Config::set('github.connections.main.token', Auth::user()->github_token);
         Github::authenticate(Auth::user()->github_token, null, 'http_token');
-        dd(Github::currentUser()->repositories('all'));
+        // dd(Github::currentUser()->repositories('all'));
 
-        return response()->json(Auth::user());
+        // return response()->json(Auth::user());
         return view('home');
     }
 }
