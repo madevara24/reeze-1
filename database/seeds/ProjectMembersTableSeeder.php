@@ -11,6 +11,9 @@ class ProjectMembersTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('project_members')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         DB::table('project_members')->insert([
             [
                 'user_id' => 1,

@@ -11,6 +11,9 @@ class CardsTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('cards')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         DB::table('cards')->insert([
             [
                 'project_id' => 1,
