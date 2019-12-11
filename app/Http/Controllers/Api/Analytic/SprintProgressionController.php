@@ -42,20 +42,22 @@ class SprintProgressionController extends Controller
         //Get the total points at the start of the sprint
         $starting_cards_points = array_sum(Card::whereIn('id', $starting_cards_ids)->pluck('points')->toArray());
 
-        $perfect_burndown = array();
-
+        $ideal_burndown = array();
+        $chart_dates = array();
         $sprint_card_points = array();
         $sprint_card_ids = array();
 
         //Get total unfinished card points every day on the duration of the sprint and calculate perfect burndown
         for ($i=0; $i < $project['sprint_duration']; $i++) {
+            //Add the date for chart label
+            array_push($chart_dates, $start_date->format('d-M'));
 
             //Get the perfect burndown point and push it to array
             $perfect_burndown_point = $starting_cards_points - ($starting_cards_points * $i / ($project['sprint_duration'] - 1));
             
             //Pushing the perfect burndown to array, still on the fence of rounding it or not
-            //array_push($perfect_burndown, intval(round($perfect_burndown_point)));
-            array_push($perfect_burndown, round($perfect_burndown_point, 2));
+            //array_push($ideal_burndown, intval(round($perfect_burndown_point)));
+            array_push($ideal_burndown, round($perfect_burndown_point, 2));
 
             //Get the start date + i cards logs
             //Only take cards that are planned, started, finished, accepted, and rejected
@@ -93,9 +95,13 @@ class SprintProgressionController extends Controller
 
             //Push todays cards total points
             array_push($sprint_card_points, $todays_card_points);
-            
         }
         
-        dd($sprint_card_points, $sprint_card_ids, $starting_cards_points, $perfect_burndown);
+        //dd($sprint_card_points, $ideal_burndown, $chart_dates);
+        return array(
+            'points_remaining' => $sprint_card_points, 
+            'ideal_burndown' => $ideal_burndown, 
+            'chart_dates' => $chart_dates
+        );
     }
 }
