@@ -17,6 +17,7 @@ Route::prefix('/v1')->group(function(){
     Route::prefix('/analytic')->namespace('Api')->group(function(){
         Route::namespace('Analytic')->group(function(){
             Route::get('/sprint-progrssion/{id}', 'SprintProgressionController@show');
+            Route::get('/deliverability/{id}', 'DeliverabilityController@show');
         });
     });
 });
