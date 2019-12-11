@@ -51,11 +51,6 @@ class CardLogsTableSeeder extends Seeder
                 'created_at' => '2019-12-09 09:14:19'
             ],
             [
-                'card_id' => 4,
-                'state' => 'planned',
-                'created_at' => '2019-12-09 09:14:31'
-            ],
-            [
                 'card_id' => 1,
                 'state' => 'started',
                 'created_at' => '2019-12-09 09:17:02'
@@ -91,6 +86,11 @@ class CardLogsTableSeeder extends Seeder
                 'created_at' => '2019-12-09 17:23:45'
             ],
             [
+                'card_id' => 4,
+                'state' => 'planned',
+                'created_at' => '2019-12-10 09:14:31'
+            ],
+            [
                 'card_id' => 1,
                 'state' => 'started',
                 'created_at' => '2019-12-10 09:16:33'
@@ -109,6 +109,11 @@ class CardLogsTableSeeder extends Seeder
                 'card_id' => 4,
                 'state' => 'started',
                 'created_at' => '2019-12-10 13:05:27'
+            ],
+            [
+                'card_id' => 2,
+                'state' => 'released',
+                'created_at' => '2019-12-10 15:06:37'
             ],
             [
                 'card_id' => 1,
@@ -133,12 +138,7 @@ class CardLogsTableSeeder extends Seeder
             [
                 'card_id' => 1,
                 'state' => 'released',
-                'created_at' => '2019-12-11 17:03:45'
-            ],
-            [
-                'card_id' => 2,
-                'state' => 'released',
-                'created_at' => '2019-12-11 17:06:37'
+                'created_at' => '2019-12-10 17:03:45'
             ],
             [
                 'card_id' => 3,
@@ -148,7 +148,7 @@ class CardLogsTableSeeder extends Seeder
             [
                 'card_id' => 4,
                 'state' => 'released',
-                'created_at' => '2019-12-11 17:11:07'
+                'created_at' => '2019-12-13 17:11:07'
             ],
         ]);
     }
