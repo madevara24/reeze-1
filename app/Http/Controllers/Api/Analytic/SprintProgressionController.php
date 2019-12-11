@@ -19,20 +19,34 @@ class SprintProgressionController extends Controller
         //Get cards from current project
         $card_ids = Card::where('project_id', $id)->pluck('id')->toArray();
 
-        //Set sprint start and end date
-        $date = Carbon::now();
+        //Set fisrt sprint start and end date
+        $date = new Carbon($project['created_at']);
         $date->setWeekStartsAt($project['sprint_start_day']);
         $date->setWeekEndsAt(
             $project['sprint_start_day'] == 0 ? 6 : $project['sprint_start_day'] -1
         );
-        $start_date = new Carbon($date->startOfWeek());
-        $end_date = new Carbon($date->startOfWeek()->addDays($project['sprint_duration'])->subMicrosecond());
+        $date->startOfWeek();
+
+        $current_sprint_start_date = $current_sprint_end_date = null;
+
+        //Check every sprint start and end date until it meets current sprint
+        //Get current sprint start and end date
+        while(true){
+            $sprint_start_date = new Carbon($date);
+            $sprint_end_date = new Carbon($date->addDays($project['sprint_duration']));
+
+            if(Carbon::now()->between($sprint_start_date, $sprint_end_date)){
+                $current_sprint_start_date = $sprint_start_date;
+                $current_sprint_end_date = $sprint_end_date;
+                break;
+            }
+        }
 
         //Get the starting card logs
         //Why not go stratight to get the id? Idk maybe the logs will be usefull, we'll see
         $starting_card_logs = CardLog::whereIn('card_id', $card_ids)
             ->whereIn('state',['planned','started','finished','accepted','rejected'])
-            ->whereBetween('created_at', [$start_date, $end_date])
+            ->whereBetween('created_at', [$current_sprint_start_date, $current_sprint_end_date])
             ->groupBy('card_id')
             ->get()->toArray();
 
@@ -50,7 +64,7 @@ class SprintProgressionController extends Controller
         //Get total unfinished card points every day on the duration of the sprint and calculate perfect burndown
         for ($i=0; $i < $project['sprint_duration']; $i++) {
             //Add the date for chart label
-            array_push($chart_dates, $start_date->format('d-M'));
+            array_push($chart_dates, $current_sprint_start_date->format('d-M'));
 
             //Get the perfect burndown point and push it to array
             $perfect_burndown_point = $starting_cards_points - ($starting_cards_points * $i / ($project['sprint_duration'] - 1));
@@ -63,7 +77,7 @@ class SprintProgressionController extends Controller
             //Only take cards that are planned, started, finished, accepted, and rejected
             $todays_card_logs = CardLog::whereIn('card_id', $card_ids)
                 ->whereIn('state',['planned','started','finished','accepted','rejected'])
-                ->whereBetween('created_at', [new Carbon($start_date), new Carbon($start_date->addDay())])
+                ->whereBetween('created_at', [new Carbon($current_sprint_start_date), new Carbon($current_sprint_start_date->addDay())])
                 ->groupBy('card_id')
                 ->get()->toArray();
             
@@ -76,7 +90,7 @@ class SprintProgressionController extends Controller
             //Get released card logs
             $todays_released_card_logs = CardLog::whereIn('card_id', $card_ids)
                 ->whereIn('state',['released'])
-                ->whereBetween('created_at', [new Carbon($start_date->subDay()), new Carbon($start_date->addDay())])
+                ->whereBetween('created_at', [new Carbon($current_sprint_start_date->subDay()), new Carbon($current_sprint_start_date->addDay())])
                 ->groupBy('card_id')
                 ->get()->toArray();
 
