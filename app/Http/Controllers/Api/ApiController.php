@@ -22,7 +22,7 @@ class ApiController extends Controller
         $user = User::query()->firstOrNew(['email' => $githubUser->getEmail()]);
 
         if (!$user->exists) {
-            $user->name = $githubUser->getName();
+            $user->name = is_null($githubUser->getName()) ? '' : $githubUser->getName();
             $user->github_token = $githubUser->token;
             $user->github_id = $githubUser->getId();
             $user->save();

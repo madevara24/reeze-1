@@ -98,10 +98,20 @@ class SprintProgressionController extends Controller
         }
         
         //dd($sprint_card_points, $ideal_burndown, $chart_dates);
-        return array(
-            'points_remaining' => $sprint_card_points, 
-            'ideal_burndown' => $ideal_burndown, 
-            'chart_dates' => $chart_dates
-        );
+        // return array(
+        //     'points_remaining' => $sprint_card_points, 
+        //     'ideal_burndown' => $ideal_burndown, 
+        //     'chart_dates' => $chart_dates
+        // );
+
+        $sprint_burndown = array();
+
+        for ($i=0; $i < $project['sprint_duration']; $i++) {
+            $var = array($chart_dates[$i], $sprint_card_points[$i], $ideal_burndown[$i]);
+            array_push( $sprint_burndown, $var);
+        }
+
+        //return array($sprint_card_points, $ideal_burndown, $chart_dates);
+        return $sprint_burndown;
     }
 }
