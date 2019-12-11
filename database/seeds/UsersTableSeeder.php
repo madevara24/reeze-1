@@ -15,14 +15,14 @@ class UsersTableSeeder extends Seeder
         DB::table('users')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         DB::table('users')->insert([
-            ['username' => 'zainokta'],
-            ['username' => 'madevara24'],
-            ['username' => 'subosko'],
-            ['username' => 'sendiki'],
-            ['username' => 'masjul'],
-            ['username' => 'surobit'],
-            ['username' => 'saipul'],
-            ['username' => 'gay_depok'],
+            ['name' => 'zainokta'],
+            ['name' => 'madevara24'],
+            ['name' => 'subosko'],
+            ['name' => 'sendiki'],
+            ['name' => 'masjul'],
+            ['name' => 'surobit'],
+            ['name' => 'saipul'],
+            ['name' => 'gay_depok'],
             ]
         );
     }
