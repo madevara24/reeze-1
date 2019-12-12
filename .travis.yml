@@ -18,7 +18,7 @@ before_install:
 
 jobs:
   include:
-    - stage : Deploy To Production
+    - stage : Deploy Production
       if: branch = master
       script:
         - ssh-keyscan -H 47.74.210.161 >> ~/.ssh/known_hosts && ssh -i deploy_key -v root@47.74.210.161 'bash -s' < scripts/deploy.sh
