@@ -19,5 +19,5 @@ jobs:
     - stage : Deploy To Production
       if: branch = master
       script:
-        - ssh-keyscan -H 47.74.210.161 >> ~/.ssh/known_hosts && ssh -i deploy_key -v root@47.74.210.161 'bash -s' < scripts/deploy.sh
+        - ssh -i ./deploy_key -v root@47.74.210.161 'bash -s' < scripts/deploy.sh
      
