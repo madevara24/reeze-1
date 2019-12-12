@@ -10,5 +10,14 @@ before_install:
 - chmod 600 ./deploy_key
 - ssh-add ./deploy_key
 
-after_success:
-- ssh-keyscan -H 47.74.210.161 >> ~/.ssh/known_hosts && ssh -i deploy_key -v root@47.74.210.161 'bash -s' < scripts/deploy.sh
+install:
+  - composer self-update
+  - composer install --no-interaction
+
+jobs:
+  include:
+    - stage : Deploy To Production
+      if: branch = master
+      script:
+        - ssh-keyscan -H 47.74.210.161 >> ~/.ssh/known_hosts && ssh -i deploy_key -v root@47.74.210.161 'bash -s' < scripts/deploy.sh
+     
