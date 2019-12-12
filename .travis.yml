@@ -1,0 +1,12 @@
+language: php
+
+php:
+  - '7.2.24'
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_7a9f6374794b_key -iv $encrypted_7a9f6374794b_iv
+  -in deploy_key.enc -out ./deploy_key -d
+- ssh-add ./deploy_key
+
+after_success:
+- ssh-keyscan -H 47.74.210.161 >> ~/.ssh/known_hosts && ssh -i deploy_key -v root@47.74.210.161 'bash -s' < scripts/deploy.sh
