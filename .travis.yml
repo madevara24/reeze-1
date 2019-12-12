@@ -21,3 +21,6 @@ jobs:
       script:
         - ssh -i ./deploy_key -v root@47.74.210.161 'bash -s' < scripts/deploy.sh
      
+addons:
+  ssh_known_hosts:
+  - 47.74.210.161
