@@ -24,8 +24,7 @@ class CreateCardLogsTable extends Migration
 
             $table->enum('state', ['created', 'started', 'finished', 'released', 'rejected', 'planned', 'accepted']);
 
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->timestamps();
         });
     }
 

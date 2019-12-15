@@ -21,8 +21,7 @@ class CreateProjectsTable extends Migration
             $table->longText('description')->nullable();
             $table->integer('sprint_duration')->nullable();
             $table->integer('sprint_start_day')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
             $table->foreign('pic_id')
                 ->references('id')
