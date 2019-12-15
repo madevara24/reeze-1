@@ -19,4 +19,9 @@ class Project extends Model
     {
         return $this->hasMany(ProjectMember::class, 'project_id', 'id');
     }
+
+    public function card()
+    {
+        return $this->hasMany(Card::class, 'project_id', 'id');
+    }
 }

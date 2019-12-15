@@ -7,6 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class Card extends Model
 {
     protected $table = 'cards';
+    protected $fillable = [
+        'title', 
+        'project_id',
+        'github_branch_name',
+        'description', 
+        'owner', 
+        'requester', 
+        'points', 
+        'iteration', 
+        'type'
+    ];
 
     public function project()
     {

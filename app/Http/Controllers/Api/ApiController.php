@@ -13,18 +13,19 @@ class ApiController extends Controller
 {
     public function redirectToProvider()
     {
-        return Socialite::driver('github')->scopes(['read:user', 'repo', 'admin:org_hook'])->stateless()->redirect();
+        return Socialite::driver('github')->setScopes(['read:user', 'repo', 'admin:org_hook'])->stateless()->redirect();
     }
 
     public function handleProviderCallback()
     {
         $githubUser = Socialite::driver('github')->stateless()->user();
-        $user = User::query()->firstOrNew(['email' => $githubUser->getEmail()]);
-
-        if (!$user->exists) {
-            $user->name = is_null($githubUser->getName()) ? '' : $githubUser->getName();
+        $user = User::firstOrCreate([
+            'name' => is_null($githubUser->getName()) ? explode('@', $githubUser->getEmail())[0] : $githubUser->getName(),
+            'github_id' =>  $githubUser->getId()
+            ]);
+            
+        if ($user != null) {
             $user->github_token = $githubUser->token;
-            $user->github_id = $githubUser->getId();
             $user->save();
         }
 

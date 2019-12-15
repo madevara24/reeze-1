@@ -22,9 +22,7 @@ class UserProjectMiddleware
                                     ->where('project_id', $request->route('project_id'))
                                     ->get();
         if(count($userProject) === 0){
-            return response()->json([
-                'error' => 'Project Not Found'
-                ], 404);
+            return abort(404);
         }
 
         return $next($request);

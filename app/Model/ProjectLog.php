@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class ProjectLog extends Model
 {
     protected $table = 'project_logs';
+    protected $fillable = [
+        'user_id',
+        'project_id',
+        'log'
+    ];
 
     public function user()
     {
