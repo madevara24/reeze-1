@@ -72,17 +72,21 @@ class ProjectController extends Controller
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
 
-        $project = Project::create([
-            'name' => $request->name,
-            'repository' => $request->repository,
-            'pic_id' => $user->id,
-            'description' => $request->description,
-            'sprint_duration' => $request->sprint_duration,
-            'sprint_start_day' => $request->sprint_start_day
-        ]);
-        $projectMember = new ProjectMember(['user_id' => $user->id]);
-        $project->project_member()->save($projectMember);
-
+        try{
+            $project = Project::create([
+                'name' => $request->name,
+                'repository' => $request->repository,
+                'pic_id' => $user->id,
+                'description' => $request->description,
+                'sprint_duration' => $request->sprint_duration,
+                'sprint_start_day' => $request->sprint_start_day
+            ]);
+            $projectMember = new ProjectMember(['user_id' => $user->id]);
+            $project->project_member()->save($projectMember);
+        }catch(\Exception $e){
+            return response()->json(['errors' => $e], 422);
+        }
+        
         return response()->json(['success' => true], 201);
     }
 
@@ -109,14 +113,18 @@ class ProjectController extends Controller
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
 
-        $project = Project::find($id);
-        $project->update([
-            'name' => $request->name,
-            'repository' => $request->repository,
-            'description' => $request->description,
-            'sprint_duration' => $request->sprint_duration,
-            'sprint_start_day' => $request->sprint_start_day
-        ]);
+        try{
+            $project = Project::find($id);
+            $project->update([
+                'name' => $request->name,
+                'repository' => $request->repository,
+                'description' => $request->description,
+                'sprint_duration' => $request->sprint_duration,
+                'sprint_start_day' => $request->sprint_start_day
+            ]);
+        }catch(\Exception $e){
+            return response()->json(['errors' => $e], 422);
+        }
 
         return response()->json(['success' => true], 200);
     }
