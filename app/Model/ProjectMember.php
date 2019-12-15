@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProjectMember extends Model
 {
+    protected $primaryKey = null;
+    public $incrementing = false;
     protected $table = 'project_members';
     protected $fillable = ['user_id'];
 

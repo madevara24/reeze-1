@@ -81,10 +81,8 @@ class ProjectController extends Controller
                 'sprint_duration' => $request->sprint_duration,
                 'sprint_start_day' => $request->sprint_start_day
             ]);
-            ProjectMember::create([
-                'user_id' => $user->id,
-                'project_id' => $project->id
-            ]);
+            $projectMember = new ProjectMember(['user_id' => $user->id]);
+            $project->project_member()->save($projectMember);
             DB::commit();   
         }catch(\Exception $e){
             DB::rollback();
