@@ -71,7 +71,7 @@ class ProjectController extends Controller
         {
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
-
+        DB::beginTransaction();
         try{
             $project = Project::create([
                 'name' => $request->name,
@@ -83,7 +83,9 @@ class ProjectController extends Controller
             ]);
             $projectMember = new ProjectMember(['user_id' => $user->id]);
             $project->project_member()->save($projectMember);
+            DB::commit();   
         }catch(\Exception $e){
+            DB::rollback();
             return response()->json(['errors' => $e], 422);
         }
         
@@ -112,7 +114,7 @@ class ProjectController extends Controller
         {
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
-
+        DB::beginTransaction();
         try{
             $project = Project::find($id);
             $project->update([
@@ -122,7 +124,9 @@ class ProjectController extends Controller
                 'sprint_duration' => $request->sprint_duration,
                 'sprint_start_day' => $request->sprint_start_day
             ]);
+            DB::commit();   
         }catch(\Exception $e){
+            DB::rollback();
             return response()->json(['errors' => $e], 422);
         }
 
