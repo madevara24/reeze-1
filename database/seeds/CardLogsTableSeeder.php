@@ -18,7 +18,17 @@ class CardLogsTableSeeder extends Seeder
             [
                 'card_id' => 1,
                 'state' => 'created',
-                'created_at' => '2019-12-09 09:04:01'
+                'created_at' => '2019-11-25 09:04:01'
+            ],
+            [
+                'card_id' => 1,
+                'state' => 'planned',
+                'created_at' => '2019-11-26 09:13:28'
+            ],
+            [
+                'card_id' => 1,
+                'state' => 'started',
+                'created_at' => '2019-11-26 09:17:02'
             ],
             [
                 'card_id' => 2,
@@ -36,11 +46,6 @@ class CardLogsTableSeeder extends Seeder
                 'created_at' => '2019-12-09 09:07:39'
             ],
             [
-                'card_id' => 1,
-                'state' => 'planned',
-                'created_at' => '2019-12-09 09:13:28'
-            ],
-            [
                 'card_id' => 2,
                 'state' => 'planned',
                 'created_at' => '2019-12-09 09:13:55'
@@ -49,11 +54,6 @@ class CardLogsTableSeeder extends Seeder
                 'card_id' => 3,
                 'state' => 'planned',
                 'created_at' => '2019-12-09 09:14:19'
-            ],
-            [
-                'card_id' => 1,
-                'state' => 'started',
-                'created_at' => '2019-12-09 09:17:02'
             ],
             [
                 'card_id' => 2,
@@ -116,16 +116,6 @@ class CardLogsTableSeeder extends Seeder
                 'created_at' => '2019-12-10 15:06:37'
             ],
             [
-                'card_id' => 1,
-                'state' => 'finished',
-                'created_at' => '2019-12-10 15:07:47'
-            ],
-            [
-                'card_id' => 1,
-                'state' => 'accepted',
-                'created_at' => '2019-12-10 15:21:25'
-            ],
-            [
                 'card_id' => 4,
                 'state' => 'finished',
                 'created_at' => '2019-12-10 15:58:21'
@@ -136,11 +126,6 @@ class CardLogsTableSeeder extends Seeder
                 'created_at' => '2019-12-10 16:12:44'
             ],
             [
-                'card_id' => 1,
-                'state' => 'released',
-                'created_at' => '2019-12-10 17:03:45'
-            ],
-            [
                 'card_id' => 3,
                 'state' => 'released',
                 'created_at' => '2019-12-11 17:08:54'
@@ -149,6 +134,21 @@ class CardLogsTableSeeder extends Seeder
                 'card_id' => 4,
                 'state' => 'released',
                 'created_at' => '2019-12-13 17:11:07'
+            ],
+            [
+                'card_id' => 1,
+                'state' => 'finished',
+                'created_at' => '2019-12-16 15:07:47'
+            ],
+            [
+                'card_id' => 1,
+                'state' => 'accepted',
+                'created_at' => '2019-12-16 15:21:25'
+            ],
+            [
+                'card_id' => 1,
+                'state' => 'released',
+                'created_at' => '2019-12-16 17:03:45'
             ],
         ]);
     }
