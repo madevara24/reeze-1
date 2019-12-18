@@ -27,7 +27,10 @@ class DeliverabilityController extends Controller
         $date->startOfWeek();
 
         $sprint_dates = array();
+        $sprint_cards = array();
+        $deliverability_rate = array();
         $deliverability = array();
+        $chart_dates = array();
 
         //Get all the sprint start and end date until current sprint
         while(true){
@@ -41,9 +44,59 @@ class DeliverabilityController extends Controller
             }
         }
         
-        for ($i=0; $i < count($sprint_dates); $i++) { 
-            
+        //Cut the array to only get the last 5 iteration
+        while (count($sprint_dates) > 6) {
+            $sprint_dates = array_shift($sprint_dates);
         }
-        dd($sprint_dates);
+
+        //Get every sprint released and not-released cards
+        for ($i=0; $i < count($sprint_dates); $i++) {
+
+            //Get cards that have activity/log between the sprint duration
+            $sprint_cards = array_column(CardLog::whereIn('card_id', $card_ids)
+                ->whereIn('state',['planned','started','finished','accepted','rejected'])
+                ->whereBetween('created_at', [$sprint_dates[$i][0], $sprint_dates[$i][1]])
+                ->groupBy('card_id')
+                ->get()->toArray(), 'card_id');
+
+            //Get the cards that don't have activity/log but haven't released yet
+            $unreleased_cards = array_column(CardLog::whereIn('card_id', $card_ids)
+                ->whereIn('state',['planned','started','finished','accepted','rejected'])
+                ->whereBetween('created_at', [$project['created_at'], $sprint_dates[$i][1]])
+                ->groupBy('card_id')
+                ->get()->toArray(), 'card_id');
+
+            //Get the cards that are already released to subtract the unreleased cards above
+            $released_cards = array_column(CardLog::whereIn('card_id', $card_ids)
+                ->whereIn('state',['released'])
+                ->whereBetween('created_at', [$project['created_at'], $sprint_dates[$i][1]])
+                ->groupBy('card_id')
+                ->get()->toArray(), 'card_id');
+                
+            $finished_sprint_cards = array_column(CardLog::whereIn('card_id', $card_ids)
+                ->whereIn('state',['released'])
+                ->whereBetween('created_at', [$sprint_dates[$i][0], $sprint_dates[$i][1]])
+                ->groupBy('card_id')
+                ->get()->toArray(), 'card_id');
+
+            //Remove the released card from the unreleased but don't have log list
+            $unreleased_cards = array_diff($unreleased_cards, $released_cards);
+
+            //Merge sprint cards with cards that don't have activity
+            $sprint_cards = array_unique(array_merge($sprint_cards, $unreleased_cards));
+
+            //Calculate the total points
+            $card_points = array_sum(Card::whereIn('id', $sprint_cards)->pluck('points')->toArray());
+
+            //Calculate the finished points
+            $finished_points = array_sum(Card::whereIn('id', $finished_sprint_cards)->pluck('points')->toArray());
+
+            //Calculate deliverability rate
+            $rate = $card_points == 0 ? -1 : round($finished_points/$card_points * 100, 2);
+            
+            array_push($deliverability_rate, [$sprint_dates[$i][0]->format('d').'-'.$sprint_dates[$i][1]->format('d M'), $rate]);
+        }
+        
+        return $deliverability_rate;
     }
 }
