@@ -11,8 +11,7 @@ use App\Model\CardLog;
 
 class SprintProgressionController extends Controller
 {
-    public function show($id)
-    {
+    public function show($id){
         //Get current project
         $project = Project::where('id', $id)->first();
 
