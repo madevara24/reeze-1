@@ -20,6 +20,7 @@ Route::prefix('/v1')->group(function(){
             Route::get('/deliverability/{id}', 'DeliverabilityController@show');
             Route::get('/rejection/{id}', 'RejectionController@show');
             Route::get('/task-lifecycle/{id}', 'TaskLifecycleController@show');
+            Route::get('/estimation/{id}', 'EstimationController@show');
         });
     });
 });
