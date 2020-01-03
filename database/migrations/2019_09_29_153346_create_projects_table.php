@@ -21,6 +21,7 @@ class CreateProjectsTable extends Migration
             $table->longText('description')->nullable();
             $table->integer('sprint_duration')->nullable();
             $table->integer('sprint_start_day')->nullable();
+            $table->string('version')->nullable();
             $table->timestamps();
 
             $table->foreign('pic_id')

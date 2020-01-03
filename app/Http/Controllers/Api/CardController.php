@@ -43,7 +43,6 @@ class CardController extends Controller
         $validator = Validator::make($request->all(),[
             'title' => 'required',
             'description' => 'required|max:255',
-            'points' => 'required|numeric',
             'type' => 'required'
         ]);
 
@@ -58,7 +57,7 @@ class CardController extends Controller
                 'project_id' => $project_id,
                 'owner' => $request->owner,
                 'requester' => $user->id,
-                'github_branch_name' => $request->github_branch_name,
+                'github_branch_name' => null,
                 'description' => $request->description,
                 'points' => $request->points,
                 'iteration' => $request->iteration,

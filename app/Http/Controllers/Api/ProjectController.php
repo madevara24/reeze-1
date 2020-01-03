@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiGithubHelper;
 use App\Http\Controllers\Controller;
+use App\Model\Card;
 use App\Model\Project;
 use App\Model\ProjectMember;
 use App\User;
@@ -79,7 +80,8 @@ class ProjectController extends Controller
                 'pic_id' => $user->id,
                 'description' => $request->description,
                 'sprint_duration' => $request->sprint_duration,
-                'sprint_start_day' => $request->sprint_start_day
+                'sprint_start_day' => $request->sprint_start_day,
+                'version' => '0.0.0'
             ]);
             $projectMember = new ProjectMember(['user_id' => $user->id]);
             $project->project_member()->save($projectMember);
@@ -152,5 +154,75 @@ class ProjectController extends Controller
         $listRepo = ApiGithubHelper::getRepositoryList();
 
         return response()->json(['success' => true, 'data' => $listRepo], 200);
+    }
+
+    public function release(Request $request, $id)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $project = Project::find($id);
+        $branchCount = count($request->card_branch);
+        
+        //Get Project Release Type (Major/Minor/Patch)
+        $releaseType = $request->release_type;
+        DB::beginTransaction();
+        try{
+            if($releaseType === "Major")
+            {
+                //Split project version
+                $projectVersion = explode('.', $project->version);
+
+                //Cast first index to int then add by 1
+                (int)$projectVersion[0] += 1;
+
+                //Cast first index back to string
+                $projectVersion[0] = (string)$projectVersion[0];
+
+                //Merge the array back to string
+                $projectVersion = implode('.', $projectVersion);
+
+                $project->version = $projectVersion;
+                $project->save();
+            }else if($releaseType === "Minor")
+            {
+                $projectVersion = explode('.', $project->version);
+                (int)$projectVersion[1] += 1;
+                $projectVersion[1] = (string)$projectVersion[1];
+                $projectVersion = implode('.', $projectVersion);
+
+                $project->version = $projectVersion;
+                $project->save();
+            }else if($releaseType === "Patch")
+            {
+                $projectVersion = explode('.', $project->version);
+                (int)$projectVersion[2] += 1;
+                $projectVersion[2] = (string)$projectVersion[2];
+                $projectVersion = implode('.', $projectVersion);
+
+                $project->version = $projectVersion;
+                $project->save();
+            }else{
+                return response()->json(['errors' => "Invalid project release type"], 422);
+            }
+
+            $releaseBranchName = 'release-'. $project->version;
+            $releaseBranch = ApiGithubHelper::showGithubBranch($user, $project, $releaseBranchName);
+            
+            //Check if branch already exists
+            if(is_null($releaseBranch)){
+                $releaseBranch = ApiGithubHelper::createReleaseBranch($user, $project);
+            }
+            
+            for($i = 0; $i < $branchCount; $i++)
+            {
+                $pullRequest = ApiGithubHelper::createPullRequest($user, $project, $request->card_branch[$i], $releaseBranchName);
+                ApiGithubHelper::mergeGithubBranch($user, $project, $pullRequest, $releaseBranch);
+            }
+
+            DB::commit();
+        }catch(\Exception $e)
+        {
+            DB::rollback();
+            return response()->json(['errors' => $e], 422);
+        }
     }
 }

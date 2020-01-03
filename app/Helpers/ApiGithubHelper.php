@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Model\Card;
+use Carbon\Carbon;
 use Github;
 use JWTAuth;
 
@@ -39,7 +40,7 @@ class ApiGithubHelper
             
             Github::gitData()->references()->create($repositoryUser, $repositoryName, $param);
         }catch(\Exception $e){
-            return response()->json(['errors' => $e], 422);
+            return response()->json(['errors' => $e->getMessage()], $e->getCode());
         }
         
         return $newBranchName;
@@ -64,5 +65,80 @@ class ApiGithubHelper
         }
 
         return $newBranchName;
+    }
+
+    public static function createPullRequest($user, $projectRepository, $branchName, $baseBranchName)
+    {
+        Github::authenticate($user->github_token, null, 'http_token');
+        $repository = explode('/', $projectRepository->repository);
+        
+        $repositoryUser = $repository[0];
+        $repositoryName = $repository[1];
+        
+        try{
+            $pullRequest = Github::pullRequest()->create($repositoryUser, $repositoryName, [
+                'base' => $baseBranchName,
+                'head' => $branchName,
+                'title' => $branchName,
+                'body' => $branchName,
+            ]);
+            return $pullRequest;
+        }catch(\Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+
+    public static function createReleaseBranch($user, $project)
+    {
+        Github::authenticate($user->github_token, null, 'http_token');
+        $repository = explode('/', $project->repository);
+        
+        $repositoryUser = $repository[0];
+        $repositoryName = $repository[1];
+
+        try{
+            $branchMasterData = Github::gitData()->references()->show($repositoryUser, $repositoryName, 'heads/master');
+        
+            $releaseBranchName = 'release-'. $project->version;
+            
+            $param['ref'] = 'refs/heads/' . $releaseBranchName;
+            $param['sha'] = $branchMasterData['object']['sha'];
+            
+            return Github::gitData()->references()->create($repositoryUser, $repositoryName, $param);
+        }catch(\Exception $e){
+            return $releaseBranchName;
+        }
+    }
+
+    public static function showGithubBranch($user, $project, $branchName)
+    {
+        Github::authenticate($user->github_token, null, 'http_token');
+        $repository = explode('/', $project->repository);
+        
+        $repositoryUser = $repository[0];
+        $repositoryName = $repository[1];
+
+        try{
+            return Github::gitData()->references()->show($repositoryUser, $repositoryName, 'heads/' . $branchName);
+        }catch(\Exception $e)
+        {
+            return null;
+        }
+    }
+
+    public static function mergeGithubBranch($user, $project, $pullRequestedBranch, $releaseBranch)
+    {
+        Github::authenticate($user->github_token, null, 'http_token');
+        $repository = explode('/', $project->repository);
+        
+        $repositoryUser = $repository[0];
+        $repositoryName = $repository[1];
+        try{
+            return Github::pullRequest()->merge($repositoryUser, $repositoryName, $pullRequestedBranch['number'], $pullRequestedBranch['title'], $pullRequestedBranch['head']['sha']);
+        }catch(\Exception $e)
+        {
+            return $e->getMessage();
+        }
     }
 }

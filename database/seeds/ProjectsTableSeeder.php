@@ -22,6 +22,7 @@ class ProjectsTableSeeder extends Seeder
                 'description' => 'ausom',
                 'sprint_duration' => 14,
                 'sprint_start_day' => 1,
+                'version' => '1.0.0'
             ],
             [
                 'name' => 'fp-cacak',
@@ -30,6 +31,7 @@ class ProjectsTableSeeder extends Seeder
                 'description' => 'fp-cacak',
                 'sprint_duration' => 7,
                 'sprint_start_day' => 1,
+                'version' => '1.0.0'
             ],
             [
                 'name' => 'rental teman',
@@ -38,6 +40,7 @@ class ProjectsTableSeeder extends Seeder
                 'description' => 'rental-teman',
                 'sprint_duration' => 7,
                 'sprint_start_day' => 1,
+                'version' => '1.0.0'
             ],
         ]);
     }
