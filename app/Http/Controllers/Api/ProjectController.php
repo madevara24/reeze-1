@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ApiGithubHelper;
 use App\Http\Controllers\Controller;
 use App\Model\Card;
+use App\Model\CardLog;
 use App\Model\Project;
 use App\Model\ProjectMember;
 use App\User;
@@ -161,68 +162,108 @@ class ProjectController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $project = Project::find($id);
         $branchCount = count($request->card_branch);
-        
+
         //Get Project Release Type (Major/Minor/Patch)
         $releaseType = $request->release_type;
-        DB::beginTransaction();
-        try{
-            if($releaseType === "Major")
-            {
-                //Split project version
-                $projectVersion = explode('.', $project->version);
-
-                //Cast first index to int then add by 1
-                (int)$projectVersion[0] += 1;
-
-                //Cast first index back to string
-                $projectVersion[0] = (string)$projectVersion[0];
-
-                //Merge the array back to string
-                $projectVersion = implode('.', $projectVersion);
-
-                $project->version = $projectVersion;
-                $project->save();
-            }else if($releaseType === "Minor")
-            {
-                $projectVersion = explode('.', $project->version);
-                (int)$projectVersion[1] += 1;
-                $projectVersion[1] = (string)$projectVersion[1];
-                $projectVersion = implode('.', $projectVersion);
-
-                $project->version = $projectVersion;
-                $project->save();
-            }else if($releaseType === "Patch")
-            {
-                $projectVersion = explode('.', $project->version);
-                (int)$projectVersion[2] += 1;
-                $projectVersion[2] = (string)$projectVersion[2];
-                $projectVersion = implode('.', $projectVersion);
-
-                $project->version = $projectVersion;
-                $project->save();
-            }else{
-                return response()->json(['errors' => "Invalid project release type"], 422);
-            }
-
-            $releaseBranchName = 'release-'. $project->version;
-            $releaseBranch = ApiGithubHelper::showGithubBranch($user, $project, $releaseBranchName);
-            
-            //Check if branch already exists
-            if(is_null($releaseBranch)){
-                $releaseBranch = ApiGithubHelper::createReleaseBranch($user, $project);
-            }
-            
-            for($i = 0; $i < $branchCount; $i++)
-            {
-                $pullRequest = ApiGithubHelper::createPullRequest($user, $project, $request->card_branch[$i], $releaseBranchName);
-                ApiGithubHelper::mergeGithubBranch($user, $project, $pullRequest, $releaseBranch);
-            }
-
-            DB::commit();
-        }catch(\Exception $e)
+        
+        if($releaseType === "Major")
         {
-            DB::rollback();
-            return response()->json(['errors' => $e], 422);
+            //Split project version
+            $projectVersion = explode('.', $project->version);
+
+            //Cast first index to int then add by 1
+            (int)$projectVersion[0] += 1;
+
+            //Cast first index back to string
+            $projectVersion[0] = (string)$projectVersion[0];
+
+            //Merge the array back to string
+            $projectVersion = implode('.', $projectVersion);
+
+            $project->version = $projectVersion;
+        }else if($releaseType === "Minor")
+        {
+            $projectVersion = explode('.', $project->version);
+            (int)$projectVersion[1] += 1;
+            $projectVersion[1] = (string)$projectVersion[1];
+            $projectVersion = implode('.', $projectVersion);
+
+            $project->version = $projectVersion;
+        }else if($releaseType === "Patch")
+        {
+            $projectVersion = explode('.', $project->version);
+            (int)$projectVersion[2] += 1;
+            $projectVersion[2] = (string)$projectVersion[2];
+            $projectVersion = implode('.', $projectVersion);
+
+            $project->version = $projectVersion;
+        }else{
+            return response()->json(['errors' => "Invalid project release type"], 422);
+        }
+
+        $releaseBranchName = 'release-'. $project->version;
+        $releaseBranch = ApiGithubHelper::showGithubBranch($user, $project, $releaseBranchName);
+        
+        //Check if branch already exists
+        if(is_null($releaseBranch)){
+            $releaseBranch = ApiGithubHelper::createReleaseBranch($user, $project);
+        }
+        
+        $shouldMergeMaster = true;
+        $statusMergeBranch = null;
+
+        for($i = 0; $i < $branchCount; $i++)
+        {
+            $cardId = Card::where('github_branch_name', $request->card_branch[$i])->first()->id;
+            $cardState = CardLog::where('card_id', $cardId)->first();
+            $listOpenPullRequests = ApiGithubHelper::getOpenPullRequest($user, $project);
+            $pullRequest = [];
+
+            if($cardState !== 'released')
+            {
+                if(count($listOpenPullRequests) !== 0)
+                {
+                    foreach($listOpenPullRequests as $openPullRequest)
+                    {
+                        if($openPullRequest['title'] == $request->card_branch[$i])
+                        {
+                            array_push($pullRequest, $openPullRequest);
+                        }
+                    }
+                }else{
+                    array_push($pullRequest, ApiGithubHelper::createPullRequest($user, $project, $request->card_branch[$i], $releaseBranchName));
+                }
+                
+                if(!empty($pullRequest))
+                {
+                    $statusMergeBranch = ApiGithubHelper::mergeGithubBranch($user, $project, $pullRequest[0], $releaseBranch);
+                    if($statusMergeBranch !== null)
+                    {
+                        CardLog::create([
+                            'card_id' => $cardId,
+                            'state' => 'released'
+                        ]);
+                        $shouldMergeMaster = true;
+                    }else{
+                        $shouldMergeMaster = false;
+                    }
+                }
+            }
+        }
+        
+        if($shouldMergeMaster)
+        {
+            //Final merge release
+            $pullRequest = ApiGithubHelper::createPullRequest($user, $project, $releaseBranchName, 'master');
+            $statusMergeMaster = ApiGithubHelper::mergeGithubBranch($user, $project, $pullRequest);
+
+            if($statusMergeMaster !== null)
+            {
+                $project->save();
+            }
+            return response()->json(['success' => true], 200);
+        }else{
+            return response()->json(['errors' => 'Something went wrong when trying to merge release.'], 422);
         }
     }
 }

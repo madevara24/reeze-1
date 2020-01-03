@@ -40,7 +40,7 @@ class ApiGithubHelper
             
             Github::gitData()->references()->create($repositoryUser, $repositoryName, $param);
         }catch(\Exception $e){
-            return response()->json(['errors' => $e->getMessage()], $e->getCode());
+            return null;
         }
         
         return $newBranchName;
@@ -67,6 +67,23 @@ class ApiGithubHelper
         return $newBranchName;
     }
 
+    public static function getOpenPullRequest($user, $projectRepository)
+    {
+        Github::authenticate($user->github_token, null, 'http_token');
+        $repository = explode('/', $projectRepository->repository);
+        
+        $repositoryUser = $repository[0];
+        $repositoryName = $repository[1];
+        
+        try{
+            $pullRequest = Github::pullRequest()->all($repositoryUser, $repositoryName, ['state' => 'open']);
+            return $pullRequest;
+        }catch(\Exception $e)
+        {
+            return null;
+        }
+    }
+
     public static function createPullRequest($user, $projectRepository, $branchName, $baseBranchName)
     {
         Github::authenticate($user->github_token, null, 'http_token');
@@ -85,7 +102,7 @@ class ApiGithubHelper
             return $pullRequest;
         }catch(\Exception $e)
         {
-            return $e->getMessage();
+            return null;
         }
     }
 
@@ -127,7 +144,7 @@ class ApiGithubHelper
         }
     }
 
-    public static function mergeGithubBranch($user, $project, $pullRequestedBranch, $releaseBranch)
+    public static function mergeGithubBranch($user, $project, $pullRequestedBranch)
     {
         Github::authenticate($user->github_token, null, 'http_token');
         $repository = explode('/', $project->repository);
@@ -138,7 +155,8 @@ class ApiGithubHelper
             return Github::pullRequest()->merge($repositoryUser, $repositoryName, $pullRequestedBranch['number'], $pullRequestedBranch['title'], $pullRequestedBranch['head']['sha']);
         }catch(\Exception $e)
         {
-            return $e->getMessage();
+            dd($e);
+            return null;
         }
     }
 }
