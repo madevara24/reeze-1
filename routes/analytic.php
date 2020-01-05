@@ -16,10 +16,11 @@ use Illuminate\Http\Request;
 Route::prefix('/v1')->group(function(){
     Route::prefix('/analytic')->namespace('Api')->group(function(){
         Route::namespace('Analytic')->group(function(){
-            Route::get('/sprint-progrssion/{id}', 'SprintProgressionController@show');
+            Route::get('/sprint-progression/{id}', 'SprintProgressionController@show');
             Route::get('/deliverability/{id}', 'DeliverabilityController@show');
             Route::get('/rejection/{id}', 'RejectionController@show');
             Route::get('/task-lifecycle/{id}', 'TaskLifecycleController@show');
+            Route::get('/estimation/{id}', 'EstimationController@show');
         });
     });
 });

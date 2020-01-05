@@ -45,4 +45,12 @@ class AnalyticHelper{
         //dd($sprint_dates);
         return $sprint_dates;
     }
+
+    public function convertArrayStringToArrayInt($array){
+        foreach ($array as $key => $value) {
+            $array[$key] = (int)$value;
+        }
+
+        return $array;
+    }
 }
