@@ -8,18 +8,10 @@ export default new Vuex.Store({
     state:{
         //user
         user:{
-            // isLogin: false,
-            isLogin: true,
+            isLogin: false,
         },
         projects:{
-            selectedProjectId: 1,
-            projects: [
-                {id:1, name: 'Insight', sprintDuration:7, sprintProgress:3, totalTasks:12, completedTasks:7},
-                {id:2, name: 'Roundabout', sprintDuration:7, sprintProgress:7, totalTasks:11, completedTasks:10},
-                {id:3, name: 'Hexagon', sprintDuration:14, sprintProgress:8, totalTasks:17, completedTasks:10},
-                {id:4, name: 'Fast Forward', sprintDuration:7, sprintProgress:1, totalTasks:5, completedTasks:0},
-                {id:5, name: 'Skipper', sprintDuration:14, sprintProgress:5, totalTasks:14, completedTasks:7},
-            ],
+            selectedProjectId: null,
         },
         //people
         selectedPerson: null,
@@ -55,7 +47,7 @@ export default new Vuex.Store({
         },
         //project
         selectProject (state, projectId) {
-            state.selectedProjectId = projectId
+            state.projects.selectedProjectId = projectId
         }
     }
 })

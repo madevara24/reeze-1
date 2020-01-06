@@ -54,7 +54,7 @@
                         </v-col>
                         <v-col cols="7" class="py-1 my-1">
                             <v-select dense :items="select.storyTypes" hide-details class="pt-1">
-
+                                
                             </v-select>
                         </v-col>
                     </v-row>

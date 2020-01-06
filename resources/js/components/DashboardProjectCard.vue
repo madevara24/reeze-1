@@ -7,7 +7,7 @@
           {{projectData.name}}
         </v-row>
         <v-row>
-          <div class="caption">Bapak Subandrio</div>
+          <div class="caption">{{projectData.pic_name}}</div>
         </v-row>
         </div>
       </v-card-title>

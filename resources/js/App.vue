@@ -24,6 +24,10 @@ export default {
   }),
     computed: {
     isLogin(){
+      if(localStorage.getItem('token') != null)
+      {
+        this.$store.commit('setLogin', true)
+      }
       console.log('Login : ' + this.$store.getters.getIsLogin)
       return this.$store.getters.getIsLogin
     }

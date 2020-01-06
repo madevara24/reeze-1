@@ -15,12 +15,12 @@ use Illuminate\Http\Request;
 
 // Route::prefix('/v1')->middleware('web')->group(function(){
 Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function(){
-    Route::get('/login', 'ApiController@redirectToProvider')->name('api-login');
+    Route::post('/login', 'ApiController@redirectToProvider')->name('api-login');
     Route::get('/github-callback', 'ApiController@handleProviderCallback');
 
     Route::middleware('jwt.auth')->group(function(){
         Route::get('/list-repo', 'ProjectController@getListRepository');
-        Route::get('/logout', 'ApiController@logout');
+        Route::post('/logout', 'ApiController@logout');
         Route::prefix('/project')->group(function(){
             Route::get('/', 'ProjectController@index');
             Route::post('/create', 'ProjectController@store');

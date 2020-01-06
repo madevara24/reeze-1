@@ -68,7 +68,7 @@ import BoardColumnHeader from '../components/BoardColumnHeader.vue'
 import TaskCard from '../components/TaskCard.vue'
 export default {
     created() {
-        
+        this.cards = this.getCards()
     },
     data() {
         return {
@@ -81,14 +81,23 @@ export default {
             doneColumn:{
                 title:'Done'
             },
-            cards:[
-                {
-                    id: 169040772,
-                    title:"Make Authentication",
-
-                }
-            ]
+            cards: null
         }
+    },
+    methods: {
+        getCards() {
+            let token = localStorage.getItem('token')
+            let selectedProjectId = this.$store.getters.getSelectedProjectId
+            
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+                };
+
+            this.axios
+                .get('http://127.0.0.1:8000/api/v1/project/' + selectedProjectId + '/cards', {headers})
+                .then(response => this.cards = response.data)
+            }
     },
     components: {
         BoardColumnHeader, TaskCard

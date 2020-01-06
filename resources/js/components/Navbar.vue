@@ -5,8 +5,7 @@
       <v-toolbar-title class="grey--text">
         <v-btn class="grey--text" :ripple="false" :to="{ name: 'home'}">
           <div class="title">
-            <span class="font-weight-light">AU</span>
-            <span class="">SOM</span>
+            <span class="font-weight-light">REEZE</span>
           </div>
         </v-btn>
       </v-toolbar-title>
@@ -25,11 +24,11 @@
 
         <v-list>
           <v-list-item
-            v-for="n in 5"
+            v-for="n in 1"
             :key="n"
-            @click="() => {}"
+            @click="logout()"
           >
-            <v-list-item-title>Option {{ n }}</v-list-item-title>
+            <v-list-item-title>Log Out</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -83,6 +82,28 @@ export default {
     }
   },
   methods: {
+    logout(){
+      let token = localStorage.getItem('token')
+      
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      };
+      
+      this.axios
+        .post('api/v1/logout', {headers}, {
+          data: {
+            token: token
+          }
+        })
+        .then(response => {
+            localStorage.removeItem('token')
+            window.location.href = "/"
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+    }
   },
 }
 </script>

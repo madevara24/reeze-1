@@ -13,7 +13,7 @@ class ApiController extends Controller
 {
     public function redirectToProvider()
     {
-        return Socialite::driver('github')->setScopes(['read:user', 'repo', 'admin:org_hook'])->stateless()->redirect();
+        return response(Socialite::driver('github')->setScopes(['read:user', 'repo', 'admin:org_hook'])->stateless()->redirect()->getTargetUrl());
     }
 
     public function handleProviderCallback()
@@ -31,9 +31,9 @@ class ApiController extends Controller
 
         $token = JWTAuth::fromUser($user);
 
-        return response()->json([
-            'token' => $token
-        ]);;
+        return view('callback', [
+            'token' => $token,
+        ]);
     }
 
     public function logout(Request $request)

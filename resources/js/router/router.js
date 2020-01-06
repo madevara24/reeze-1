@@ -10,7 +10,6 @@ import Login from '../views/Login.vue'
 import Board from '../views/Board.vue'
 import Analytics from '../views/Analytics.vue'
 
-import guest from './middleware/guest'
 import auth from './middleware/auth'
 import middlewarePipeline from './middlewarePipeline'
 Vue.use(Router)
@@ -55,31 +54,6 @@ const router = new Router({
       name: 'login',
       component: Login,
     },
-    {
-      path: '/github-callback',
-      name: 'github-callback',
-      redirect: to=>{
-        store.commit('setLogin', true)
-        console.log('store login: ' + store.getters.getIsLogin)
-        return '/'
-      },
-    },
-    // { path: '/dynamic-redirect/:id?',
-    //   redirect: to => {
-    //     const { hash, params, query } = to
-    //     if (query.to === 'foo') {
-    //       return { path: '/foo', query: null }
-    //     }
-    //     if (hash === '#baz') {
-    //       return { name: 'baz', hash: '' }
-    //     }
-    //     if (params.id) {
-    //       return '/with-params/:id'
-    //     } else {
-    //       return '/bar'
-    //     }
-    //   }
-    // },
   ]
 })
 
