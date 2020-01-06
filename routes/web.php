@@ -11,9 +11,7 @@ include "analytic.php";
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/{any}', 'HomeController@index')->where('any', '.*');
 
 Auth::routes([
     'register' => false,
@@ -21,4 +19,3 @@ Auth::routes([
     'verify' => false,
 ]);
 
-Route::get('/home', 'HomeController@index')->name('home');
