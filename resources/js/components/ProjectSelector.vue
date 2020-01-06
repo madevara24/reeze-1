@@ -38,7 +38,7 @@ export default {
     methods: {
         selectProject(id){
             //eslint-disable-next-line
-            console.log(id)
+            console.log("Change project to " + id)
             this.$router.push({ name: 'board', params: { id } })
         }
     },

@@ -40,16 +40,26 @@
           </v-card>
         </v-col>
         <v-col cols=12 xs=12>
-          <v-card flat class="px-3 mb-5">
-            <v-card-title>Estimation Chart</v-card-title>
-            <v-card-text>
-              <!-- <GChart
-                type="Timeline"
-                :data="estimation.chartData"
-                :options="estimation.chartOptions"
-              /> -->
-            </v-card-text>
-          </v-card>
+          <v-row justify="space-around">
+            <v-card flat class="px-3 mb-5 flex-grow-1">
+              <v-card-title>Project Velocity</v-card-title>
+              <v-card-text>
+                <v-row class="display-1 font-weight-medium">
+                  <v-col cols="2" class="indigo--text text-right">{{estimation.velocity}}</v-col>
+                  <v-col class="flex-grow-1">points per sprint</v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+            <v-card flat class="px-3 mb-5 flex-grow-1">
+              <v-card-title>Estimated Sprints Required</v-card-title>
+              <v-card-text>
+                <v-row class="display-1 font-weight-medium">
+                  <v-col cols="2" class="indigo--text text-right">{{estimation.sprintEstimate}}</v-col>
+                  <v-col class="flex-grow-1">sprints left</v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-row>
         </v-col>
       </v-row>
 </template>
@@ -62,7 +72,11 @@ export default {
     this.getSprintProgression();
     this.getDeliverability();
     this.getTaskLifecycle();
+    this.getEstimation();
 
+  },
+  beforeUpdate(){
+    console.log("Before update " + this.$store.getters.getSelectedProjectId)
   },
   components:{
     GChart
@@ -71,7 +85,8 @@ export default {
     return {
       burndown: {
         chartData: [
-          ['Day', 'Points Remaining', 'Ideal Burndown']
+          ['Day', 'Points Remaining', 'Ideal Burndown'],
+          
         ],
         chartOptions: {
           title: 'Burndown Chart',
@@ -107,20 +122,8 @@ export default {
         }
       },
       estimation: {
-        chartData: [
-          ['Day', 'Points Remaining', 'Ideal Burndown'],
-          ['Monday', 15, 15],
-          ['Tuesday', 13, 11.25],
-          ['Wednesday', 11, 7.5],
-          ['Thursday', 6, 3.75],
-          ['Friday', 3, 0],
-          ['Saturday', 3, 0],
-          ['Sunday', 3, 0],
-        ],
-        chartOptions: {
-          title: 'Burndown Chart',
-          subtitle: 'Points Remaining, Iteration : 2',
-        }
+        velocity: 0,
+        sprintEstimate: 0
       },
     }
   },
@@ -139,22 +142,31 @@ export default {
       console.log("Get deliverability")
       this.axios
         .get('http://127.0.0.1:8000/v1/analytic/deliverability/' + this.$store.getters.getSelectedProjectId)
-        .then(response => (this.formatDeliverability(response)))
+        .then(response => (this.formatDeliverability(response.data)))
     },
     formatDeliverability(data){
-      this.deliverability.chartData = this.deliverability.chartData.concat(data.data);
+      this.deliverability.chartData = this.deliverability.chartData.concat(data);
       this.getRejection();
     },
     getRejection(){
       this.axios
         .get('http://127.0.0.1:8000/v1/analytic/rejection/' + this.$store.getters.getSelectedProjectId)
-        .then(response => (this.formatRejection(response)))
+        .then(response => (this.formatRejection(response.data)))
     },
     formatRejection(data){
-      for (let index = 0; index < data.data.length; index++) {
-        this.deliverability.chartData[index + 1].push(data.data[index])
+      for (let index = 0; index < data.length; index++) {
+        this.deliverability.chartData[index + 1].push(data[index])
       }
       console.table(this.deliverability.chartData)
+    },
+    getEstimation(){
+      this.axios
+        .get('http://127.0.0.1:8000/v1/analytic/estimation/' + this.$store.getters.getSelectedProjectId)
+        .then(response => (this.formatEstimation(response.data)))
+    },
+    formatEstimation(data){
+      this.estimation.velocity = data[0]
+      this.estimation.sprintEstimate = data[1]
     }
   }
 }
