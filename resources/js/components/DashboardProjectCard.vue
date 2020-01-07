@@ -34,9 +34,9 @@ export default {
   },
   methods: {
     selectProject(id){
-      console.log('Clicked: Project' + this.projectData.name)
-      this.$store.commit('selectProject', id)
-      console.log('Selected project: ' + this.$store.state.selectedProjectId)
+      console.log("Component DashboardProjectCard (methods) : Clicked Project ID " + this.projectData.id)
+      localStorage.setItem("selectedProjectId", this.projectData.id)
+      console.log("Component DashboardProjectCard (methods) : Selected Project ID " + localStorage.getItem("selectedProjectId"))
       this.$router.push({ name: 'board', params: { id } })
     }
   },

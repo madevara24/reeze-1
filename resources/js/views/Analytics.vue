@@ -69,6 +69,7 @@ import { GChart } from 'vue-google-charts'
 
 export default {
   created() {
+    console.log("View Analytics (created) : Selected Project ID " + localStorage.getItem("selectedProjectId"))
     this.getSprintProgression();
     this.getDeliverability();
     this.getTaskLifecycle();
@@ -76,7 +77,7 @@ export default {
 
   },
   beforeUpdate(){
-    console.log("Before update " + this.$store.getters.getSelectedProjectId)
+    
   },
   components:{
     GChart
@@ -129,19 +130,21 @@ export default {
   },
   methods:{
     getSprintProgression(){
+      console.log("View Analytics (method) : Get sprint progression")
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/sprint-progression/' + this.$store.getters.getSelectedProjectId)
+        .get('http://127.0.0.1:8000/v1/analytic/sprint-progression/' + localStorage.getItem("selectedProjectId"))
         .then(response => (this.burndown.chartData = this.burndown.chartData.concat(response.data)))
     },
     getTaskLifecycle(){
+      console.log("View Analytics (method) : Get task lifecycle")
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/task-lifecycle/' + this.$store.getters.getSelectedProjectId)
+        .get('http://127.0.0.1:8000/v1/analytic/task-lifecycle/' + localStorage.getItem("selectedProjectId"))
         .then(response => (this.taskLifecycle.chartData = this.taskLifecycle.chartData.concat(response.data)))
     },
     getDeliverability(){
-      console.log("Get deliverability")
+      console.log("View Analytics (method) : Get deliverability")
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/deliverability/' + this.$store.getters.getSelectedProjectId)
+        .get('http://127.0.0.1:8000/v1/analytic/deliverability/' + localStorage.getItem("selectedProjectId"))
         .then(response => (this.formatDeliverability(response.data)))
     },
     formatDeliverability(data){
@@ -149,19 +152,20 @@ export default {
       this.getRejection();
     },
     getRejection(){
+      console.log("View Analytics (method) : Get rejection")
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/rejection/' + this.$store.getters.getSelectedProjectId)
+        .get('http://127.0.0.1:8000/v1/analytic/rejection/' + localStorage.getItem("selectedProjectId"))
         .then(response => (this.formatRejection(response.data)))
     },
     formatRejection(data){
       for (let index = 0; index < data.length; index++) {
         this.deliverability.chartData[index + 1].push(data[index])
       }
-      console.table(this.deliverability.chartData)
     },
     getEstimation(){
+      console.log("View Analytics (method) : Get estimation")
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/estimation/' + this.$store.getters.getSelectedProjectId)
+        .get('http://127.0.0.1:8000/v1/analytic/estimation/' + localStorage.getItem("selectedProjectId"))
         .then(response => (this.formatEstimation(response.data)))
     },
     formatEstimation(data){
