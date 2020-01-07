@@ -57,11 +57,11 @@ class TaskLifecycleController extends Controller
                 if($key == 0 && $card_log['state'] != 'planned'){
                     $state_before = CardLog::where('card_id', $card_log['card_id'])
                         ->where('created_at', '<', $sprint_dates[0][0])
-                        ->latest('created_at')->first()->toArray();
+                        ->orderBy('created_at', 'desc')->first()->toArray();
 
                     //Get the duration from the start of the sprint time to the first log, to be set as the duration of the state before
                     $duration = $sprint_dates[0][0]->diffInMinutes($card_log['created_at']);
-                    
+
                     array_push($task_lifecycle[$state_before['state']], $duration);
                 }
 
@@ -85,10 +85,10 @@ class TaskLifecycleController extends Controller
         }
         
         foreach ($task_lifecycle as $state => $state_duration) {
-            
-            $task_lifecycle[$state] = array_sum($state_duration);
+            $div = count($state_duration);
+            $task_lifecycle[$state] = array($state, round(array_sum($state_duration) / ($div * 60), 1));
         }
 
-        return $task_lifecycle;
+        return array_values($task_lifecycle);
     }
 }
