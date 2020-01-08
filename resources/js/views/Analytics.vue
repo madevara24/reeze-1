@@ -69,12 +69,20 @@ import { GChart } from 'vue-google-charts'
 
 export default {
   created() {
-    console.log("View Analytics (created) : Selected Project ID " + localStorage.getItem("selectedProjectId"))
+    console.log("View Analytics (created) : Selected Project ID " + this.$route.params.id)
     this.getSprintProgression();
     this.getDeliverability();
     this.getTaskLifecycle();
     this.getEstimation();
-
+  },
+  watch: {
+    $route(to, from) {
+      console.log("View Analytics (watch, route) : Selected Project ID " + this.$route.params.id)
+      this.getSprintProgression();
+      this.getDeliverability();
+      this.getTaskLifecycle();
+      this.getEstimation();
+    }
   },
   beforeUpdate(){
     
@@ -132,19 +140,19 @@ export default {
     getSprintProgression(){
       console.log("View Analytics (method) : Get sprint progression")
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/sprint-progression/' + localStorage.getItem("selectedProjectId"))
+        .get('http://127.0.0.1:8000/v1/analytic/sprint-progression/' + this.$route.params.id)
         .then(response => (this.burndown.chartData = this.burndown.chartData.concat(response.data)))
     },
     getTaskLifecycle(){
       console.log("View Analytics (method) : Get task lifecycle")
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/task-lifecycle/' + localStorage.getItem("selectedProjectId"))
+        .get('http://127.0.0.1:8000/v1/analytic/task-lifecycle/' + this.$route.params.id)
         .then(response => (this.taskLifecycle.chartData = this.taskLifecycle.chartData.concat(response.data)))
     },
     getDeliverability(){
       console.log("View Analytics (method) : Get deliverability")
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/deliverability/' + localStorage.getItem("selectedProjectId"))
+        .get('http://127.0.0.1:8000/v1/analytic/deliverability/' + this.$route.params.id)
         .then(response => (this.formatDeliverability(response.data)))
     },
     formatDeliverability(data){
@@ -154,7 +162,7 @@ export default {
     getRejection(){
       console.log("View Analytics (method) : Get rejection")
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/rejection/' + localStorage.getItem("selectedProjectId"))
+        .get('http://127.0.0.1:8000/v1/analytic/rejection/' + this.$route.params.id)
         .then(response => (this.formatRejection(response.data)))
     },
     formatRejection(data){
@@ -165,7 +173,7 @@ export default {
     getEstimation(){
       console.log("View Analytics (method) : Get estimation")
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/estimation/' + localStorage.getItem("selectedProjectId"))
+        .get('http://127.0.0.1:8000/v1/analytic/estimation/' + this.$route.params.id)
         .then(response => (this.formatEstimation(response.data)))
     },
     formatEstimation(data){

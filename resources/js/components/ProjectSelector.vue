@@ -4,22 +4,21 @@
     dense
     solo
     prepend-icon="folder"
-    @change="selectProject(selectedProject.id)"
-    v-model="selectedProject"
-    :items="projectSelections"
-    item-text="name"
-    item-value="id"
     label="Select Project"
     return-object
     single-line
-    :value="selectedProject.name"
+    v-model="this.selectedProject"
+    :items="this.projectSelections"
+    v-on:change="selectProject"
+    item-text="name"
+    item-value="id"
     ></v-select>
-          
 </template>
 
 <script>
 export default {
     created() {
+        console.log("Component ProjectSelecter (created) : Route name : " + this.$route.name)
         this.getProjects()
         this.getSelectedProject();
     },
@@ -39,7 +38,7 @@ export default {
 
             this.axios
                 .get('http://127.0.0.1:8000/api/v1/project', {headers})
-                .then(response => this.projects = response.data.data)
+                .then(response => this.projectSelections = response.data.data)
         },
         getSelectedProject(){
             console.log("Component ProjectSelector (computed) : Fetch selected project data")
@@ -50,13 +49,12 @@ export default {
                 };
 
             this.axios
-                .get('http://127.0.0.1:8000/api/v1/project/' + localStorage.getItem("selectedProjectId"), {headers})
+                .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id, {headers})
                 .then(response => this.selectedProject = response.data.data)
         },
-        selectProject(id){
-            //eslint-disable-next-line
-            console.log("Change project to " + id)
-            this.$router.push({ name: 'board', params: { id } })
+        selectProject(data){
+            let projectId = data.id
+            this.$router.push({ path: `/project/${projectId}/`+this.$route.name })
         }
     },
 }
