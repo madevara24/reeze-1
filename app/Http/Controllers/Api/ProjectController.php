@@ -266,4 +266,18 @@ class ProjectController extends Controller
             return response()->json(['errors' => 'Something went wrong when trying to merge release.'], 422);
         }
     }
+
+    public function show($project_id){
+        $user = JWTAuth::parseToken()->authenticate();
+
+        if(ProjectMember::where([['project_id', $project_id],['user_id', $user->id]])->count() === 0)
+        {
+            return response()->json([
+                'error' => 'Project Not Found'
+                ], 404);
+        }
+
+        $project = Project::where('id', $project_id)->first();
+        return response()->json(['success' => true, 'data' => $project]);
+    }
 }
