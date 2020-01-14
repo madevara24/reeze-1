@@ -76,8 +76,6 @@ export default {
   },
   computed: {
     isOnProjectPage(){
-      console.log('On project page: ')
-      console.log(this.$route.path.includes('/project'))
       return this.$route.path.includes('/project')
     }
   },

@@ -209,7 +209,6 @@ class ProjectController extends Controller
             $releaseBranch = ApiGithubHelper::createReleaseBranch($user, $project);
         }
         
-        $shouldMergeMaster = true;
         $statusMergeBranch = null;
 
         for($i = 0; $i < $branchCount; $i++)
@@ -237,33 +236,42 @@ class ProjectController extends Controller
                 if(!empty($pullRequest))
                 {
                     $statusMergeBranch = ApiGithubHelper::mergeGithubBranch($user, $project, $pullRequest[0], $releaseBranch);
-                    if($statusMergeBranch !== null)
+                    
+                    if($statusMergeBranch['merge'] !== null)
                     {
                         CardLog::create([
                             'card_id' => $cardId,
                             'state' => 'released'
                         ]);
-                        $shouldMergeMaster = true;
+                        //Final merge release
+                        $pullRequest = ApiGithubHelper::createPullRequest($user, $project, $releaseBranchName, 'master');
+                        $statusMergeMaster = ApiGithubHelper::mergeGithubBranch($user, $project, $pullRequest);
+                        
+                        if($statusMergeMaster['merge'] !== null)
+                        {
+                            $project->save();
+                            return response()->json(['errors' => $statusMergeMaster['message']], $statusMergeMaster['code']);
+                        }
+                        return response()->json(['success' => true], 200);
                     }else{
-                        $shouldMergeMaster = false;
+                        return response()->json(['errors' => $statusMergeBranch['message']], $statusMergeBranch['code']);
                     }
                 }
             }
         }
-        
-        if($shouldMergeMaster)
-        {
-            //Final merge release
-            $pullRequest = ApiGithubHelper::createPullRequest($user, $project, $releaseBranchName, 'master');
-            $statusMergeMaster = ApiGithubHelper::mergeGithubBranch($user, $project, $pullRequest);
+    }
 
-            if($statusMergeMaster !== null)
-            {
-                $project->save();
-            }
-            return response()->json(['success' => true], 200);
-        }else{
-            return response()->json(['errors' => 'Something went wrong when trying to merge release.'], 422);
+    public function show($project_id){
+        $user = JWTAuth::parseToken()->authenticate();
+
+        if(ProjectMember::where([['project_id', $project_id],['user_id', $user->id]])->count() === 0)
+        {
+            return response()->json([
+                'error' => 'Project Not Found'
+                ], 404);
         }
+
+        $project = Project::where('id', $project_id)->first();
+        return response()->json(['success' => true, 'data' => $project]);
     }
 }

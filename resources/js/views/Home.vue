@@ -21,7 +21,8 @@ import DashboardProjectCard from '../components/DashboardProjectCard'
 export default {
   created() {
     this.projects = this.getProjects()
-    console.log(this.$store.getters.selectedProjectId)
+    localStorage.setItem("selectedProjectId", null)
+    console.log("View Home (Created) : Selected project id : " + localStorage.getItem("selectedProjectId"))
   },
   data() {
     return {

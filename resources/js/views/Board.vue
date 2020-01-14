@@ -87,7 +87,7 @@ export default {
     methods: {
         getCards() {
             let token = localStorage.getItem('token')
-            let selectedProjectId = this.$store.getters.getSelectedProjectId
+            let selectedProjectId = this.$route.params.id
             
             const headers = {
                 'Content-Type': 'application/json',

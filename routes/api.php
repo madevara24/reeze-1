@@ -26,6 +26,7 @@ Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function(){
             Route::post('/create', 'ProjectController@store');
 
             Route::middleware('user.project')->group(function(){
+                Route::get('/{project_id}', 'ProjectController@show');
                 Route::get('/{project_id}/members', 'ProjectController@member');
                 Route::put('/{project_id}/edit', 'ProjectController@update');
                 Route::delete('/{project_id}/delete', 'ProjectController@destroy');

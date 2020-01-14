@@ -20,7 +20,7 @@ class ApiController extends Controller
     {
         $githubUser = Socialite::driver('github')->stateless()->user();
         $user = User::firstOrCreate([
-            'name' => is_null($githubUser->getName()) ? explode('@', $githubUser->getEmail())[0] : $githubUser->getName(),
+            'name' => is_null($githubUser->getName()) ? $githubUser->getNickname() : $githubUser->getName(),
             'github_id' =>  $githubUser->getId()
             ]);
             
