@@ -17,12 +17,12 @@ class UsersTableSeeder extends Seeder
         DB::table('users')->insert([
             ['name' => 'zainokta'],
             ['name' => 'madevara24'],
-            ['name' => 'subosko'],
-            ['name' => 'sendiki'],
-            ['name' => 'masjul'],
-            ['name' => 'surobit'],
-            ['name' => 'saipul'],
-            ['name' => 'gay_depok'],
+            ['name' => 'yohanesgre31'],
+            ['name' => 'shidqi'],
+            ['name' => 'julian29'],
+            ['name' => 'robert'],
+            ['name' => 'saiful'],
+            ['name' => 'rayhan'],
             ]
         );
     }

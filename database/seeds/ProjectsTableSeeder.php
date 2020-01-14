@@ -20,27 +20,32 @@ class ProjectsTableSeeder extends Seeder
                 'repository' => 'ausom',
                 'pic_id'=> 1,
                 'description' => 'ausom',
-                'sprint_duration' => 14,
+                'sprint_duration' => 7,
                 'sprint_start_day' => 1,
-                'version' => '1.0.0'
+                'version' => '1.4.0',
+                'created_at' => '2020-01-01 00:00:01'
             ],
             [
-                'name' => 'fp-cacak',
-                'repository' => 'fp-cacak',
+                'name' => 'FP Piranti Interaksi 2',
+                'repository' => 'fp-piranti-interaksi-2',
                 'pic_id'=> 5,
-                'description' => 'fp-cacak',
+                'description' => 'Final project piranti interaksi 2',
                 'sprint_duration' => 7,
                 'sprint_start_day' => 1,
-                'version' => '1.0.0'
+                'version' => '2.2.1',
+                'created_at' => '2020-01-01 00:00:01'
+
             ],
             [
-                'name' => 'rental teman',
-                'repository' => 'rental-teman',
+                'name' => 'Laundromat',
+                'repository' => 'laundromat-app',
                 'pic_id'=> 2,
-                'description' => 'rental-teman',
+                'description' => 'Aplikasi laundry online',
                 'sprint_duration' => 7,
                 'sprint_start_day' => 1,
-                'version' => '1.0.0'
+                'version' => '1.0.5',
+                'created_at' => '2020-01-01 00:00:01'
+
             ],
         ]);
     }

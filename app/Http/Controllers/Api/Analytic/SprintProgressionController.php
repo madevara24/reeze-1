@@ -109,13 +109,6 @@ class SprintProgressionController extends Controller
             //Push todays cards total points
             array_push($sprint_card_points, $todays_card_points);
         }
-        
-        //dd($sprint_card_points, $ideal_burndown, $chart_dates);
-        // return array(
-        //     'points_remaining' => $sprint_card_points, 
-        //     'ideal_burndown' => $ideal_burndown, 
-        //     'chart_dates' => $chart_dates
-        // );
 
         $sprint_burndown = array();
 
