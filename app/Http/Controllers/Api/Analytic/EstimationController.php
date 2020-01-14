@@ -34,7 +34,7 @@ class EstimationController extends Controller
 
         $released_cards_points = $analytic_helper->convertArrayStringToArrayInt($released_cards_points);
 
-        $velocity = array_sum($released_cards_points)/(count($sprint_dates) - 1);
+        $velocity = (int)round(array_sum($released_cards_points)/(count($sprint_dates) - 1), 0);
 
         $average_card_points = array_sum($released_cards_points)/count($released_cards_points);
 
