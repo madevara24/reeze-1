@@ -152,11 +152,17 @@ class ApiGithubHelper
         $repositoryUser = $repository[0];
         $repositoryName = $repository[1];
         try{
-            return Github::pullRequest()->merge($repositoryUser, $repositoryName, $pullRequestedBranch['number'], $pullRequestedBranch['title'], $pullRequestedBranch['head']['sha']);
+            $merge = Github::pullRequest()->merge($repositoryUser, $repositoryName, $pullRequestedBranch['number'], $pullRequestedBranch['title'], $pullRequestedBranch['head']['sha']);
+            $data['merge'] = $merge;
+            $data['code'] = 200;
+            $data['message'] = "success";
+            return $data; 
         }catch(\Exception $e)
         {
-            dd($e);
-            return null;
+            $data['merge'] = null;
+            $data['code'] = $e->getCode();
+            $data['message'] = $e->getMessage();
+            return $data;
         }
     }
 }
