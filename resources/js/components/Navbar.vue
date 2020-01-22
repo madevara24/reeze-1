@@ -34,19 +34,16 @@
       </v-menu>
       <template v-if="isOnProjectPage" #extension>
           <v-toolbar-items>
-            <v-tabs grow>
-              <router-link to="board" tag="v-tab">
+            <v-tabs grow v-model="active_tab">
+              <router-link v-for="tab of tabs" :key="tab.id" :to="tab.route" tag="v-tab">
+                {{tab.name}}
+              </router-link>
+              <!-- <router-link to="board" tag="v-tab" exact>
                 Board
               </router-link>
-              <router-link to="analytics" tag="v-tab">
+              <router-link to="analytics" tag="v-tab" exact>
                 Analytics
-              </router-link>
-              <!-- <v-tab href="board" exact>
-                Board
-              </v-tab>
-              <v-tab href="analytics" exact>
-                Analytics
-              </v-tab> -->
+              </router-link> -->
             </v-tabs>
         </v-toolbar-items>
         </template>
@@ -60,15 +57,24 @@
 import ProjectSelector from '../components/ProjectSelector'
 
 export default {
+  created(){
+    this.active_tab = this.activeTab();
+  },
   data() {
     return {
       sideDrawer: false,
       links:[
-              {icon: 'dashboard', text: 'Dashboard', route: '/' },
-              // {icon: 'folder', text: 'Projects', route: '/projects' },
-              {icon: 'group', text: 'Teams', route: '/teams' },
-              {icon: 'person', text: 'Individual', route: '/individuals' },
-          ],
+        {icon: 'dashboard', text: 'Dashboard', route: '/' },
+        // {icon: 'folder', text: 'Projects', route: '/projects' },
+        {icon: 'group', text: 'Teams', route: '/teams' },
+        {icon: 'person', text: 'Individual', route: '/individuals' },
+      ],
+      tabs: [
+        { id: 1, name: 'Board',  route:"board"},
+        { id: 2, name: 'Team',  route:"teamAnalytics"},
+        { id: 3, name: 'Personal',  route:"personalAnalytics"}
+      ],
+      active_tab: 0,
     }
   },
   components:{
@@ -101,6 +107,18 @@ export default {
         .catch(function (error) {
             console.error(error);
         });
+    },
+    activeTab(){
+      let tab = null;
+      if(this.$route.path.includes('/board')){
+        tab = 0
+      }else if(this.$route.path.includes('/teamAnalytics')){
+        tab = 1
+      }else if(this.$route.path.includes('/personalAnalytics')){
+        tab = 2
+      }
+      console.log("Active tab = " + tab);
+      return tab;
     }
   },
 }
