@@ -105,11 +105,6 @@ export default {
       deliverability:{
         chartData: [
           ['Iteration', 'Deliver Rate', 'Rejection Rate'],
-          // ['Iteration 1', 92, 12],
-          // ['Iteration 2', 88, 18],
-          // ['Iteration 3', 91, 8],
-          // ['Iteration 4', 96, 14],
-          // ['Current Iteration', 90, 9]
         ],
         chartOptions: {
           title: 'Deliverability',
