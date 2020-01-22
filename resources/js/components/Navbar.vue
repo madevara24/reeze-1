@@ -38,12 +38,6 @@
               <router-link v-for="tab of tabs" :key="tab.id" :to="tab.route" tag="v-tab">
                 {{tab.name}}
               </router-link>
-              <!-- <router-link to="board" tag="v-tab" exact>
-                Board
-              </router-link>
-              <router-link to="analytics" tag="v-tab" exact>
-                Analytics
-              </router-link> -->
             </v-tabs>
         </v-toolbar-items>
         </template>
@@ -117,7 +111,6 @@ export default {
       }else if(this.$route.path.includes('/personalAnalytics')){
         tab = 2
       }
-      console.log("Active tab = " + tab);
       return tab;
     }
   },
