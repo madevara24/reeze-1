@@ -8,7 +8,8 @@ import Home from '../views/Home.vue'
 import Project from '../views/Project.vue'
 import Login from '../views/Login.vue'
 import Board from '../views/Board.vue'
-import Analytics from '../views/Analytics.vue'
+import TeamAnalytics from '../views/TeamAnalytics.vue'
+import PersonalAnalytics from '../views/PersonalAnalytics.vue'
 
 import auth from './middleware/auth'
 import middlewarePipeline from './middlewarePipeline'
@@ -44,10 +45,16 @@ const router = new Router({
           component: Board
         },
         {
-          path: 'analytics',
-          name: 'analytics',
-          component: Analytics
-        }]
+          path: 'teamAnalytics',
+          name: 'teamAnalytics',
+          component: TeamAnalytics
+        },
+        {
+          path: 'personalAnalytics',
+          name: 'personalAnalytics',
+          component: PersonalAnalytics
+        }
+      ]
     },
     {
       path: '/login',
