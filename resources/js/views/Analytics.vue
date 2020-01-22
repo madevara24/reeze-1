@@ -139,21 +139,36 @@ export default {
   methods:{
     getSprintProgression(){
       console.log("View Analytics (method) : Get sprint progression")
+      let token = localStorage.getItem('token')
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      };
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/sprint-progression/' + this.$route.params.id)
-        .then(response => (this.burndown.chartData = this.burndown.chartData.concat(response.data)))
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/sprint-progression', {headers})
+        .then(response => (this.burndown.chartData = this.burndown.chartData.concat(response.data.data)));
     },
     getTaskLifecycle(){
       console.log("View Analytics (method) : Get task lifecycle")
+      let token = localStorage.getItem('token')
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      };
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/task-lifecycle/' + this.$route.params.id)
-        .then(response => (this.taskLifecycle.chartData = this.taskLifecycle.chartData.concat(response.data)))
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/task-lifecycle', {headers})
+        .then(response => (this.taskLifecycle.chartData = this.taskLifecycle.chartData.concat(response.data.data)))
     },
     getDeliverability(){
       console.log("View Analytics (method) : Get deliverability")
+      let token = localStorage.getItem('token')
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      };
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/deliverability/' + this.$route.params.id)
-        .then(response => (this.formatDeliverability(response.data)))
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/deliverability', {headers})
+        .then(response => (this.formatDeliverability(response.data.data)))
     },
     formatDeliverability(data){
       this.deliverability.chartData = this.deliverability.chartData.concat(data);
@@ -161,9 +176,14 @@ export default {
     },
     getRejection(){
       console.log("View Analytics (method) : Get rejection")
+      let token = localStorage.getItem('token')
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      };
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/rejection/' + this.$route.params.id)
-        .then(response => (this.formatRejection(response.data)))
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/rejection', {headers})
+        .then(response => (this.formatRejection(response.data.data)))
     },
     formatRejection(data){
       for (let index = 0; index < data.length; index++) {
@@ -172,13 +192,18 @@ export default {
     },
     getEstimation(){
       console.log("View Analytics (method) : Get estimation")
+      let token = localStorage.getItem('token')
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      };
       this.axios
-        .get('http://127.0.0.1:8000/v1/analytic/estimation/' + this.$route.params.id)
-        .then(response => (this.formatEstimation(response.data)))
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/estimation', {headers})
+        .then(response => (this.formatEstimation(response.data.data)))
     },
     formatEstimation(data){
-      this.estimation.velocity = data[0]
-      this.estimation.sprintEstimate = data[1]
+      this.estimation.velocity = data.velocity
+      this.estimation.sprintEstimate = data.estimate
     }
   }
 }
