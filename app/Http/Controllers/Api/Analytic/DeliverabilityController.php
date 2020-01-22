@@ -70,7 +70,7 @@ class DeliverabilityController extends Controller
             $finished_points = array_sum(Card::whereIn('id', $finished_sprint_cards)->pluck('points')->toArray());
 
             //Calculate deliverability rate
-            $rate = $card_points == 0 ? 0 : round($finished_points/$card_points * 100, 2);
+            $rate = $card_points == 0 ? 0 : round($finished_points/$card_points * 100, 1);
             
             array_push($deliverability_rate, [$sprint_dates[$i][0]->format('d').'-'.$sprint_dates[$i][1]->format('d M'), $rate]);
         }

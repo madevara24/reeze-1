@@ -90,7 +90,7 @@ class RejectionController extends Controller
                 array_push($rejection_rate[$i], $card_sprint_rejection);
             }
             if(count($rejection_rate[$i]) != 0){
-                $rejection_rate[$i] = round(array_sum($rejection_rate[$i])/count($rejection_rate[$i]), 2);
+                $rejection_rate[$i] = round(array_sum($rejection_rate[$i])/count($rejection_rate[$i]), 1);
             }else{
                 $rejection_rate[$i] = 0;
             }
