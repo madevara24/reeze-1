@@ -95,6 +95,7 @@ class RejectionController extends Controller
                 $rejection_rate[$i] = 0;
             }
         }
-        return $rejection_rate;
+
+        return response()->json(['success' => true, 'data' => $rejection_rate]);
     }
 }

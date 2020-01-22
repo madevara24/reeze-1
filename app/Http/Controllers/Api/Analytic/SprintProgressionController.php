@@ -11,7 +11,7 @@ use App\Model\CardLog;
 
 class SprintProgressionController extends Controller
 {
-    public function show($id){
+    public function getBurndown($id){
         //Get current project
         $project = Project::where('id', $id)->first();
 
@@ -118,6 +118,10 @@ class SprintProgressionController extends Controller
         }
 
         //return array($sprint_card_points, $ideal_burndown, $chart_dates);
-        return $sprint_burndown;
+        return response()->json(['success' => true, 'data' => $sprint_burndown]);
+    }
+
+    public function getProgression($id){
+
     }
 }

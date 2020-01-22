@@ -75,6 +75,6 @@ class DeliverabilityController extends Controller
             array_push($deliverability_rate, [$sprint_dates[$i][0]->format('d').'-'.$sprint_dates[$i][1]->format('d M'), $rate]);
         }
         
-        return $deliverability_rate;
+        return response()->json(['success' => true, 'data' => $deliverability_rate]);
     }
 }

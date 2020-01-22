@@ -51,6 +51,6 @@ class EstimationController extends Controller
 
         $estimated_sprints_left = (int)round($unfinished_cards_points/$velocity);
 
-        return array($velocity, $estimated_sprints_left);
+        return response()->json(['success' => true, 'data' => ['velocity' => $velocity, 'estimate' => $estimated_sprints_left]]);
     }
 }

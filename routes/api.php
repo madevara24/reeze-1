@@ -39,6 +39,14 @@ Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function(){
 
                 Route::post('{project_id}/card/{card_id}/create-branch', 'CardController@createGithubBranch');
                 Route::post('{project_id}/card/{card_id}/update-state', 'CardController@updateCardState');
+
+                Route::prefix('/{project_id}/analytic')->namespace('Analytic')->group(function(){
+                    Route::get('/sprint-progression', 'SprintProgressionController@getBurndown');
+                    Route::get('/deliverability', 'DeliverabilityController@show');
+                    Route::get('/rejection', 'RejectionController@show');
+                    Route::get('/task-lifecycle', 'TaskLifecycleController@show');
+                    Route::get('/estimation', 'EstimationController@show');
+                });
             });
         });
     });
