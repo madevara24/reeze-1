@@ -64,7 +64,6 @@ export default {
     this.getSprintProgression();
     this.getDeliverability();
     this.getTaskLifecycle();
-    this.getEstimation();
   },
   watch: {
     $route(to, from) {
