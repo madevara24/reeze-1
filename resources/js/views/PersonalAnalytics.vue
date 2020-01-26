@@ -50,15 +50,6 @@
                 </v-row>
               </v-card-text>
             </v-card>
-            <v-card flat class="px-3 mb-5 flex-grow-1">
-              <v-card-title>Estimated Sprints Required</v-card-title>
-              <v-card-text>
-                <v-row class="display-1 font-weight-medium">
-                  <v-col cols="2" class="indigo--text text-right">{{estimation.sprintEstimate}}</v-col>
-                  <v-col class="flex-grow-1">sprints left</v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
           </v-row>
         </v-col>
       </v-row>
@@ -81,7 +72,6 @@ export default {
       this.getSprintProgression();
       this.getDeliverability();
       this.getTaskLifecycle();
-      this.getEstimation();
     }
   },
   beforeUpdate(){
@@ -129,10 +119,6 @@ export default {
           pieHole: 0.4,
           colors: ['#dbdbdb','#f08000','#203e64','#629200','#a71f39']
         }
-      },
-      estimation: {
-        velocity: 0,
-        sprintEstimate: 0
       },
     }
   },
@@ -189,21 +175,6 @@ export default {
       for (let index = 0; index < data.length; index++) {
         this.deliverability.chartData[index + 1].push(data[index])
       }
-    },
-    getEstimation(){
-      console.log("View Analytics (method) : Get estimation")
-      let token = localStorage.getItem('token')
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      };
-      this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/estimation', {headers})
-        .then(response => (this.formatEstimation(response.data.data)))
-    },
-    formatEstimation(data){
-      this.estimation.velocity = data.velocity
-      this.estimation.sprintEstimate = data.estimate
     }
   }
 }
