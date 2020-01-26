@@ -39,19 +39,6 @@
             </v-card-text>
           </v-card>
         </v-col>
-        <v-col cols=12 xs=12>
-          <v-row justify="space-around">
-            <v-card flat class="px-3 mb-5 flex-grow-1">
-              <v-card-title>Project Velocity</v-card-title>
-              <v-card-text>
-                <v-row class="display-1 font-weight-medium">
-                  <v-col cols="2" class="indigo--text text-right">{{estimation.velocity}}</v-col>
-                  <v-col class="flex-grow-1">points per sprint</v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-row>
-        </v-col>
       </v-row>
 </template>
 
@@ -94,11 +81,6 @@ export default {
       deliverability:{
         chartData: [
           ['Iteration', 'Deliver Rate', 'Rejection Rate'],
-          // ['Iteration 1', 92, 12],
-          // ['Iteration 2', 88, 18],
-          // ['Iteration 3', 91, 8],
-          // ['Iteration 4', 96, 14],
-          // ['Current Iteration', 90, 9]
         ],
         chartOptions: {
           title: 'Deliverability',
@@ -174,7 +156,7 @@ export default {
       for (let index = 0; index < data.length; index++) {
         this.deliverability.chartData[index + 1].push(data[index])
       }
-    }
+    },
   }
 }
 </script>
