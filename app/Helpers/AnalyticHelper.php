@@ -4,6 +4,8 @@ namespace App\Helpers;
 
 use Carbon\Carbon;
 use App\Model\Project;
+use App\Model\Card;
+use App\Model\CardLog;
 
 class AnalyticHelper{
     
@@ -52,5 +54,15 @@ class AnalyticHelper{
         }
 
         return $array;
+    }
+
+    public function getCardsIds($card_ids, $states, $dates){
+        $cards = array_column(CardLog::whereIn('card_id', $card_ids)
+        ->whereIn('state', $states)
+        ->whereBetween('created_at', $dates)
+        ->groupBy('card_id')
+        ->get()->toArray(), 'card_id');
+
+        return $cards;
     }
 }

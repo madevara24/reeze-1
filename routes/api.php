@@ -41,8 +41,8 @@ Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function(){
                 Route::post('{project_id}/card/{card_id}/update-state', 'CardController@updateCardState');
 
                 Route::prefix('/{project_id}/analytic')->namespace('Analytic')->group(function(){
-                    Route::get('/sprint-progression', 'SprintProgressionController@getBurndown');
-                    Route::get('/deliverability', 'DeliverabilityController@show');
+                    Route::get('/sprint-progression', 'AnalyticController@burndown');
+                    Route::get('/deliverability', 'AnalyticController@deliverability');
                     Route::get('/rejection', 'RejectionController@show');
                     Route::get('/task-lifecycle', 'TaskLifecycleController@show');
                     Route::get('/estimation', 'EstimationController@show');
