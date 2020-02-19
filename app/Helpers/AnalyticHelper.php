@@ -56,12 +56,21 @@ class AnalyticHelper{
         return $array;
     }
 
+    public function getCardLogs($card_id, $states, $dates){
+        $card_logs = CardLog::where('card_id', $card_id)
+            ->whereIn('state', $states)
+            ->whereBetween('created_at', $dates)
+            ->get()->toArray();
+        
+        return $card_logs;
+    }
+
     public function getCardsIds($card_ids, $states, $dates){
         $cards = array_column(CardLog::whereIn('card_id', $card_ids)
-        ->whereIn('state', $states)
-        ->whereBetween('created_at', $dates)
-        ->groupBy('card_id')
-        ->get()->toArray(), 'card_id');
+            ->whereIn('state', $states)
+            ->whereBetween('created_at', $dates)
+            ->groupBy('card_id')
+            ->get()->toArray(), 'card_id');
 
         return $cards;
     }
