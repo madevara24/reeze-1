@@ -44,8 +44,8 @@ Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function(){
                     Route::get('/sprint-progression/{user_id?}', 'AnalyticController@sprintProgression');
                     Route::get('/deliverability/{user_id?}', 'AnalyticController@deliverability');
                     Route::get('/rejection/{user_id?}', 'AnalyticController@rejection');
-                    Route::get('/task-lifecycle', 'TaskLifecycleController@show');
-                    Route::get('/estimation', 'EstimationController@show');
+                    Route::get('/task-lifecycle/{user_id?}', 'AnalyticController@taskLifecycle');
+                    Route::get('/estimation', 'AnalyticController@estimate');
                 });
             });
         });
