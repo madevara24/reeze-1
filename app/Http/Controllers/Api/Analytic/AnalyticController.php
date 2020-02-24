@@ -13,6 +13,7 @@ use App\Model\CardLog;
 class AnalyticController extends Controller
 {
     public function chartDates($project_id){
+        $analytic_helper = new AnalyticHelper();
         $sprint_dates = $analytic_helper->getProjectSprintDates($project_id);
         $formated_dates = array();
         foreach ($sprint_dates as $sprint_date) {
