@@ -72,20 +72,17 @@ export default {
     console.log("View Analytics (created) : Selected Project ID " + this.$route.params.id)
     this.getSprintProgression();
     this.getDeliverability();
-    this.getTaskLifecycle();
-    this.getEstimation();
+    // this.getTaskLifecycle();
+    // this.getEstimation();
   },
   watch: {
     $route(to, from) {
       console.log("View Analytics (watch, route) : Selected Project ID " + this.$route.params.id)
       this.getSprintProgression();
       this.getDeliverability();
-      this.getTaskLifecycle();
-      this.getEstimation();
+      // this.getTaskLifecycle();
+      // this.getEstimation();
     }
-  },
-  beforeUpdate(){
-    
   },
   components:{
     GChart
@@ -95,7 +92,6 @@ export default {
       burndown: {
         chartData: [
           ['Day', 'Points Remaining', 'Ideal Burndown'],
-          
         ],
         chartOptions: {
           title: 'Burndown Chart',
@@ -141,7 +137,9 @@ export default {
       };
       this.axios
         .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/sprint-progression', {headers})
-        .then(response => (this.burndown.chartData = this.burndown.chartData.concat(response.data.data)));
+        .then((response) => {
+          this.burndown.chartData = this.burndown.chartData.concat(response.data.data);
+        });
     },
     getTaskLifecycle(){
       console.log("View Analytics (method) : Get task lifecycle")
@@ -162,28 +160,21 @@ export default {
         'Authorization': 'Bearer ' + token,
       };
       this.axios
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/formated-chart-dates', {headers})
+        .then(response => (this.formatDeliverability(response.data.data, null, null)));
+
+      this.axios
         .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/deliverability', {headers})
-        .then(response => (this.formatDeliverability(response.data.data)))
-    },
-    formatDeliverability(data){
-      this.deliverability.chartData = this.deliverability.chartData.concat(data);
-      this.getRejection();
-    },
-    getRejection(){
-      console.log("View Analytics (method) : Get rejection")
-      let token = localStorage.getItem('token')
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      };
+        .then(response => (this.formatDeliverability(null, response.data.data, null)));
+
       this.axios
         .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/rejection', {headers})
-        .then(response => (this.formatRejection(response.data.data)))
+        .then(response => (this.formatDeliverability(null, null, response.data.data)));
     },
-    formatRejection(data){
-      for (let index = 0; index < data.length; index++) {
-        this.deliverability.chartData[index + 1].push(data[index])
-      }
+    formatDeliverability(chartDate, deliverability, rejection){
+      console.table(chartDate);
+      console.table(deliverability);
+      console.table(rejection);
     },
     getEstimation(){
       console.log("View Analytics (method) : Get estimation")
