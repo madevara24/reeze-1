@@ -72,16 +72,16 @@ export default {
     console.log("View Analytics (created) : Selected Project ID " + this.$route.params.id)
     this.getSprintProgression();
     this.getDeliverability();
-    // this.getTaskLifecycle();
-    // this.getEstimation();
+    this.getTaskLifecycle();
+    this.getEstimation();
   },
   watch: {
     $route(to, from) {
       console.log("View Analytics (watch, route) : Selected Project ID " + this.$route.params.id)
       this.getSprintProgression();
       this.getDeliverability();
-      // this.getTaskLifecycle();
-      // this.getEstimation();
+      this.getTaskLifecycle();
+      this.getEstimation();
     }
   },
   components:{
