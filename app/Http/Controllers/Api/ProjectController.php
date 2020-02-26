@@ -250,15 +250,14 @@ class ProjectController extends Controller
                         if($statusMergeMaster['merge'] !== null)
                         {
                             $project->save();
-                            return response()->json(['errors' => $statusMergeMaster['message']], $statusMergeMaster['code']);
                         }
-                        return response()->json(['success' => true], 200);
                     }else{
                         return response()->json(['errors' => $statusMergeBranch['message']], $statusMergeBranch['code']);
                     }
                 }
             }
         }
+        return response()->json(['success' => true], 200);
     }
 
     public function show($project_id){

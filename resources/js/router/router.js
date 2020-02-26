@@ -10,6 +10,7 @@ import Login from '../views/Login.vue'
 import Board from '../views/Board.vue'
 import TeamAnalytics from '../views/TeamAnalytics.vue'
 import PersonalAnalytics from '../views/PersonalAnalytics.vue'
+import CreateProject from '../views/CreateProject.vue'
 
 import auth from './middleware/auth'
 import middlewarePipeline from './middlewarePipeline'
@@ -60,6 +61,11 @@ const router = new Router({
       path: '/login',
       name: 'login',
       component: Login,
+    },
+    {
+      path: '/create',
+      name: 'createProject',
+      component: CreateProject,
     },
   ]
 })
