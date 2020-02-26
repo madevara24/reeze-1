@@ -1,6 +1,13 @@
 <template>
       <v-row>
         <v-col cols=12 xs=12>
+          <v-card flat class="px-3 mb-n1">
+            <v-card-text>
+              
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols=12 xs=12>
           <v-card flat class="px-3 mb-5">
             <v-card-title>Sprint Progression</v-card-title>
             <v-card-text>
