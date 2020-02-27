@@ -44,7 +44,7 @@ class ProjectController extends Controller
         }
 
         $projectMembers = DB::table('project_members')
-                        ->select('users.name as username', 'users.email', 'projects.*')
+                        ->select('users.id as user_id','users.name as username', 'users.email', 'projects.*')
                         ->join('users', 'project_members.user_id', 'users.id')
                         ->join('projects', 'project_members.project_id', 'projects.id')
                         ->where('project_members.project_id', $project_id)
