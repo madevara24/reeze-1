@@ -7,9 +7,9 @@
     label="Select Person"
     return-object
     single-line
-    v-model="this.selectedProject"
-    :items="this.projectSelections"
-    v-on:change="selectProject"
+    v-model="this.selectedPerson"
+    :items="this.persontSelections"
+    v-on:change="selectPerson"
     item-text="name"
     item-value="id"
     ></v-select>
@@ -18,18 +18,18 @@
 <script>
 export default {
     created() {
-        console.log("Component ProjectSelecter (created) : Route name : " + this.$route.name)
-        this.getProjects()
-        this.getSelectedProject();
+        console.log("Component PersonSelecter (created) : Route name : " + this.$route.name)
+        this.getPerson()
+        this.getSelectedPerson();
     },
     data() {
         return {
-            projectSelections: null,
-            selectedProject: null,
+            persontSelections: null,
+            selectedPerson: null,
         }
     },
     methods: {
-        getProjects(){
+        getPerson(){
             let token = localStorage.getItem('token')
             const headers = {
                 'Content-Type': 'application/json',
@@ -37,24 +37,23 @@ export default {
                 };
 
             this.axios
-                .get('http://127.0.0.1:8000/api/v1/project', {headers})
-                .then(response => this.projectSelections = response.data.data)
+                .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/members', {headers})
+                .then(response => this.persontSelections = response.data.data)
         },
-        getSelectedProject(){
-            console.log("Component ProjectSelector (computed) : Fetch selected project data")
+        getSelectedPerson(){
+            console.log("Component PersonSelector (computed) : Fetch selected person data")
             let token = localStorage.getItem('token')
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token,
                 };
 
-            this.axios
-                .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id, {headers})
-                .then(response => this.selectedProject = response.data.data)
+            // this.axios
+            //     .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id, {headers})
+            //     .then(response => this.selectedPerson = response.data.data)
         },
-        selectProject(data){
-            let projectId = data.id
-            this.$router.push({ path: `/project/${projectId}/`+this.$route.name })
+        selectPerson(data){
+            
         }
     },
 }
