@@ -21,6 +21,9 @@ Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function(){
     Route::middleware('jwt.auth')->group(function(){
         Route::get('/list-repo', 'ProjectController@getListRepository');
         Route::post('/logout', 'ApiController@logout');
+        Route::prefix('/user')->group(function(){
+            Route::get('/{user_id}', 'UserController@show');
+        });
         Route::prefix('/project')->group(function(){
             Route::get('/', 'ProjectController@index');
             Route::post('/create', 'ProjectController@store');
