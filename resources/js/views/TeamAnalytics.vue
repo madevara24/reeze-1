@@ -69,7 +69,7 @@ import { GChart } from 'vue-google-charts'
 
 export default {
   created() {
-    console.log("View Analytics (created) : Selected Project ID " + this.$route.params.id)
+    console.log("View Analytics (created) : Selected Project ID " + this.$route.params.projectId)
     this.getSprintProgression();
     this.getDeliverability();
     this.getTaskLifecycle();
@@ -77,7 +77,7 @@ export default {
   },
   watch: {
     $route(to, from) {
-      console.log("View Analytics (watch, route) : Selected Project ID " + this.$route.params.id)
+      console.log("View Analytics (watch, route) : Selected Project ID " + this.$route.params.projectId)
       this.getSprintProgression();
       this.getDeliverability();
       this.getTaskLifecycle();
@@ -136,7 +136,7 @@ export default {
         'Authorization': 'Bearer ' + token,
       };
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/sprint-progression', {headers})
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/sprint-progression', {headers})
         .then((response) => {
           this.burndown.chartData = this.burndown.chartData.concat(response.data.data);
         });
@@ -149,7 +149,7 @@ export default {
         'Authorization': 'Bearer ' + token,
       };
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/task-lifecycle', {headers})
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/task-lifecycle', {headers})
         .then(response => (this.taskLifecycle.chartData = this.taskLifecycle.chartData.concat(response.data.data)))
     },
     getDeliverability(){
@@ -160,15 +160,15 @@ export default {
         'Authorization': 'Bearer ' + token,
       };
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/formated-chart-dates', {headers})
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/formated-chart-dates', {headers})
         .then((response) => {this.formatDeliverability(response.data.data, null, null)});
 
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/deliverability', {headers})
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/deliverability', {headers})
         .then((response) => {this.formatDeliverability(null, response.data.data, null)});
 
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/rejection', {headers})
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/rejection', {headers})
         .then((response) => {this.formatDeliverability(null, null, response.data.data)});
     },
     formatDeliverability(chartDate, deliverability, rejection){
@@ -202,7 +202,7 @@ export default {
         'Authorization': 'Bearer ' + token,
       };
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.id + '/analytic/estimation', {headers})
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/estimation', {headers})
         .then(response => (this.formatEstimation(response.data.data)))
     },
     formatEstimation(data){

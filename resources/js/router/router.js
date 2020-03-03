@@ -31,7 +31,7 @@ const router = new Router({
       }
     },
     {
-      path: '/project/:id',
+      path: '/project/:projectId',
       name: 'project',
       component: Project,
       meta: { 
@@ -51,7 +51,7 @@ const router = new Router({
           component: TeamAnalytics
         },
         {
-          path: 'personalAnalytics',
+          path: 'personalAnalytics/:personId?',
           name: 'personalAnalytics',
           component: PersonalAnalytics
         }
