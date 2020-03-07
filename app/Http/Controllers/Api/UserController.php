@@ -16,7 +16,9 @@ class UserController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        $user_data = User::where('id', $user_id)->first();
+        $user_data = DB::table('users')
+            ->select('id as user_id','name as username', 'email','github_id')
+            ->where('id', $user_id)->first();
         return response()->json(['success' => true, 'data' => $user_data]);
     }
 }
