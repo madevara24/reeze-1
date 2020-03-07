@@ -1,17 +1,17 @@
 <template>
     <v-select
-    class="pt-2"
+    class="pt-2 mb-n2"
     dense
     solo
-    prepend-icon="folder"
+    prepend-icon="person"
     label="Select Person"
     return-object
     single-line
     v-model="this.selectedPerson"
     :items="this.personSelections"
     v-on:change="selectPerson"
-    item-text="name"
-    item-value="id"
+    item-text="username"
+    item-value="user_id"
     ></v-select>
 </template>
 
@@ -20,6 +20,7 @@ export default {
     created() {
         console.log("Component PersonSelecter (created) : Route name : " + this.$route.name)
         this.getPerson()
+        this.getSelectedPerson()
     },
     data() {
         return {
@@ -40,16 +41,19 @@ export default {
                 .then(response => this.personSelections = response.data.data)
         },
         getSelectedPerson(){
-            console.log("Component PersonSelector (computed) : Fetch selected person data")
-            let token = localStorage.getItem('token')
-            const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-                };
+            console.log(this.$route.params.personId);
+            if(this.$route.params.personId){
+                console.log("Component PersonSelector (computed) : Fetch selected person data")
+                let token = localStorage.getItem('token')
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                    };
 
-            // this.axios
-            //     .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.projectId, {headers})
-            //     .then(response => this.selectedPerson = response.data.data)
+                this.axios
+                    .get('http://127.0.0.1:8000/api/v1/user/' + this.$route.params.personId, {headers})
+                    .then(response => this.selectedPerson = response.data.data)
+            }
         },
         selectPerson(data){
             let personId = data.id

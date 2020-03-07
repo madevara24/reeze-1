@@ -3,7 +3,11 @@
         <v-col cols=12 xs=12>
           <v-card flat class="px-3 mb-n1">
             <v-card-text>
-              <PersonSelector />
+              <v-row>
+                <v-col cols=12 sm=4>
+                  <PersonSelector />
+                </v-col>
+              </v-row>
             </v-card-text>
           </v-card>
         </v-col>
