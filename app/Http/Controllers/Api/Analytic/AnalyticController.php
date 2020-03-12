@@ -12,7 +12,17 @@ use App\Model\CardLog;
 
 class AnalyticController extends Controller
 {
-    public function chartDates($project_id){
+    public function currentSprintDates($project_id){
+        $analytic_helper = new AnalyticHelper();
+        $sprint_dates = $analytic_helper->getProjectCurrentSprintDates($project_id);
+        $formated_dates = array();
+        foreach ($sprint_dates as $sprint_date) {
+            array_push($formated_dates, $sprint_date->format('d M'));
+        }
+        return response()->json(['success' => true, 'data' => $formated_dates]);
+    }
+
+    public function sprintDates($project_id){
         $analytic_helper = new AnalyticHelper();
         $sprint_dates = $analytic_helper->getProjectSprintDates($project_id);
         $formated_dates = array();
@@ -89,7 +99,7 @@ class AnalyticController extends Controller
         $sprint_burndown = array();
 
         for ($i=0; $i < $project['sprint_duration']; $i++) {
-            $var = array($chart_dates[$i], $sprint_card_points[$i], $ideal_burndown[$i]);
+            $var = array($sprint_card_points[$i], $ideal_burndown[$i]);
             array_push( $sprint_burndown, $var);
         }
 

@@ -96,6 +96,7 @@ export default {
         chartOptions: {
           title: 'Burndown Chart',
           subtitle: 'Points Remaining',
+          colors: ['#1e88e5','#e53935'],
         }
       },
       deliverability:{
@@ -108,7 +109,7 @@ export default {
             maxValue : 100,
             minValue : 0
           },
-          colors: ['blue','red'],
+          colors: ['#1e88e5','#e53935'],
         }
       },
       taskLifecycle:{
@@ -118,7 +119,7 @@ export default {
         chartOptions: {
           title: 'Task Lifecycle',
           pieHole: 0.4,
-          colors: ['#dbdbdb','#f08000','#203e64','#629200','#a71f39']
+          colors: ['#bdbdbd','#ffd600','#2962ff','#00c853','#dd2c00']
         }
       },
       estimation: {
@@ -136,10 +137,29 @@ export default {
         'Authorization': 'Bearer ' + token,
       };
       this.axios
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/current-sprint-dates', {headers})
+        .then((response) => {this.formatSprintProgression(response.data.data, null)});
+        
+      this.axios
         .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/sprint-progression', {headers})
-        .then((response) => {
-          this.burndown.chartData = this.burndown.chartData.concat(response.data.data);
-        });
+        .then((response) => {this.formatSprintProgression(null, response.data.data)});
+    },
+    formatSprintProgression(chartDate, burndown){
+      if(chartDate){
+        if(this.burndown.chartData.length === 1){
+          chartDate.forEach(element => {this.burndown.chartData.push(new Array(element, null, null));});
+        }else{
+          chartDate.forEach((element, index) => {this.burndown.chartData[index + 1].splice(0, 1, element);});
+        }
+      }
+      if(burndown){
+        if(this.burndown.chartData.length === 1){
+          burndown.forEach(element => {this.burndown.chartData.push(new Array(null, element[0], element[1]));});
+        }else{
+          burndown.forEach((element, index) => {this.burndown.chartData[index + 1].splice(1, 1, element[0]);});
+          burndown.forEach((element, index) => {this.burndown.chartData[index + 1].splice(2, 1, element[1]);});
+        }
+      }
     },
     getTaskLifecycle(){
       console.log("View Analytics (method) : Get task lifecycle")
@@ -160,7 +180,7 @@ export default {
         'Authorization': 'Bearer ' + token,
       };
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/formated-chart-dates', {headers})
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/sprint-dates', {headers})
         .then((response) => {this.formatDeliverability(response.data.data, null, null)});
 
       this.axios

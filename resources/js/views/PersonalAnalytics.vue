@@ -61,15 +61,15 @@ export default {
   created() {
     console.log("View Analytics (created) : Selected Project ID " + this.$route.params.projectId)
     this.getSprintProgression();
-    this.getDeliverability();
-    this.getTaskLifecycle();
+    // this.getDeliverability();
+    // this.getTaskLifecycle();
   },
   watch: {
     $route(to, from) {
       console.log("View Analytics (watch, route) : Selected Project ID " + this.$route.params.projectId)
       this.getSprintProgression();
-      this.getDeliverability();
-      this.getTaskLifecycle();
+      // this.getDeliverability();
+      // this.getTaskLifecycle();
     }
   },
   components:{
@@ -80,16 +80,16 @@ export default {
     return {
       burndown: {
         chartData: [
-          ['Day', 'Points Remaining', 'Ideal Burndown'],
         ],
         chartOptions: {
           title: 'Burndown Chart',
           subtitle: 'Points Remaining',
+          colors: ['#1e88e5','#e53935','#6ab7ff','#ff6f60'],
         }
       },
       deliverability:{
         chartData: [
-          ['Iteration', 'Deliver Rate', 'Rejection Rate'],
+          ['Iteration', 'Team Deliver Rate', 'Personal Deliver Rate', 'Team Rejection Rate', 'Personal Rejection Rate'],
         ],
         chartOptions: {
           title: 'Deliverability',
@@ -97,7 +97,7 @@ export default {
             maxValue : 100,
             minValue : 0
           },
-          colors: ['blue','red'],
+          colors: ['#1e88e5','#e53935','#6ab7ff','#ff6f60'],
         }
       },
       taskLifecycle:{
@@ -120,11 +120,48 @@ export default {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       };
+      if(this.$route.params.personId){
+        this.burndown.chartData.push(['Day', 'Team Points Remaining', 'Team Ideal Burndown', 'Personal Points Remaining', 'Personal Ideal Burndown']);
+        
+        this.axios
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/sprint-progression/' + this.$route.params.personId, {headers})
+        .then((response) => {this.formatSprintProgression(null, null, response.data.data)});
+      }
+      else{
+        this.burndown.chartData.push(['Day', 'Points Remaining', 'Ideal Burndown']);
+      }
+
+      this.axios
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/current-sprint-dates', {headers})
+        .then((response) => {this.formatSprintProgression(response.data.data, null, null)});
+        
       this.axios
         .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/sprint-progression', {headers})
-        .then((response) => {
-          this.burndown.chartData = this.burndown.chartData.concat(response.data.data);
-        });
+        .then((response) => {this.formatSprintProgression(null, response.data.data, null)});
+    },
+    formatSprintProgression(chartDate, teamBurndown, personalBurndown){
+      if(chartDate){
+        if(this.burndown.chartData.length === 1){
+          chartDate.forEach(element => {this.burndown.chartData.push(new Array(element, null, null));});
+        }else{
+          chartDate.forEach((element, index) => {this.burndown.chartData[index + 1].splice(0, 1, element);});
+        }
+      }
+      if(teamBurndown){
+        if(this.burndown.chartData.length === 1){
+          teamBurndown.forEach(element => {this.burndown.chartData.push(new Array(null, element[0], element[1]));});
+        }else{
+          teamBurndown.forEach((element, index) => {this.burndown.chartData[index + 1].splice(1, 1, element[0]);});
+          teamBurndown.forEach((element, index) => {this.burndown.chartData[index + 1].splice(2, 1, element[1]);});
+        }
+      }
+      if(personalBurndown){
+        if(this.burndown.chartData.length === 1){
+          personalBurndown.forEach(element => {this.burndown.chartData.push(new Array(null, null, null, element[0], element[1]));});
+        }else{
+          personalBurndown.forEach((element, index) => {this.burndown.chartData[index + 1].push(element);console.log('element :', element);});
+        }
+      }
     },
     getTaskLifecycle(){
       console.log("View Analytics (method) : Get task lifecycle")
@@ -156,7 +193,7 @@ export default {
         .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/rejection', {headers})
         .then((response) => {this.formatDeliverability(null, null, response.data.data)});
     },
-    formatDeliverability(chartDate, deliverability, rejection){
+    formatDeliverability(chartDate, teamDeliverability, teamRejection, personDeliverability, personRejection){
       if(chartDate){
         if(this.deliverability.chartData.length === 1){
           chartDate.forEach(element => {this.deliverability.chartData.push(new Array(element, null, null));});

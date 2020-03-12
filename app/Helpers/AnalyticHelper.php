@@ -48,6 +48,28 @@ class AnalyticHelper{
         return $sprint_dates;
     }
 
+    public function getProjectCurrentSprintDates($project_id){
+        $sprint_dates = array();
+
+        //Get the project
+        $project = Project::where('id', $project_id)->first();
+
+        //Set fisrt sprint start and end date
+        $date = new Carbon();
+        $date->setWeekStartsAt($project['sprint_start_day']);
+        $date->setWeekEndsAt(
+            $project['sprint_start_day'] == 0 ? 6 : $project['sprint_start_day'] -1
+        );
+        $date->startOfWeek();
+
+        for ($i=0; $i < $project['sprint_duration']; $i++) { 
+            array_push($sprint_dates, new Carbon($date));
+            $date->addDay();
+        }
+
+        return $sprint_dates;
+    }
+
     public function convertArrayStringToArrayInt($array){
         foreach ($array as $key => $value) {
             $array[$key] = (int)$value;
