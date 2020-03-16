@@ -61,15 +61,15 @@ export default {
   created() {
     console.log("View Analytics (created) : Selected Project ID " + this.$route.params.projectId)
     this.getSprintProgression();
-    // this.getDeliverability();
-    // this.getTaskLifecycle();
+    this.getDeliverability();
+    this.getTaskLifecycle();
   },
   watch: {
     $route(to, from) {
       console.log("View Analytics (watch, route) : Selected Project ID " + this.$route.params.projectId)
       this.getSprintProgression();
-      // this.getDeliverability();
-      // this.getTaskLifecycle();
+      this.getDeliverability();
+      this.getTaskLifecycle();
     }
   },
   components:{
@@ -79,18 +79,18 @@ export default {
   data() {
     return {
       burndown: {
-        chartData: [
-        ],
+        chartData: [],
         chartOptions: {
           title: 'Burndown Chart',
           subtitle: 'Points Remaining',
           colors: ['#1e88e5','#e53935','#6ab7ff','#ff6f60'],
+          vAxis : {
+            minValue : 0
+          },
         }
       },
       deliverability:{
-        chartData: [
-          ['Iteration', 'Team Deliver Rate', 'Personal Deliver Rate', 'Team Rejection Rate', 'Personal Rejection Rate'],
-        ],
+        chartData: [],
         chartOptions: {
           title: 'Deliverability',
           vAxis : {
@@ -159,7 +159,7 @@ export default {
         if(this.burndown.chartData.length === 1){
           personalBurndown.forEach(element => {this.burndown.chartData.push(new Array(null, null, null, element[0], element[1]));});
         }else{
-          personalBurndown.forEach((element, index) => {this.burndown.chartData[index + 1].push(element);console.log('element :', element);});
+          personalBurndown.forEach((element, index) => {this.burndown.chartData[index + 1].push(element);});
         }
       }
     },
@@ -181,19 +181,35 @@ export default {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       };
+
+      if(this.$route.params.personId){
+        this.deliverability.chartData.push(['Iteration', 'Team Deliver Rate', 'Team Rejection Rate', 'Personal Deliver Rate', 'Personal Rejection Rate'],);
+        
+        this.axios
+          .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/deliverability/' + this.$route.params.personId, {headers})
+          .then((response) => {this.formatDeliverability(null, null, null, response.data.data, null)});
+
+        this.axios
+          .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/rejection/' + this.$route.params.personId, {headers})
+          .then((response) => {this.formatDeliverability(null, null, null, null, response.data.data)});
+      }
+      else{
+        this.deliverability.chartData.push(['Iteration', 'Team Deliver Rate', 'Team Rejection Rate']);
+      }
+
       this.axios
         .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/formated-chart-dates', {headers})
-        .then((response) => {this.formatDeliverability(response.data.data, null, null)});
+        .then((response) => {this.formatDeliverability(response.data.data, null, null, null, null)});
 
       this.axios
         .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/deliverability', {headers})
-        .then((response) => {this.formatDeliverability(null, response.data.data, null)});
+        .then((response) => {this.formatDeliverability(null, response.data.data, null, null, null)});
 
       this.axios
         .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/rejection', {headers})
-        .then((response) => {this.formatDeliverability(null, null, response.data.data)});
+        .then((response) => {this.formatDeliverability(null, null, response.data.data, null, null)});
     },
-    formatDeliverability(chartDate, teamDeliverability, teamRejection, personDeliverability, personRejection){
+    formatDeliverability(chartDate, teamDeliverability, teamRejection, personalDeliverability, personalRejection){
       if(chartDate){
         if(this.deliverability.chartData.length === 1){
           chartDate.forEach(element => {this.deliverability.chartData.push(new Array(element, null, null));});
@@ -201,18 +217,40 @@ export default {
           chartDate.forEach((element, index) => {this.deliverability.chartData[index + 1].splice(0, 1, element);});
         }
       }
-      if(deliverability){
+      if(teamDeliverability){
         if(this.deliverability.chartData.length === 1){
-          deliverability.forEach(element => {this.deliverability.chartData.push(new Array(null, element, null));});
+          teamDeliverability.forEach(element => {this.deliverability.chartData.push(new Array(null, element, null));});
         }else{
-          deliverability.forEach((element, index) => {this.deliverability.chartData[index + 1].splice(1, 1, element);});
+          teamDeliverability.forEach((element, index) => {this.deliverability.chartData[index + 1].splice(1, 1, element);});
         }
       }
-      if(rejection){
+      if(teamRejection){
         if(this.deliverability.chartData.length === 1){
-          rejection.forEach(element => {this.deliverability.chartData.push(new Array(null, null, element));});
+          teamRejection.forEach(element => {this.deliverability.chartData.push(new Array(null, null, element));});
         }else{
-          rejection.forEach((element, index) => {this.deliverability.chartData[index + 1].splice(2, 1, element);});
+          teamRejection.forEach((element, index) => {this.deliverability.chartData[index + 1].splice(2, 1, element);});
+        }
+      }
+      if(personalDeliverability){
+        if(this.deliverability.chartData.length === 1){
+          personalDeliverability.forEach(element => {this.deliverability.chartData.push(new Array(null, null, null, element, null));});
+        }else{
+          if(this.deliverability.chartData[1].length <5){
+            personalDeliverability.forEach((element, index) => {this.deliverability.chartData[index + 1].push(element, null);});
+          }else{
+            personalDeliverability.forEach((element, index) => {this.deliverability.chartData[index + 1].splice(3, 1, element);});
+          }
+        }
+      }
+      if(personalRejection){
+        if(this.deliverability.chartData.length === 1){
+          personalRejection.forEach(element => {this.deliverability.chartData.push(new Array(null, null, null, element, element));});
+        }else{
+          if(this.deliverability.chartData[1].length <5){
+            personalRejection.forEach((element, index) => {this.deliverability.chartData[index + 1].push(null, element);});
+          }else{
+            personalRejection.forEach((element, index) => {this.deliverability.chartData[index + 1].splice(4, 1, element);});
+          }
         }
       }
     }
