@@ -41,7 +41,6 @@ export default {
                 .then(response => this.personSelections = response.data.data)
         },
         getSelectedPerson(){
-            console.log(this.$route.params.personId);
             if(this.$route.params.personId){
                 console.log("Component PersonSelector (computed) : Fetch selected person data")
                 let token = localStorage.getItem('token')
