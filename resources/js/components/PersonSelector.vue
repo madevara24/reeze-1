@@ -7,7 +7,7 @@
     label="Select Person"
     return-object
     single-line
-    v-model="this.selectedPerson"
+    :value=this.selectedPerson
     :items="this.personSelections"
     v-on:change="selectPerson"
     item-text="username"
@@ -55,12 +55,9 @@ export default {
             }
         },
         selectPerson(data){
-            let personId = data.id
+            let personId = data.user_id
             this.$router.push({ path: `/project/${this.$route.params.projectId}/` + this.$route.name + `/${personId}/` })
         }
-    },
-    computed: {
-        
     }
 }
 </script>

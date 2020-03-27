@@ -59,14 +59,14 @@ import PersonSelector from '../components/PersonSelector'
 
 export default {
   created() {
-    console.log("View Analytics (created) : Selected Project ID " + this.$route.params.projectId)
+    console.log("View Analytics (created) : Selected Project ID " + this.$route.params.projectId +"/"+ this.$route.params.personId)
     this.getSprintProgression();
     this.getDeliverability();
     this.getTaskLifecycle();
   },
   watch: {
     $route(to, from) {
-      console.log("View Analytics (watch, route) : Selected Project ID " + this.$route.params.projectId)
+      console.log("View Analytics (watch, route) : Selected Project ID " + this.$route.params.projectId +"/"+ this.$route.params.personId)
       this.getSprintProgression();
       this.getDeliverability();
       this.getTaskLifecycle();
@@ -114,12 +114,15 @@ export default {
   },
   methods:{
     getSprintProgression(){
-      console.log("View Analytics (method) : Get sprint progression")
+      console.log("View Analytics (method) : Get sprint progression " + this.$route.params.projectId +"/"+ this.$route.params.personId)
       let token = localStorage.getItem('token')
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       };
+
+      this.burndown.chartData = []
+
       if(this.$route.params.personId){
         this.burndown.chartData.push(['Day', 'Team Points Remaining', 'Team Ideal Burndown', 'Personal Points Remaining', 'Personal Ideal Burndown']);
         
@@ -134,7 +137,7 @@ export default {
       this.axios
         .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/current-sprint-dates', {headers})
         .then((response) => {this.formatSprintProgression(response.data.data, null, null)});
-        
+      
       this.axios
         .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/sprint-progression', {headers})
         .then((response) => {this.formatSprintProgression(null, response.data.data, null)});
@@ -164,23 +167,28 @@ export default {
       }
     },
     getTaskLifecycle(){
-      console.log("View Analytics (method) : Get task lifecycle")
+      console.log("View Analytics (method) : Get task lifecycle " + this.$route.params.projectId +"/"+ this.$route.params.personId)
       let token = localStorage.getItem('token')
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       };
+
+      this.taskLifecycle.chartData = [['State', 'Avg. Hours']]
+
       this.axios
         .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/task-lifecycle', {headers})
         .then(response => (this.taskLifecycle.chartData = this.taskLifecycle.chartData.concat(response.data.data)))
     },
     getDeliverability(){
-      console.log("View Analytics (method) : Get deliverability")
+      console.log("View Analytics (method) : Get deliverability " + this.$route.params.projectId +"/"+ this.$route.params.personId)
       let token = localStorage.getItem('token')
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       };
+
+      this.deliverability.chartData = []
 
       if(this.$route.params.personId){
         this.deliverability.chartData.push(['Iteration', 'Team Deliver Rate', 'Team Rejection Rate', 'Personal Deliver Rate', 'Personal Rejection Rate'],);
