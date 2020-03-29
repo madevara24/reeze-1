@@ -7,7 +7,7 @@
     label="Select Project"
     return-object
     single-line
-    v-model="this.selectedProject"
+    :value="this.selectedProject"
     :items="this.projectSelections"
     v-on:change="selectProject"
     item-text="name"

@@ -35,7 +35,7 @@ export default {
   methods: {
     selectProject(id){
       console.log("Component DashboardProjectCard (methods) : Clicked Project ID " + this.projectData.id)
-      this.$router.push({ name: 'board', params: { id } })
+      this.$router.push({ name: 'board', params: { projectId: id } })
     }
   },
 }
