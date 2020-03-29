@@ -1,12 +1,19 @@
 <template>
   <div>
     <v-row class="black">
-      <v-col cols="12" sm="4" class="py-0 px-3  grey">
+      <v-col cols="12" sm="4" class="py-0 px-3 grey">
         <v-row>
           <BoardColumnHeader :headerData="iceboxColumn" />
         </v-row>
-        <v-row>
-          <draggable class="list-group" :list="list1" group="card" @change="changeState">
+        <draggable
+          :list="list1"
+          group="card"
+          v-bind="dragOptions"
+          @change="changeState"
+          @start="drag = true"
+          @end="drag = false"
+        >
+          <transition-group tag="div" class="list-group" type="transition" :name="!drag ? 'flip-list' : null">
             <v-card class="my-1 mx-2" flat v-for="(element, index) in list1" :key="element.name">
               <v-list-item three-line>
                 <v-list-item-content>
@@ -23,15 +30,22 @@
                 <v-btn text>Button</v-btn>
               </v-card-actions>
             </v-card>
-          </draggable>
-        </v-row>
+          </transition-group>
+        </draggable>
       </v-col>
-      <v-col cols="12" sm="4" class="py-0 px-3  grey">
+      <v-col cols="12" sm="4" class="py-0 px-3 grey">
         <v-row>
           <BoardColumnHeader :headerData="backlogColumn" />
         </v-row>
-        <v-row>
-          <draggable class="list-group" :list="list2" group="card" @change="changeState">
+        <draggable
+          :list="list2"
+          group="card"
+          v-bind="dragOptions"
+          @change="changeState"
+          @start="drag = true"
+          @end="drag = false"
+        >
+          <transition-group tag="div" class="list-group" type="transition" :name="!drag ? 'flip-list' : null">
             <v-card class="my-1 mx-2" flat v-for="(element, index) in list2" :key="element.name">
               <v-list-item three-line>
                 <v-list-item-content>
@@ -48,15 +62,22 @@
                 <v-btn text>Button</v-btn>
               </v-card-actions>
             </v-card>
-          </draggable>
-        </v-row>
+          </transition-group>
+        </draggable>
       </v-col>
-      <v-col cols="12" sm="4" class="py-0 px-3  grey">
+      <v-col cols="12" sm="4" class="py-0 px-3 grey">
         <v-row>
           <BoardColumnHeader :headerData="doneColumn" />
         </v-row>
-        <v-row>
-          <draggable class="list-group" :list="list3" group="card" @change="changeState">
+        <draggable
+          :list="list3"
+          group="card"
+          v-bind="dragOptions"
+          @change="changeState"
+          @start="drag = true"
+          @end="drag = false"
+        >
+          <transition-group tag="div" class="list-group" type="transition" :name="!drag ? 'flip-list' : null">
             <v-card class="my-1 mx-2" flat v-for="(element, index) in list3" :key="element.name">
               <v-list-item three-line>
                 <v-list-item-content>
@@ -73,8 +94,8 @@
                 <v-btn text>Button</v-btn>
               </v-card-actions>
             </v-card>
-          </draggable>
-        </v-row>
+          </transition-group>
+        </draggable>
       </v-col>
     </v-row>
   </div>
@@ -101,6 +122,7 @@ export default {
         title: "Done"
       },
       cards: null,
+      drag: false,
       list1: [
         { name: "John", id: 1 },
         { name: "Joao", id: 2 },
@@ -123,6 +145,16 @@ export default {
         { name: "Boii", id: 5 }
       ]
     };
+  },
+  computed: {
+    dragOptions() {
+      return {
+        animation: 200,
+        group: "description",
+        disabled: false,
+        ghostClass: "ghost"
+      };
+    }
   },
   methods: {
     getCards() {
@@ -154,3 +186,9 @@ export default {
   }
 };
 </script>
+
+<style>
+.list-group {
+  min-height: 500px;
+}
+</style>
