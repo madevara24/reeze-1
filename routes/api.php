@@ -51,6 +51,7 @@ Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function(){
                     Route::get('/rejection/{user_id?}', 'AnalyticController@rejection');
                     Route::get('/task-lifecycle/{user_id?}', 'AnalyticController@taskLifecycle');
                     Route::get('/estimation', 'AnalyticController@estimate');
+                    Route::get('/card-timeline/{user_id?}', 'AnalyticController@cardTimeline');
                 });
             });
         });
