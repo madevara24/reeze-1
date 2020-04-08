@@ -39,6 +39,20 @@
         </v-col>
         <v-col cols=12 xs=12>
           <v-card flat class="px-3 mb-5">
+            <v-card-title>Card Timeline</v-card-title>
+            <v-card-text>
+              <GChart
+                :settings="{ packages: ['timeline'] }"
+                style="height: 400px;"
+                type="Timeline"
+                :data="cardTimeline.chartData"
+                :option="cardTimeline.chartOptions"
+              />
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols=12 xs=12>
+          <v-card flat class="px-3 mb-5">
             <v-card-title>Task Lifecycle</v-card-title>
             <v-card-text>
               <GChart
@@ -63,6 +77,7 @@ export default {
     this.getSprintProgression();
     this.getDeliverability();
     this.getTaskLifecycle();
+    this.getCardTimeline();
   },
   watch: {
     $route(to, from) {
@@ -70,6 +85,7 @@ export default {
       this.getSprintProgression();
       this.getDeliverability();
       this.getTaskLifecycle();
+      this.getCardTimeline();
     }
   },
   components:{
@@ -98,6 +114,32 @@ export default {
             minValue : 0
           },
           colors: ['#1e88e5','#e53935','#6ab7ff','#ff6f60'],
+        }
+      },
+      cardTimeline:{
+        chartData: [
+          [
+            { type: 'string', id: 'Role' },{ type: 'string', id: 'Name' },{ type: 'string', id: 'style', role: 'style' },{ type: 'date', id: 'Start' },{ type: 'date', id: 'End' }
+          ],
+          ['#51 - Create login API for users', 'Planned', '#dbdbdb', new Date(2020, 3, 30, 9, 3, 8), new Date(2020, 3, 30, 9, 15, 17)],
+          ['#51 - Create login API for users', 'Started', '#f08000', new Date(2020, 3, 30, 9, 15, 17), new Date(2020, 4, 2, 14, 36, 30)],
+          ['#51 - Create login API for users', 'Finished', '#203e64', new Date(2020, 4, 2, 14, 36, 30), new Date(2020, 4, 2, 14, 48, 12)],
+          ['#51 - Create login API for users', 'Accepted', '#629200', new Date(2020, 4, 2, 14, 48, 12), new Date(2020, 4, 5, 9, 43, 5)],
+          ['#52 - Expand search filter options', 'Planned', '#dbdbdb',new Date(2020, 3, 30, 9, 5, 12), new Date(2020, 3, 30, 9, 22, 44)],
+          ['#52 - Expand search filter options', 'Started', '#f08000',new Date(2020, 3, 30, 9, 22, 44), new Date(2020, 4, 1, 17, 49, 1)],
+          ['#52 - Expand search filter options', 'Finished', '#203e64',new Date(2020, 4, 1, 17, 49, 1), new Date(2020, 4, 2, 10, 12, 25)],
+          ['#52 - Expand search filter options', 'Accepted', '#629200',new Date(2020, 4, 2, 10, 12, 25), new Date(2020, 4, 5, 9, 43, 5)]
+        ],
+        chartOptions: {
+          title: 'Card Timeline',
+          singleColor: true,
+          width: 500,
+          timeline: {
+            colorByRowLabel: true,
+            singleColor: true,
+          },
+          // colors: ['#cbb69d', '#603913', '#c69c6e'],
+          //colors: ['#dbdbdb','#f08000','#203e64','#629200']
         }
       },
       taskLifecycle:{
@@ -261,6 +303,40 @@ export default {
           }
         }
       }
+    },
+    getCardTimeline(){
+      // var data = new google.visualization.DataTable();
+      // data.addColumn({ type: 'string', id: 'Task' });
+      // data.addColumn({ type: 'string', id: 'State' });
+      // data.addColumn({ type: 'string', id: 'style', role: 'style' });
+      // data.addColumn({ type: 'date', id: 'Start' });
+      // data.addColumn({ type: 'date', id: 'End' });
+
+      // data.addRows(
+      //     ['#51 - Create login API for users', 'Planned', '#dbdbdb', new Date(2020, 3, 30, 9, 3, 8), new Date(2020, 3, 30, 9, 15, 17)],
+      //     ['#51 - Create login API for users', 'Started', '#f08000', new Date(2020, 3, 30, 9, 15, 17), new Date(2020, 4, 2, 14, 36, 30)],
+      //     ['#51 - Create login API for users', 'Finished', '#203e64', new Date(2020, 4, 2, 14, 36, 30), new Date(2020, 4, 2, 14, 48, 12)],
+      //     ['#51 - Create login API for users', 'Accepted', '#629200', new Date(2020, 4, 2, 14, 48, 12), new Date(2020, 4, 5, 9, 43, 5)],
+
+      //     // ['#52 - Extend chart detail on team analytic', 'Planned', new Date(2020, 3, 30, 9, 3, 8), new Date(2020, 3, 30, 9, 15, 17)],
+      //     // ['#52 - Extend chart detail on team analytic', 'Started', new Date(2020, 3, 30, 9, 15, 17), new Date(2020, 4, 2, 14, 36, 30)],
+      //     // ['#52 - Extend chart detail on team analytic', 'Finished', new Date(2020, 4, 2, 14, 36, 30), new Date(2020, 4, 2, 14, 48, 12)],
+      //     // ['#52 - Extend chart detail on team analytic', 'Accepted', new Date(2020, 4, 2, 14, 48, 12), new Date(2020, 4, 5, 9, 43, 5)],
+      // )
+    },
+    onTimelineReady(chart, google){
+      // var dataTable = new google.visualization.DataTable();
+      // dataTable.addColumn({ type: 'string', id: 'Card' });
+      // dataTable.addColumn({ type: 'string', id: 'State' });
+      // dataTable.addColumn({ type: 'string', id: 'style', role: 'style' });
+      // dataTable.addColumn({ type: 'date', id: 'Start' });
+      // dataTable.addColumn({ type: 'date', id: 'End' });
+      // dataTable.addRows([
+      //   ['#51 - Create login API for users', 'Planned', '#dbdbdb', new Date(2020, 3, 30, 9, 3, 8), new Date(2020, 3, 30, 9, 15, 17)],
+      //   ['#51 - Create login API for users', 'Started', '#f08000', new Date(2020, 3, 30, 9, 15, 17), new Date(2020, 4, 2, 14, 36, 30)],
+      //   ['#51 - Create login API for users', 'Finished', '#203e64', new Date(2020, 4, 2, 14, 36, 30), new Date(2020, 4, 2, 14, 48, 12)],
+      //   ['#51 - Create login API for users', 'Accepted', '#629200', new Date(2020, 4, 2, 14, 48, 12), new Date(2020, 4, 5, 9, 43, 5)]]);
+      // chart.draw(dataTable);
     }
   }
 }
