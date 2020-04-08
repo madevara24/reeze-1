@@ -366,4 +366,38 @@ class AnalyticController extends Controller
 
         return response()->json(['success' => true, 'data' => ['velocity' => $velocity, 'estimate' => $estimated_sprints_left]]);
     }
+
+    public function cardTimeline($project_id, $user_id = null){
+        $analytic_helper = new AnalyticHelper();
+
+        //Get current project
+        $project = Project::where('id', $project_id)->first();
+
+        //Checks if this request is for whole project or for single user, determines the analyzed cards
+        if ($user_id) {
+            $project_card_ids = Card::where([['project_id', $project_id],['owner', $user_id]])->pluck('id')->toArray();
+        }else {
+            $project_card_ids = Card::where('project_id', $project_id)->pluck('id')->toArray();
+        }
+
+        //Get sprint dates for the last 5 sprints
+        $sprint_dates = $analytic_helper->getProjectSprintDates($project['id']);
+
+        //Get the ids of the cards that have activity
+        $card_ids = $analytic_helper->getCardsIds(
+            $project_card_ids, ['planned','started','finished','accepted','rejected','released'], [$sprint_dates[count($sprint_dates) - 1][0], $sprint_dates[count($sprint_dates) - 1][1]]);
+        
+        $data = [];
+
+        foreach ($card_ids as $card_id) {
+            $card_info = Card::where('id', $card_id)->get()->toArray();
+            $card_logs = $analytic_helper->getCardLogs(
+                $card_id, ['planned','started','finished','accepted','rejected','released'], [$sprint_dates[count($sprint_dates) - 1][0], $sprint_dates[count($sprint_dates) - 1][1]]);
+            
+            dd($card_info, $card_logs);
+            array_push($data, $card_logs);
+        }
+
+        return response()->json(['success' => true, 'data' => $data]);
+    }
 }
