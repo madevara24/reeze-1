@@ -17,7 +17,7 @@ class AnalyticController extends Controller
         $sprint_dates = $analytic_helper->getProjectCurrentSprintDates($project_id);
         $formated_dates = array();
         foreach ($sprint_dates as $sprint_date) {
-            array_push($formated_dates, $sprint_date->format('d M'));
+            array_push($formated_dates, $sprint_date[0]->format('d M'));
         }
         return response()->json(['success' => true, 'data' => $formated_dates]);
     }
@@ -45,14 +45,15 @@ class AnalyticController extends Controller
             $card_ids = Card::where('project_id', $project_id)->pluck('id')->toArray();
         }
 
-        $sprint_dates = $analytic_helper->getProjectSprintDates($project_id);
+        $sprint_dates = $analytic_helper->getProjectCurrentSprintDates($project_id);
 
         //Get the starting card ids
         $starting_cards_ids = $analytic_helper->getCardsIds(
-            $card_ids, ['planned','started','finished','accepted','rejected'], [$sprint_dates[count($sprint_dates)-1][0], $sprint_dates[count($sprint_dates)-1][1]]);
+            $card_ids, ['planned','started','finished','accepted','rejected'], [$sprint_dates[0][0], $sprint_dates[0][1]]);
         
         //Get the total points at the start of the sprint
         $starting_cards_points = array_sum(Card::whereIn('id', $starting_cards_ids)->pluck('points')->toArray());
+        dd($starting_cards_ids, $starting_cards_points);
 
         $ideal_burndown = array();
         $chart_dates = array();
@@ -62,7 +63,7 @@ class AnalyticController extends Controller
         //Get total unfinished card points every day on the duration of the sprint and calculate perfect burndown
         for ($i=0; $i < $project['sprint_duration']; $i++) {
             //Add the date for chart label
-            array_push($chart_dates, $sprint_dates[count($sprint_dates)-1][0]->format('d-M'));
+            array_push($chart_dates, $sprint_dates[$i][0]->format('d-M'));
 
             //Get the perfect burndown point and push it to array
             $perfect_burndown_point = $starting_cards_points - ($starting_cards_points * $i / ($project['sprint_duration'] - 1));
@@ -73,7 +74,7 @@ class AnalyticController extends Controller
             //Get the start date + i cards logs. Only take cards that are planned, started, finished, accepted, and rejected
             $newly_added_cards_ids = $analytic_helper->getCardsIds(
                 $card_ids, ['planned','started','finished','accepted','rejected'], 
-                [$sprint_dates[count($sprint_dates)-1][0], new Carbon($sprint_dates[count($sprint_dates)-1][0]->addDay())]);
+                [$sprint_dates[$i][0], $sprint_dates[$i][1]]);
 
             //Compare with previous day card ids and add new cards if not exist
             $todays_card_ids = $i == 0 ? $newly_added_cards_ids : array_unique(array_merge($sprint_card_ids[$i-1], $newly_added_cards_ids));
@@ -81,7 +82,7 @@ class AnalyticController extends Controller
             //Get released card logs
             $todays_released_card_logs = $analytic_helper->getCardsIds(
                 $card_ids, ['released'], 
-                [new Carbon($sprint_dates[count($sprint_dates)-1][0]->subDay()), new Carbon($sprint_dates[count($sprint_dates)-1][0]->addDay())]);
+                [$sprint_dates[$i][0], $sprint_dates[$i][1]]);
 
             //Subtract the released cards ids
             $todays_card_ids = array_diff($todays_card_ids, $todays_released_card_logs);

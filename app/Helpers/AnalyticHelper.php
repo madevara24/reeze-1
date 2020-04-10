@@ -44,7 +44,6 @@ class AnalyticHelper{
         }
 
         $sprint_dates = array_reverse($sprint_dates);
-        //dd($sprint_dates);
         return $sprint_dates;
     }
 
@@ -62,11 +61,13 @@ class AnalyticHelper{
         );
         $date->startOfWeek();
 
-        for ($i=0; $i < $project['sprint_duration']; $i++) { 
-            array_push($sprint_dates, new Carbon($date));
+        for ($i=0; $i < $project['sprint_duration']; $i++) {
+            $dates = [];
+            array_push($dates, new Carbon($date));
             $date->addDay();
+            array_push($dates, new Carbon($date));
+            array_push($sprint_dates, $dates);
         }
-
         return $sprint_dates;
     }
 
