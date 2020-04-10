@@ -43,7 +43,6 @@
             <v-card-text>
               <GChart
                 :settings="{ packages: ['timeline'] }"
-                style="height: 400px;"
                 type="Timeline"
                 :data="cardTimeline.chartData"
                 :option="cardTimeline.chartOptions"
@@ -116,30 +115,29 @@ export default {
           colors: ['#1e88e5','#e53935','#6ab7ff','#ff6f60'],
         }
       },
-      cardTimeline:{
+      cardTimeline: {
         chartData: [
           [
             { type: 'string', id: 'Role' },{ type: 'string', id: 'Name' },{ type: 'string', id: 'style', role: 'style' },{ type: 'date', id: 'Start' },{ type: 'date', id: 'End' }
           ],
-          ['#51 - Create login API for users', 'Planned', '#dbdbdb', new Date(2020, 3, 30, 9, 3, 8), new Date(2020, 3, 30, 9, 15, 17)],
-          ['#51 - Create login API for users', 'Started', '#f08000', new Date(2020, 3, 30, 9, 15, 17), new Date(2020, 4, 2, 14, 36, 30)],
-          ['#51 - Create login API for users', 'Finished', '#203e64', new Date(2020, 4, 2, 14, 36, 30), new Date(2020, 4, 2, 14, 48, 12)],
-          ['#51 - Create login API for users', 'Accepted', '#629200', new Date(2020, 4, 2, 14, 48, 12), new Date(2020, 4, 5, 9, 43, 5)],
-          ['#52 - Expand search filter options', 'Planned', '#dbdbdb',new Date(2020, 3, 30, 9, 5, 12), new Date(2020, 3, 30, 9, 22, 44)],
-          ['#52 - Expand search filter options', 'Started', '#f08000',new Date(2020, 3, 30, 9, 22, 44), new Date(2020, 4, 1, 17, 49, 1)],
-          ['#52 - Expand search filter options', 'Finished', '#203e64',new Date(2020, 4, 1, 17, 49, 1), new Date(2020, 4, 2, 10, 12, 25)],
-          ['#52 - Expand search filter options', 'Accepted', '#629200',new Date(2020, 4, 2, 10, 12, 25), new Date(2020, 4, 5, 9, 43, 5)]
+          ['#51 - Create login API for users', 'Planned', '#dbdbdb', new Date(2020, 4, 6, 9, 3, 8), new Date(2020, 4, 6, 9, 15, 17)],
+          ['#51 - Create login API for users', 'Started', '#f08000', new Date(2020, 4, 6, 9, 15, 17), new Date(2020, 4, 9, 14, 36, 30)],
+          ['#51 - Create login API for users', 'Finished', '#203e64', new Date(2020, 4, 9, 14, 36, 30), new Date(2020, 4, 9, 14, 48, 12)],
+          ['#51 - Create login API for users', 'Accepted', '#629200', new Date(2020, 4, 9, 14, 48, 12), new Date(2020, 4, 10, 17, 43, 5)],
+          ['#52 - Expand search filter options', 'Planned', '#dbdbdb',new Date(2020, 4, 6, 9, 5, 12), new Date(2020, 4, 6, 9, 22, 44)],
+          ['#52 - Expand search filter options', 'Started', '#f08000',new Date(2020, 4, 6, 9, 22, 44), new Date(2020, 4, 8, 17, 49, 1)],
+          ['#52 - Expand search filter options', 'Finished', '#203e64',new Date(2020, 4, 8, 17, 49, 1), new Date(2020, 4, 9, 10, 12, 25)],
+          ['#52 - Expand search filter options', 'Accepted', '#629200',new Date(2020, 4, 9, 10, 12, 25), new Date(2020, 4, 10, 17, 43, 5)],
+          ['#53 - Fix user setting not loading', 'Planned', '#dbdbdb',new Date(2020, 4, 6, 9, 7, 27), new Date(2020, 4, 6, 13, 2, 12)],
+          ['#53 - Fix user setting not loading', 'Started', '#f08000',new Date(2020, 4, 6, 13, 2, 12), new Date(2020, 4, 6, 18, 13, 9)],
+          ['#53 - Fix user setting not loading', 'Finished', '#203e64',new Date(2020, 4, 6, 18, 13, 9), new Date(2020, 4, 7, 9, 42, 0)],
+          ['#53 - Fix user setting not loading', 'Rejected', '#a71f39',new Date(2020, 4, 7, 9, 42, 0), new Date(2020, 4, 7, 14, 34, 18)], 
+          ['#53 - Fix user setting not loading', 'Started', '#f08000',new Date(2020, 4, 7, 14, 34, 18), new Date(2020, 4, 8, 17, 20, 20)],
+          ['#53 - Fix user setting not loading', 'Finished', '#203e64',new Date(2020, 4, 8, 17, 20, 20), new Date(2020, 4, 8, 18, 15, 30)],
+          ['#53 - Fix user setting not loading', 'Accepted', '#629200',new Date(2020, 4, 8, 18, 15, 30), new Date(2020, 4, 10, 17, 43, 5)]
         ],
         chartOptions: {
-          title: 'Card Timeline',
-          singleColor: true,
-          width: 500,
-          timeline: {
-            colorByRowLabel: true,
-            singleColor: true,
-          },
-          // colors: ['#cbb69d', '#603913', '#c69c6e'],
-          //colors: ['#dbdbdb','#f08000','#203e64','#629200']
+          title: 'Card Timeline'
         }
       },
       taskLifecycle:{
