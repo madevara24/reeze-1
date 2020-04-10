@@ -119,7 +119,7 @@ export default {
         chartOptions: {
           title: 'Task Lifecycle',
           pieHole: 0.4,
-          colors: ['#bdbdbd','#ffd600','#2962ff','#00c853','#dd2c00']
+          colors: ['#dbdbdb','#f08000','#203e64','#629200','#a71f39']
         }
       },
       estimation: {
