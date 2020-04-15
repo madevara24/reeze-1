@@ -53,7 +53,6 @@ class AnalyticController extends Controller
         
         //Get the total points at the start of the sprint
         $starting_cards_points = array_sum(Card::whereIn('id', $starting_cards_ids)->pluck('points')->toArray());
-        dd($starting_cards_ids, $starting_cards_points);
 
         $ideal_burndown = array();
         $chart_dates = array();
@@ -106,10 +105,6 @@ class AnalyticController extends Controller
 
         return response()->json(['success' => true, 'data' => $sprint_burndown]);
     }
-   
-    public function getProgression($project_id){   
-   
-    }   
    
     public function deliverability($project_id, $user_id = null){   
         $analytic_helper = new AnalyticHelper();
@@ -376,29 +371,40 @@ class AnalyticController extends Controller
 
         //Checks if this request is for whole project or for single user, determines the analyzed cards
         if ($user_id) {
-            $project_card_ids = Card::where([['project_id', $project_id],['owner', $user_id]])->pluck('id')->toArray();
+            $card_ids = Card::where([['project_id', $project_id],['owner', $user_id]])->pluck('id')->toArray();
         }else {
-            $project_card_ids = Card::where('project_id', $project_id)->pluck('id')->toArray();
+            $card_ids = Card::where('project_id', $project_id)->pluck('id')->toArray();
         }
 
-        //Get sprint dates for the last 5 sprints
-        $sprint_dates = $analytic_helper->getProjectSprintDates($project['id']);
-
-        //Get the ids of the cards that have activity
-        $card_ids = $analytic_helper->getCardsIds(
-            $project_card_ids, ['planned','started','finished','accepted','rejected','released'], [$sprint_dates[count($sprint_dates) - 1][0], $sprint_dates[count($sprint_dates) - 1][1]]);
+        $sprint_dates = $analytic_helper->getProjectCurrentSprintDates($project_id);
         
-        $data = [];
+        $timeline_data = [];
 
         foreach ($card_ids as $card_id) {
             $card_info = Card::where('id', $card_id)->get()->toArray();
             $card_logs = $analytic_helper->getCardLogs(
-                $card_id, ['planned','started','finished','accepted','rejected','released'], [$sprint_dates[count($sprint_dates) - 1][0], $sprint_dates[count($sprint_dates) - 1][1]]);
+                $card_id, ['planned','started','finished','accepted','rejected'], [$sprint_dates[0][0], $sprint_dates[count($sprint_dates) - 1][1]]);
+                
+            $released_log = $analytic_helper->getCardLogs(
+                $card_id, ['released'], [$sprint_dates[0][0], $sprint_dates[count($sprint_dates) - 1][1]]);
             
-            dd($card_info, $card_logs);
-            array_push($data, $card_logs);
+            $card_end_date = $sprint_dates[count($sprint_dates) - 1][1];
+            if($released_log)
+                $card_end_date = $released_log[0]['created_at'];
+                
+            if($card_logs){
+                for ($i=0; $i < count($card_logs); $i++) {
+                    if($i == count($card_logs) - 1)
+                        $end_date = $card_end_date;
+                    else
+                        $end_date = $card_logs[$i + 1]['created_at'];
+
+                    $card_data = $analytic_helper->formatCardTimelineData($card_info[0], $card_logs[$i], $end_date);
+                    array_push($timeline_data, $card_data);
+                }
+            }
         }
 
-        return response()->json(['success' => true, 'data' => $data]);
+        return response()->json(['success' => true, 'data' => $timeline_data]);
     }
 }

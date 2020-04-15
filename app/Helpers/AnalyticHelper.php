@@ -97,4 +97,39 @@ class AnalyticHelper{
 
         return $cards;
     }
+
+    public function formatCardTimelineData($card_info, $card_log, $end_date){
+        $name = '#' . $card_info['id'] . ' - ' . $card_info['title'];
+        $state = ucfirst(strtolower($card_log['state']));
+        $colour = $this->getCardStateColour($card_log['state']);
+        $start = new Carbon($card_log['created_at']);
+        $end = new Carbon($end_date);
+        // $start = json_encode(date($card_log['created_at']));
+        // $end = json_encode(date($end_date));
+        $data = [$name, $state, $colour, $start, $end];
+        return $data;
+    }
+
+    public function getCardStateColour($state){
+        switch (ucfirst(strtolower($state))) {
+            case 'Planned': 
+                return "#dbdbdb";
+                break;
+            case 'Started': 
+                return "#f08000";
+                break;
+            case 'Finished': 
+                return "#203e64";
+                break;
+            case 'Accepted': 
+                return "#629200";
+                break;
+            case 'Rejected': 
+                return "#a71f39";
+                break;
+            default:
+                return "#dbdbdb";
+                break;
+        }
+    }
 }
