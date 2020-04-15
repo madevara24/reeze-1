@@ -46,6 +46,7 @@
                 type="Timeline"
                 :data="cardTimeline.chartData"
                 :option="cardTimeline.chartOptions"
+                style="height: 500px"
               />
             </v-card-text>
           </v-card>
@@ -303,38 +304,43 @@ export default {
       }
     },
     getCardTimeline(){
-      // var data = new google.visualization.DataTable();
-      // data.addColumn({ type: 'string', id: 'Task' });
-      // data.addColumn({ type: 'string', id: 'State' });
-      // data.addColumn({ type: 'string', id: 'style', role: 'style' });
-      // data.addColumn({ type: 'date', id: 'Start' });
-      // data.addColumn({ type: 'date', id: 'End' });
+      console.log("View Analytics (method) : Get task lifecycle " + this.$route.params.projectId +"/"+ this.$route.params.personId)
+      console.log(new Date(2020, 4, 6, 9, 3, 8), new Date(2020, 4, 6, 9, 15, 17));
+      let token = localStorage.getItem('token')
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      };
+            // console.log(this.cardTimeline.chartData);
 
-      // data.addRows(
-      //     ['#51 - Create login API for users', 'Planned', '#dbdbdb', new Date(2020, 3, 30, 9, 3, 8), new Date(2020, 3, 30, 9, 15, 17)],
-      //     ['#51 - Create login API for users', 'Started', '#f08000', new Date(2020, 3, 30, 9, 15, 17), new Date(2020, 4, 2, 14, 36, 30)],
-      //     ['#51 - Create login API for users', 'Finished', '#203e64', new Date(2020, 4, 2, 14, 36, 30), new Date(2020, 4, 2, 14, 48, 12)],
-      //     ['#51 - Create login API for users', 'Accepted', '#629200', new Date(2020, 4, 2, 14, 48, 12), new Date(2020, 4, 5, 9, 43, 5)],
 
-      //     // ['#52 - Extend chart detail on team analytic', 'Planned', new Date(2020, 3, 30, 9, 3, 8), new Date(2020, 3, 30, 9, 15, 17)],
-      //     // ['#52 - Extend chart detail on team analytic', 'Started', new Date(2020, 3, 30, 9, 15, 17), new Date(2020, 4, 2, 14, 36, 30)],
-      //     // ['#52 - Extend chart detail on team analytic', 'Finished', new Date(2020, 4, 2, 14, 36, 30), new Date(2020, 4, 2, 14, 48, 12)],
-      //     // ['#52 - Extend chart detail on team analytic', 'Accepted', new Date(2020, 4, 2, 14, 48, 12), new Date(2020, 4, 5, 9, 43, 5)],
-      // )
+      this.cardTimeline.chartData = [
+        [
+          { type: 'string', id: 'Role' },
+          { type: 'string', id: 'Name' },
+          { type: 'string', id: 'style', role: 'style' },
+          { type: 'date', id: 'Start' },
+          { type: 'date', id: 'End' }
+        ],
+      ]
+
+      if(this.$route.params.personId){
+        this.axios
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/card-timeline/' + this.$route.params.personId, {headers})
+        .then(response => (this.formatCardTimeline(response.data.data)))
+      }else{
+        this.axios
+        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/card-timeline/', {headers})
+        .then(response => (this.formatCardTimeline(response.data.data)))
+      }
     },
-    onTimelineReady(chart, google){
-      // var dataTable = new google.visualization.DataTable();
-      // dataTable.addColumn({ type: 'string', id: 'Card' });
-      // dataTable.addColumn({ type: 'string', id: 'State' });
-      // dataTable.addColumn({ type: 'string', id: 'style', role: 'style' });
-      // dataTable.addColumn({ type: 'date', id: 'Start' });
-      // dataTable.addColumn({ type: 'date', id: 'End' });
-      // dataTable.addRows([
-      //   ['#51 - Create login API for users', 'Planned', '#dbdbdb', new Date(2020, 3, 30, 9, 3, 8), new Date(2020, 3, 30, 9, 15, 17)],
-      //   ['#51 - Create login API for users', 'Started', '#f08000', new Date(2020, 3, 30, 9, 15, 17), new Date(2020, 4, 2, 14, 36, 30)],
-      //   ['#51 - Create login API for users', 'Finished', '#203e64', new Date(2020, 4, 2, 14, 36, 30), new Date(2020, 4, 2, 14, 48, 12)],
-      //   ['#51 - Create login API for users', 'Accepted', '#629200', new Date(2020, 4, 2, 14, 48, 12), new Date(2020, 4, 5, 9, 43, 5)]]);
-      // chart.draw(dataTable);
+    formatCardTimeline(data){
+      data.forEach(element => {
+        let row = [element[0], element[1], element[2], new Date(element[3]), new Date(element[4])]
+        console.log(row);
+        this.cardTimeline.chartData.push(row)
+        console.log(this.cardTimeline.chartData);
+      });
     }
   }
 }
