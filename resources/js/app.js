@@ -16,15 +16,15 @@ Vue.use(VueAxios, axios)
 
 
 export default new Vuetify({
-  icons: {
-    iconfont: 'md',
-  }
+    icons: {
+        iconfont: 'md',
+    }
 })
 
 new Vue({
-  store,
-  router,
-  vuetify,
-  axios,
-  render: h => h(App)
+    store,
+    router,
+    vuetify,
+    axios,
+    render: h => h(App)
 }).$mount('#app')
