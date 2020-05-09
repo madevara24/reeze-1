@@ -69,7 +69,6 @@ export default {
       this.axios
         .get(`${this.appUrl}/api/v1/list-repo`, { headers })
         .then(response => {
-          console.log(response.data.data);
           this.repositories = response.data.data;
         })
         .catch(function(error) {
@@ -94,7 +93,7 @@ export default {
       this.axios
         .post(`${this.appUrl}/api/v1/project/create`, data, { headers })
         .then(response => {
-          console.log(response);
+          this.$router.go(-1);
         })
         .catch(function(error) {
           console.log(error);
