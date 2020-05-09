@@ -137,11 +137,11 @@ export default {
         'Authorization': 'Bearer ' + token,
       };
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/current-sprint-dates', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/current-sprint-dates', {headers})
         .then((response) => {this.formatSprintProgression(response.data.data, null)});
         
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/sprint-progression', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/sprint-progression', {headers})
         .then((response) => {this.formatSprintProgression(null, response.data.data)});
     },
     formatSprintProgression(chartDate, burndown){
@@ -169,7 +169,7 @@ export default {
         'Authorization': 'Bearer ' + token,
       };
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/task-lifecycle', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/task-lifecycle', {headers})
         .then(response => (this.taskLifecycle.chartData = this.taskLifecycle.chartData.concat(response.data.data)))
     },
     getDeliverability(){
@@ -180,15 +180,15 @@ export default {
         'Authorization': 'Bearer ' + token,
       };
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/sprint-dates', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/sprint-dates', {headers})
         .then((response) => {this.formatDeliverability(response.data.data, null, null)});
 
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/deliverability', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/deliverability', {headers})
         .then((response) => {this.formatDeliverability(null, response.data.data, null)});
 
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/rejection', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/rejection', {headers})
         .then((response) => {this.formatDeliverability(null, null, response.data.data)});
     },
     formatDeliverability(chartDate, deliverability, rejection){
@@ -222,7 +222,7 @@ export default {
         'Authorization': 'Bearer ' + token,
       };
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/estimation', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/estimation', {headers})
         .then(response => (this.formatEstimation(response.data.data)))
     },
     formatEstimation(data){

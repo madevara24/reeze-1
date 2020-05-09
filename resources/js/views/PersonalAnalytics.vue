@@ -168,7 +168,7 @@ export default {
         this.burndown.chartData.push(['Day', 'Team Points Remaining', 'Team Ideal Burndown', 'Personal Points Remaining', 'Personal Ideal Burndown']);
         
         this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/sprint-progression/' + this.$route.params.personId, {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/sprint-progression/' + this.$route.params.personId, {headers})
         .then((response) => {this.formatSprintProgression(null, null, response.data.data)});
       }
       else{
@@ -176,11 +176,11 @@ export default {
       }
 
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/current-sprint-dates', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/current-sprint-dates', {headers})
         .then((response) => {this.formatSprintProgression(response.data.data, null, null)});
       
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/sprint-progression', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/sprint-progression', {headers})
         .then((response) => {this.formatSprintProgression(null, response.data.data, null)});
     },
     formatSprintProgression(chartDate, teamBurndown, personalBurndown){
@@ -218,7 +218,7 @@ export default {
       this.taskLifecycle.chartData = [['State', 'Avg. Hours']]
 
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/task-lifecycle', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/task-lifecycle', {headers})
         .then(response => (this.taskLifecycle.chartData = this.taskLifecycle.chartData.concat(response.data.data)))
     },
     getDeliverability(){
@@ -235,11 +235,11 @@ export default {
         this.deliverability.chartData.push(['Iteration', 'Team Deliver Rate', 'Team Rejection Rate', 'Personal Deliver Rate', 'Personal Rejection Rate'],);
         
         this.axios
-          .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/deliverability/' + this.$route.params.personId, {headers})
+          .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/deliverability/' + this.$route.params.personId, {headers})
           .then((response) => {this.formatDeliverability(null, null, null, response.data.data, null)});
 
         this.axios
-          .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/rejection/' + this.$route.params.personId, {headers})
+          .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/rejection/' + this.$route.params.personId, {headers})
           .then((response) => {this.formatDeliverability(null, null, null, null, response.data.data)});
       }
       else{
@@ -247,15 +247,15 @@ export default {
       }
 
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/formated-chart-dates', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/formated-chart-dates', {headers})
         .then((response) => {this.formatDeliverability(response.data.data, null, null, null, null)});
 
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/deliverability', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/deliverability', {headers})
         .then((response) => {this.formatDeliverability(null, response.data.data, null, null, null)});
 
       this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/rejection', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/rejection', {headers})
         .then((response) => {this.formatDeliverability(null, null, response.data.data, null, null)});
     },
     formatDeliverability(chartDate, teamDeliverability, teamRejection, personalDeliverability, personalRejection){
@@ -311,8 +311,6 @@ export default {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       };
-            // console.log(this.cardTimeline.chartData);
-
 
       this.cardTimeline.chartData = [
         [
@@ -326,11 +324,11 @@ export default {
 
       if(this.$route.params.personId){
         this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/card-timeline/' + this.$route.params.personId, {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/card-timeline/' + this.$route.params.personId, {headers})
         .then(response => (this.formatCardTimeline(response.data.data)))
       }else{
         this.axios
-        .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/analytic/card-timeline/', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/card-timeline/', {headers})
         .then(response => (this.formatCardTimeline(response.data.data)))
       }
     },
