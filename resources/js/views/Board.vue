@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <v-row class="black">
-      <v-col cols="12" sm="4" class="py-0 px-3 grey">
-        <v-row>
-          <BoardColumnHeader :headerData="iceboxColumn" />
-        </v-row>
+  <v-layout>
+    <v-col cols="12" sm="4">
+      <v-toolbar color="grey">
+        <v-toolbar-title>Icebox</v-toolbar-title>
+      </v-toolbar>
+      <v-card class="card-scrollable" color="grey">
         <draggable
           :list="list1"
           group="card"
@@ -13,8 +13,19 @@
           @start="drag = true"
           @end="drag = false"
         >
-          <transition-group tag="div" class="list-group" type="transition" :name="!drag ? 'flip-list' : null">
-            <v-card class="my-1 mx-2" flat v-for="(element, index) in list1" :key="element.name">
+          <transition-group
+            tag="div"
+            class="list-group"
+            type="transition"
+            :name="!drag ? 'flip-list' : null"
+          >
+            <v-card
+              class="my-1 mx-2 py-0 px-3"
+              flat
+              v-for="(element, index) in list1"
+              :key="element.name"
+              hover
+            >
               <v-list-item three-line>
                 <v-list-item-content>
                   <div class="overline mb-4">{{ index }}</div>
@@ -32,11 +43,13 @@
             </v-card>
           </transition-group>
         </draggable>
-      </v-col>
-      <v-col cols="12" sm="4" class="py-0 px-3 grey">
-        <v-row>
-          <BoardColumnHeader :headerData="backlogColumn" />
-        </v-row>
+      </v-card>
+    </v-col>
+    <v-col cols="12" sm="4">
+      <v-toolbar color="grey">
+        <v-toolbar-title>Current Iteration/Backlog</v-toolbar-title>
+      </v-toolbar>
+      <v-card class="card-scrollable" color="grey">
         <draggable
           :list="list2"
           group="card"
@@ -45,8 +58,19 @@
           @start="drag = true"
           @end="drag = false"
         >
-          <transition-group tag="div" class="list-group" type="transition" :name="!drag ? 'flip-list' : null">
-            <v-card class="my-1 mx-2" flat v-for="(element, index) in list2" :key="element.name">
+          <transition-group
+            tag="div"
+            class="list-group"
+            type="transition"
+            :name="!drag ? 'flip-list' : null"
+          >
+            <v-card
+              class="my-1 mx-2 py-0 px-3"
+              flat
+              v-for="(element, index) in list2"
+              :key="element.name"
+              hover
+            >
               <v-list-item three-line>
                 <v-list-item-content>
                   <div class="overline mb-4">{{ index }}</div>
@@ -64,11 +88,13 @@
             </v-card>
           </transition-group>
         </draggable>
-      </v-col>
-      <v-col cols="12" sm="4" class="py-0 px-3 grey">
-        <v-row>
-          <BoardColumnHeader :headerData="doneColumn" />
-        </v-row>
+      </v-card>
+    </v-col>
+    <v-col cols="4" sm="4">
+      <v-toolbar color="grey">
+        <v-toolbar-title>Done</v-toolbar-title>
+      </v-toolbar>
+      <v-card class="card-scrollable" color="grey">
         <draggable
           :list="list3"
           group="card"
@@ -77,8 +103,19 @@
           @start="drag = true"
           @end="drag = false"
         >
-          <transition-group tag="div" class="list-group" type="transition" :name="!drag ? 'flip-list' : null">
-            <v-card class="my-1 mx-2" flat v-for="(element, index) in list3" :key="element.name">
+          <transition-group
+            tag="div"
+            class="list-group"
+            type="transition"
+            :name="!drag ? 'flip-list' : null"
+          >
+            <v-card
+              class="my-1 mx-2 py-0 px-3"
+              flat
+              v-for="(element, index) in list3"
+              :key="element.name"
+              hover
+            >
               <v-list-item three-line>
                 <v-list-item-content>
                   <div class="overline mb-4">{{ index }}</div>
@@ -96,9 +133,9 @@
             </v-card>
           </transition-group>
         </draggable>
-      </v-col>
-    </v-row>
-  </div>
+      </v-card>
+    </v-col>
+  </v-layout>
 </template>
 
 <script>
@@ -167,12 +204,9 @@ export default {
       };
 
       this.axios
-        .get(
-          "http://127.0.0.1:8000/api/v1/project/" +
-            selectedProjectId +
-            "/cards",
-          { headers }
-        )
+        .get(`${this.appUrl}/api/v1/project/` + selectedProjectId + "/cards", {
+          headers
+        })
         .then(response => (this.cards = response.data));
     },
     changeState() {
@@ -187,8 +221,14 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .list-group {
   min-height: 500px;
+  overflow-y: auto;
+}
+
+.card-scrollable {
+  height: 800px;
+  overflow-y: auto;
 }
 </style>

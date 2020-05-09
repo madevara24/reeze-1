@@ -14,6 +14,8 @@ Vue.config.productionTip = false
 Vue.use(Vuetify)
 Vue.use(VueAxios, axios)
 
+const appUrl = process.env.MIX_APP_URL;
+Vue.prototype.appUrl = appUrl;
 
 export default new Vuetify({
     icons: {
