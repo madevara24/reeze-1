@@ -67,7 +67,7 @@ export default {
       };
 
       this.axios
-        .get("http://127.0.0.1:8000/api/v1/list-repo", { headers })
+        .get(`${this.appUrl}/api/v1/list-repo`, { headers })
         .then(response => {
           console.log(response.data.data);
           this.repositories = response.data.data;
@@ -83,7 +83,7 @@ export default {
         repository: this.repository,
         description: this.description,
         sprint_duration: this.sprintDuration,
-        sprint_start_day: this.sprintStartDay,
+        sprint_start_day: this.sprintStartDay
       };
 
       const headers = {
@@ -92,7 +92,7 @@ export default {
       };
 
       this.axios
-        .post("http://127.0.0.1:8000/api/v1/project/create", data, { headers })
+        .post(`${this.appUrl}/api/v1/project/create`, data, { headers })
         .then(response => {
           console.log(response);
         })
