@@ -66,7 +66,8 @@ export default {
       tabs: [
         { id: 1, name: 'Board',  route:"board"},
         { id: 2, name: 'Team',  route:"teamAnalytics"},
-        { id: 3, name: 'Personal',  route:"personalAnalytics"}
+        { id: 3, name: 'Personal',  route:"personalAnalytics"},
+        { id: 4, name: 'Project Merge',  route:"projectMerge"},
       ],
       active_tab: 0,
     }

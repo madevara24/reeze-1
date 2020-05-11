@@ -10,6 +10,7 @@ import Login from '../views/Login.vue'
 import Board from '../views/Board.vue'
 import TeamAnalytics from '../views/TeamAnalytics.vue'
 import PersonalAnalytics from '../views/PersonalAnalytics.vue'
+import ProjectMerge from '../views/ProjectMerge.vue'
 import CreateProject from '../views/CreateProject.vue'
 
 import auth from './middleware/auth'
@@ -54,7 +55,12 @@ const router = new Router({
           path: 'personalAnalytics/:personId?',
           name: 'personalAnalytics',
           component: PersonalAnalytics
-        }
+        },
+        {
+          path: 'projectMerge',
+          name: 'projectMerge',
+          component: ProjectMerge
+        },
       ]
     },
     {
