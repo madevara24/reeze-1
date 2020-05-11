@@ -37,7 +37,7 @@ export default {
                 };
 
             this.axios
-                .get(`${this.appUrl}/api/v1/project`, {headers})
+                .get(`${this.appUrl}/api/v1/project/`, {headers})
                 .then(response => this.projectSelections = response.data.data)
         },
         getSelectedProject(){
