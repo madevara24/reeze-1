@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-col cols="12" sm="4">
-      <v-toolbar color="grey">
+      <v-toolbar>
         <v-toolbar-title>Icebox</v-toolbar-title>
       </v-toolbar>
       <v-card class="card-scrollable" color="grey">
@@ -19,34 +19,13 @@
             type="transition"
             :name="!drag ? 'flip-list' : null"
           >
-            <v-card
-              class="my-1 mx-2 py-0 px-3"
-              flat
-              v-for="(element, index) in list1"
-              :key="element.name"
-              hover
-            >
-              <v-list-item three-line>
-                <v-list-item-content>
-                  <div class="overline mb-4">{{ index }}</div>
-                  <v-list-item-title class="headline mb-1">{{ element.name }}</v-list-item-title>
-                  <v-list-item-subtitle>Greyhound divisely hello coldly fonwderfully</v-list-item-subtitle>
-                </v-list-item-content>
-
-                <v-list-item-avatar tile size="80" color="grey"></v-list-item-avatar>
-              </v-list-item>
-
-              <v-card-actions>
-                <v-btn text>Button</v-btn>
-                <v-btn text>Button</v-btn>
-              </v-card-actions>
-            </v-card>
+            <TaskCard v-for="card in list1" :key="card.id" :title="card.title"></TaskCard>
           </transition-group>
         </draggable>
       </v-card>
     </v-col>
     <v-col cols="12" sm="4">
-      <v-toolbar color="grey">
+      <v-toolbar>
         <v-toolbar-title>Current Iteration/Backlog</v-toolbar-title>
       </v-toolbar>
       <v-card class="card-scrollable" color="grey">
@@ -64,34 +43,13 @@
             type="transition"
             :name="!drag ? 'flip-list' : null"
           >
-            <v-card
-              class="my-1 mx-2 py-0 px-3"
-              flat
-              v-for="(element, index) in list2"
-              :key="element.name"
-              hover
-            >
-              <v-list-item three-line>
-                <v-list-item-content>
-                  <div class="overline mb-4">{{ index }}</div>
-                  <v-list-item-title class="headline mb-1">{{ element.name }}</v-list-item-title>
-                  <v-list-item-subtitle>Greyhound divisely hello coldly fonwderfully</v-list-item-subtitle>
-                </v-list-item-content>
-
-                <v-list-item-avatar tile size="80" color="grey"></v-list-item-avatar>
-              </v-list-item>
-
-              <v-card-actions>
-                <v-btn text>Button</v-btn>
-                <v-btn text>Button</v-btn>
-              </v-card-actions>
-            </v-card>
+            <TaskCard v-for="card in list2" :key="card.id" :title="card.title"></TaskCard>
           </transition-group>
         </draggable>
       </v-card>
     </v-col>
     <v-col cols="4" sm="4">
-      <v-toolbar color="grey">
+      <v-toolbar>
         <v-toolbar-title>Done</v-toolbar-title>
       </v-toolbar>
       <v-card class="card-scrollable" color="grey">
@@ -109,32 +67,61 @@
             type="transition"
             :name="!drag ? 'flip-list' : null"
           >
-            <v-card
-              class="my-1 mx-2 py-0 px-3"
-              flat
-              v-for="(element, index) in list3"
-              :key="element.name"
-              hover
-            >
-              <v-list-item three-line>
-                <v-list-item-content>
-                  <div class="overline mb-4">{{ index }}</div>
-                  <v-list-item-title class="headline mb-1">{{ element.name }}</v-list-item-title>
-                  <v-list-item-subtitle>Greyhound divisely hello coldly fonwderfully</v-list-item-subtitle>
-                </v-list-item-content>
-
-                <v-list-item-avatar tile size="80" color="grey"></v-list-item-avatar>
-              </v-list-item>
-
-              <v-card-actions>
-                <v-btn text>Button</v-btn>
-                <v-btn text>Button</v-btn>
-              </v-card-actions>
-            </v-card>
+            <TaskCard v-for="card in list3" :key="card.id" :title="card.title"></TaskCard>
           </transition-group>
         </draggable>
       </v-card>
     </v-col>
+
+    <v-dialog v-model="dialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">User Profile</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field label="Legal first name*" required></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field label="Legal middle name" hint="example of helper text only on focus"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  label="Legal last name*"
+                  hint="example of persistent helper text"
+                  persistent-hint
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field label="Email*" required></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field label="Password*" type="password" required></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-select :items="['0-17', '18-29', '30-54', '54+']" label="Age*" required></v-select>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-autocomplete
+                  :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
+                  label="Interests"
+                  multiple
+                ></v-autocomplete>
+              </v-col>
+            </v-row>
+          </v-container>
+          <small>*indicates required field</small>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
+          <v-btn color="blue darken-1" text @click="dialog = false">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
@@ -149,6 +136,7 @@ export default {
   },
   data() {
     return {
+      dialog: false,
       iceboxColumn: {
         title: "Icebox"
       },
@@ -160,27 +148,9 @@ export default {
       },
       cards: null,
       drag: false,
-      list1: [
-        { name: "John", id: 1 },
-        { name: "Joao", id: 2 },
-        { name: "Jean", id: 3 },
-        { name: "Gerard", id: 4 }
-      ],
-      list2: [
-        { name: "Masjul", id: 1 },
-        { name: "Subosko", id: 2 },
-        { name: "Devara", id: 3 },
-        { name: "Sujen", id: 4 },
-        { name: "Sudhan", id: 5 }
-      ],
-      list3: [
-        { name: "Card 1", id: 1 },
-        { name: "Card 2", id: 2 },
-        { name: "MAKE A CAR", id: 3 },
-        { name: "Covid", id: 4 },
-        { name: "Yea", id: 5 },
-        { name: "Boii", id: 5 }
-      ]
+      list1: [],
+      list2: [],
+      list3: []
     };
   },
   computed: {
@@ -191,6 +161,11 @@ export default {
         disabled: false,
         ghostClass: "ghost"
       };
+    }
+  },
+  watch: {
+    cards: function() {
+      this.list1 = this.cards;
     }
   },
   methods: {
@@ -207,7 +182,10 @@ export default {
         .get(`${this.appUrl}/api/v1/project/` + selectedProjectId + "/cards", {
           headers
         })
-        .then(response => (this.cards = response.data));
+        .then(response => {
+          this.cards = response.data;
+        })
+        .catch(error => console.log(error));
     },
     changeState() {
       console.log("hello");

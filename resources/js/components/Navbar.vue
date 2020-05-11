@@ -89,7 +89,7 @@ export default {
       };
       
       this.axios
-        .post('api/v1/logout', {headers}, {
+        .post(`${this.appUrl}/api/v1/logout`, {headers}, {
           data: {
             token: token
           }

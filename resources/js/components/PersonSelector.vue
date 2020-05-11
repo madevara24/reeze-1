@@ -37,7 +37,7 @@ export default {
                 };
 
             this.axios
-                .get('http://127.0.0.1:8000/api/v1/project/' + this.$route.params.projectId + '/members', {headers})
+                .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/members', {headers})
                 .then(response => this.personSelections = response.data.data)
         },
         getSelectedPerson(){
@@ -50,7 +50,7 @@ export default {
                     };
 
                 this.axios
-                    .get('http://127.0.0.1:8000/api/v1/user/' + this.$route.params.personId, {headers})
+                    .get(`${this.appUrl}/api/v1/user/` + this.$route.params.personId, {headers})
                     .then(response => this.selectedPerson = response.data.data)
             }
         },

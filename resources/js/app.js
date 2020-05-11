@@ -23,6 +23,8 @@ export default new Vuetify({
     }
 })
 
+export const bus = new Vue()
+
 new Vue({
     store,
     router,
