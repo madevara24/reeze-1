@@ -20,7 +20,7 @@
                 <div class="caption">Card Type</div>
               </v-col>
               <v-col cols="7" class="py-1 my-1">
-                <v-select dense :items="select.type" hide-details class="pt-1"></v-select>
+                <v-select dense :items="type" hide-details class="pt-1"></v-select>
               </v-col>
             </v-row>
             <v-row class="my-n3">
@@ -28,7 +28,7 @@
                 <div class="caption">Points</div>
               </v-col>
               <v-col cols="7" class="py-1 my-1">
-                <v-select dense :items="select.points" hide-details class="pt-1"></v-select>
+                <v-select dense :items="points" hide-details class="pt-1"></v-select>
               </v-col>
             </v-row>
             <v-row class="my-n3">
@@ -36,7 +36,7 @@
                 <div class="caption">Requester</div>
               </v-col>
               <v-col cols="7" class="py-1 my-1">
-                <v-select dense :items="select.teamMembers" hide-details class="pt-1"></v-select>
+                <v-select dense :items="owner" hide-details class="pt-1"></v-select>
               </v-col>
             </v-row>
             <v-row class="my-n3">
@@ -44,7 +44,7 @@
                 <div class="caption">Owner</div>
               </v-col>
               <v-col cols="7" class="py-1 my-1">
-                <v-select dense :items="select.teamMembers" hide-details class="pt-1"></v-select>
+                <v-select dense :items="owner" hide-details class="pt-1"></v-select>
               </v-col>
             </v-row>
             <v-row class>
@@ -79,16 +79,13 @@ export default {
   data() {
     return {
       newCardData: null,
-      select: {
-        points: [0, 1, 3, 5, 8],
-        teamMembers: ["Devara", "Zainokta", "Masjul", "Subosko", "Sendiqi"],
-        title: "",
-        github_branch_name: null,
-        description: "",
-        owner: 0,
-        iteration: 0,
-        type: ["Feature", "Bug"],
-      }
+      points: [0, 1, 3, 5, 8],
+      title: "",
+      github_branch_name: null,
+      description: "",
+      owner: [],
+      iteration: 0,
+      type: ["Feature", "Bug"]
     };
   },
   methods: {
