@@ -33,6 +33,7 @@ class ApiController extends Controller
 
         return view('callback', [
             'token' => $token,
+            'user' => $user
         ]);
     }
 

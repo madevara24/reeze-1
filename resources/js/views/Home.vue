@@ -21,10 +21,14 @@ export default {
   created() {
     this.projects = this.getProjects();
     localStorage.setItem("selectedProjectId", null);
-    console.log(
-      "View Home (Created) : Selected project id : " +
-        localStorage.getItem("selectedProjectId")
-    );
+
+    if (this.$store.getters.getUser === null) {
+      let user = localStorage.getItem("user");
+
+      localStorage.removeItem("user");
+      this.$store.commit("setUser", JSON.parse(user));
+
+    }
   },
   data() {
     return {

@@ -23,7 +23,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/login',
                 'description' => 'login',
                 'points' => '3',
-                'iteration' => 1,
                 'type' =>'feature',
             ],
             [
@@ -34,7 +33,7 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'bug/login',
                 'description' => 'login gagal',
                 'points' => '5',
-                'iteration' => 1,
+                
                 'type' => 'bug'
             ],
             [
@@ -45,7 +44,7 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-search-bar',
                 'description' => 'Make search bar on projects page to search for project by name',
                 'points' => '3',
-                'iteration' => 1,
+                
                 'type' => 'feature'
             ],
             [
@@ -56,7 +55,7 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-card-query',
                 'description' => 'Make CRUD query for cards',
                 'points' => '3',
-                'iteration' => 1,
+                
                 'type' => 'feature'
             ],
             [
@@ -67,7 +66,7 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-lobby-interface',
                 'description' => 'Make the lobby interface/menu',
                 'points' => '1',
-                'iteration' => 1,
+                
                 'type' => 'feature'
             ],
             [
@@ -78,7 +77,7 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-ui-assets',
                 'description' => 'Make UI assets for menu',
                 'points' => '3',
-                'iteration' => 1,
+                
                 'type' => 'feature'
             ],
             [
@@ -89,7 +88,7 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'bug/fix-collision',
                 'description' => 'Fix player collision on gameplay',
                 'points' => '3',
-                'iteration' => 1,
+                
                 'type' => 'bug'
             ],
             [
@@ -100,7 +99,7 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-multiplayer-connection',
                 'description' => 'Make multiplayer connection using unet',
                 'points' => '5',
-                'iteration' => 1,
+                
                 'type' => 'feature'
             ],
             [
@@ -111,7 +110,7 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'bug/fix-auth',
                 'description' => 'Fix login flow',
                 'points' =>'3',
-                'iteration' => 1,
+                
                 'type' => 'bug'
             ],
             [
@@ -122,7 +121,7 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-orders-query',
                 'description' => 'Make query for orders feature',
                 'points' => '3',
-                'iteration' => 1,
+                
                 'type' => 'feature'
             ],
             [
@@ -133,7 +132,7 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-mobile-views',
                 'description' => 'Make mobile views',
                 'points' => '5',
-                'iteration' => 1,
+                
                 'type' => 'feature'
             ],
             [
@@ -144,7 +143,7 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/research-gmaps-location',
                 'description' => 'Research google maps location identifier',
                 'points' => '8',
-                'iteration' => 1,
+                
                 'type' => 'feature'
             ],
             [
@@ -155,7 +154,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'bug/fix-project-members-query',
                 'description' => 'Fix project member query keeps showing non-member',
                 'points' => '3',
-                'iteration' => 2,
                 'type' => 'bug'
             ],
             [
@@ -166,7 +164,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-login-UI',
                 'description' => 'Make ui design for login page',
                 'points' => '1',
-                'iteration' => 2,
                 'type' => 'feature'
             ],
             [
@@ -177,7 +174,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/add-card-color-code',
                 'description' => 'Add color code to cards based on card types',
                 'points' => '1',
-                'iteration' => 2,
                 'type' => 'feature'
             ],
             [
@@ -188,7 +184,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-cards-api',
                 'description' => 'Make api for cards based on query',
                 'points' => '3',
-                'iteration' => 2,
                 'type' => 'feature'
             ],
             [
@@ -199,7 +194,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-card-log-query',
                 'description' => 'Make query for card log table',
                 'points' => '3',
-                'iteration' => 2,
                 'type' => 'feature'
             ],
             [
@@ -210,7 +204,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-dynamic-damage',
                 'description' => 'Change the damage to be dynamic based on RNG',
                 'points' => '1',
-                'iteration' => 2,
                 'type' => 'feature'
             ],
             [
@@ -221,7 +214,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/research-player-type',
                 'description' => 'Research and make player design/attribute',
                 'points' => '5',
-                'iteration' => 2,
                 'type' => 'feature'
             ],
             [
@@ -232,7 +224,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'bug/fix-lobby-navigation',
                 'description' => 'Fix back button on lobby not working',
                 'points' => '1',
-                'iteration' => 2,
                 'type' => 'bug'
             ],
             [
@@ -243,7 +234,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/research-steam-api',
                 'description' => 'Research steam api',
                 'points' => '8',
-                'iteration' => 2,
                 'type' => 'feature'
             ],
             [
@@ -254,7 +244,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-environment-asset',
                 'description' => 'Make assets for gameplay environment',
                 'points' => '5',
-                'iteration' => 2,
                 'type' => 'feature'
             ],
             [
@@ -265,7 +254,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'bug/fix-order-flow',
                 'description' => 'Fix order flow not searching from near location',
                 'points' => '3',
-                'iteration' => 2,
                 'type' => 'bug'
             ],
             [
@@ -276,7 +264,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-catalog-api',
                 'description' => 'Make api for catalog page',
                 'points' => '3',
-                'iteration' => 2,
                 'type' => 'feature'
             ],
             [
@@ -287,7 +274,6 @@ class CardsTableSeeder extends Seeder
                 'github_branch_name' => 'feature/make-payment-api',
                 'description' => 'Make api for payment with midtrans',
                 'points' => '5',
-                'iteration' => 2,
                 'type' => 'feature'
             ]
         ]);

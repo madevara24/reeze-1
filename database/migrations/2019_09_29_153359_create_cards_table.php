@@ -39,7 +39,6 @@ class CreateCardsTable extends Migration
             $table->string('github_branch_name')->nullable();
             $table->longText('description')->nullable();
             $table->enum('points', [1, 3, 5, 8])->nullable();
-            $table->integer('iteration')->nullable();
             $table->enum('type', ['feature', 'bug']);
             $table->timestamps();
         });

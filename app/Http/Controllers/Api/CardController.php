@@ -25,7 +25,6 @@ class CardController extends Controller
                 $query->where('id', $project_id);
         }])
             ->where('project_id', $project_id)
-            ->orderBy('iteration', 'asc')
             ->get();
 
         return $cards;
@@ -60,10 +59,9 @@ class CardController extends Controller
                 'github_branch_name' => null,
                 'description' => $request->description,
                 'points' => $request->points,
-                'iteration' => $request->iteration,
-                'type' => $request->type
+                'type' => strtolower($request->type)
             ]);
-    
+
             ProjectLog::create([
                 'user_id' => $user->id,
                 'project_id' => $project_id,
@@ -76,7 +74,7 @@ class CardController extends Controller
             ]);
     
         }catch(\Exception $e){
-            return response()->json(['errors' => $e->getMessage()], 422);
+            return response()->json(['errors' => "Error"], 422);
         }
        
         return response()->json(['success' => true, 'card' => $card], 201);
@@ -116,7 +114,6 @@ class CardController extends Controller
             $card->requester = $user->id;
             $card->description = $request->description;
             $card->points = $request->points;
-            $card->iteration = $request->iteration;
             $card->type = $request->type;
             $card->save();
     

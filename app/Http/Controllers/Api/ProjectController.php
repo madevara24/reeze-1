@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Card;
 use App\Model\CardLog;
 use App\Model\Project;
+use App\Model\ProjectLog;
 use App\Model\ProjectMember;
 use App\User;
 use Illuminate\Http\Request;
@@ -272,5 +273,11 @@ class ProjectController extends Controller
 
         $project = Project::where('id', $project_id)->first();
         return response()->json(['success' => true, 'data' => $project]);
+    }
+
+    public function log($project_id){
+        $user = JWTAuth::parseToken()->authenticate();
+        $projectLogs = ProjectLog::where('project_id', $project_id)->get();
+        return response()->json(['success' => true, 'data' => $projectLogs]);
     }
 }

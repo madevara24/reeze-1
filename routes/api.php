@@ -31,6 +31,7 @@ Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function(){
             Route::middleware('user.project')->group(function(){
                 Route::get('/{project_id}', 'ProjectController@show');
                 Route::get('/{project_id}/members', 'ProjectController@member');
+                Route::get('/{project_id}/log', 'ProjectController@log');
                 Route::put('/{project_id}/edit', 'ProjectController@update');
                 Route::delete('/{project_id}/delete', 'ProjectController@destroy');
                 Route::post('/{project_id}/release', 'ProjectController@release');
