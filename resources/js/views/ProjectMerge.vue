@@ -6,7 +6,7 @@
             <v-card-text>
               <v-row>
                 <div class="pl-3">
-                  <v-btn depressed small color="primary">Release</v-btn>
+                  <v-btn depressed small color="primary" @click="onPressReleaseButton()">Release</v-btn>
                 </div>
               </v-row>
               <v-row>
@@ -26,7 +26,7 @@
                     </thead>
                     <tbody>
                       <tr v-for="item in cards" :key="item.id">
-                        <td>Checklist</td>
+                        <td><v-checkbox v-model="mergeSelect" :value=item.id></v-checkbox></td>
                         <td>{{ item.id }}</td>
                         <td>{{ item.type }}</td>
                         <td>{{ item.name }}</td>
@@ -85,11 +85,15 @@ export default {
           owner: 'Julian',
           state: 'Accepted',
         },
-      ]
+      ],
+      mergeSelect: []
     }
   },
   methods:{
-
+    onPressReleaseButton(){
+      console.log(this.mergeSelect);
+      console.log('ping');
+    }
   }
 }
 </script>
