@@ -76,10 +76,10 @@ class CardController extends Controller
             ]);
     
         }catch(\Exception $e){
-            return response()->json(['errors' => $e], 422);
+            return response()->json(['errors' => $e->getMessage()], 422);
         }
        
-        return response()->json(['success' => true], 201);
+        return response()->json(['success' => true, 'card' => $card], 201);
     }
 
     /**
