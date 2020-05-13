@@ -11,7 +11,7 @@
         <template v-if="!isExtended">
           <span class="subtitle-1 d-flex align-center board-card-title">{{card.title}}</span>
           <v-spacer></v-spacer>
-          <v-btn class="mt-2 mr-2 d-flex align-right" color="primary" dark small>State</v-btn>
+          <v-btn class="mt-2 mr-2 d-flex align-right" color="primary" dark small>{{cardState}}</v-btn>
         </template>
         <template v-if="isExtended">
           <v-text-field v-model="title" class="mr-3" value="title"></v-text-field>
@@ -41,7 +41,7 @@
             <v-col cols="7" class="py-1 my-1">
               <v-select dense v-model="cardState" :items="cardStates" hide-details class="pt-1">
                 <template v-slot:prepend>
-                  <v-btn color="primary" dark small>State</v-btn>
+                  <v-btn color="primary" dark small>{{cardState}}</v-btn>
                 </template>
               </v-select>
             </v-col>
@@ -135,7 +135,7 @@ export default {
         isUp: false,
         message: null
       },
-      cardState: "",
+      cardState: this.card.state,
       cardStates: [
         "Created",
         "Planned",

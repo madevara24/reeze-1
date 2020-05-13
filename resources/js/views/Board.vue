@@ -164,7 +164,8 @@ export default {
   watch: {
     cards: function() {
       this.list1 = this.cards;
-    },
+      this.checkState();
+    }
   },
   methods: {
     getUser() {
@@ -244,6 +245,21 @@ export default {
     },
     onListUpdate(newCardData) {
       this.list1.push(newCardData);
+    },
+    checkState() {
+      if (this.list1 !== undefined) {
+        for (let i = 0; i < this.list1.length; i++) {
+          if (this.list1[i].state !== "Created") {
+            if(this.list1[i].state === "Finished" || this.list1[i].state === "Released")
+            {
+              this.list3.push(this.list1[i]);
+            }else{
+              this.list2.push(this.list1[i]);
+            }
+            this.list1.splice(i, 1);
+          }
+        }
+      }
     }
   },
   components: {

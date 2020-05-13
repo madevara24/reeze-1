@@ -21,11 +21,16 @@ class CardController extends Controller
      */
     public function index($project_id)
     {
-        $cards = Card::with(['project' => function($query) use ($project_id){
-                $query->where('id', $project_id);
+        $cards = Card::with(['project' => function ($query) use ($project_id) {
+            $query->where('id', $project_id);
         }])
             ->where('project_id', $project_id)
             ->get();
+
+        foreach($cards as $card){
+            $cardState = CardLog::where('card_id', $card->id)->latest()->first()->state;
+            $card->state = ucfirst($cardState);
+        }
 
         return $cards;
     }
@@ -39,18 +44,17 @@ class CardController extends Controller
     public function store(Request $request, $project_id)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'title' => 'required',
             'description' => 'required|max:255',
             'type' => 'required'
         ]);
 
-        if($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
 
-        try{
+        try {
             $card = Card::create([
                 'title' => $request->title,
                 'project_id' => $project_id,
@@ -65,18 +69,17 @@ class CardController extends Controller
             ProjectLog::create([
                 'user_id' => $user->id,
                 'project_id' => $project_id,
-                'log' => $user->name . ' created a card with title ' . "'". $card->title . "'" .' at ' . $card->created_at->format('Y-m-d H:i:s')
+                'log' => $user->name . ' created a card with title ' . "'" . $card->title . "'" . ' at ' . $card->created_at->format('Y-m-d H:i:s')
             ]);
-    
+
             CardLog::create([
                 'card_id' => $card->id,
                 'state' => 'created'
             ]);
-    
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json(['errors' => "Error"], 422);
         }
-       
+
         return response()->json(['success' => true, 'card' => $card], 201);
     }
 
@@ -91,23 +94,22 @@ class CardController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
         $card = Card::find($card_id);
-        if(is_null($card)){
+        if (is_null($card)) {
             return abort(404);
         }
 
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'title' => 'required',
             'description' => 'required|max:255',
             'points' => 'required|numeric',
             'type' => 'required'
         ]);
 
-        if($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
 
-        try{
+        try {
             $card->title = $request->title;
             $card->github_branch_name = $request->github_branch_name;
             $card->owner = $request->owner;
@@ -116,16 +118,16 @@ class CardController extends Controller
             $card->points = $request->points;
             $card->type = $request->type;
             $card->save();
-    
+
             ProjectLog::create([
                 'user_id' => $user->id,
                 'project_id' => $project_id,
-                'log' => $user->name . ' updated a card with title ' . "'". $card->title . "'" .' at ' . $card->created_at->format('Y-m-d H:i:s')
+                'log' => $user->name . ' updated a card with title ' . "'" . $card->title . "'" . ' at ' . $card->created_at->format('Y-m-d H:i:s')
             ]);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json(['errors' => $e], 422);
         }
-        
+
 
         return response()->json(['success' => true], 204);
     }
@@ -141,42 +143,42 @@ class CardController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $card = Card::find($card_id);
 
-        try{
+        try {
             ProjectLog::create([
                 'user_id' => $user->id,
                 'project_id' => $project_id,
-                'log' => $user->name . ' deleted a card with title ' . "'". $card->title . "'" .' at ' . $card->created_at->format('Y-m-d H:i:s')
+                'log' => $user->name . ' deleted a card with title ' . "'" . $card->title . "'" . ' at ' . $card->created_at->format('Y-m-d H:i:s')
             ]);
-    
+
             $card->delete();
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json(['errors' => $e], 422);
         }
 
         return response()->json(['success' => true], 204);
     }
 
-    public function createGithubBranch(Request $request, $project_id, $card_id){
+    public function createGithubBranch(Request $request, $project_id, $card_id)
+    {
         $user = JWTAuth::parseToken()->authenticate();
         $project = Project::find($project_id);
         $card = Card::find($card_id);
-        
+
         $branchName = ApiGithubHelper::createGithubBranch($user, $project, $request->branch_name);
-        
-        try{
+
+        try {
             $card->github_branch_name = $branchName;
             $card->save();
 
             ProjectLog::create([
                 'user_id' => $user->id,
                 'project_id' => $project_id,
-                'log' => $user->name . ' create a branch ' . $branchName . 'in card ' . "'". $card->title . "'" .' at ' . $card->created_at->format('Y-m-d H:i:s')
+                'log' => $user->name . ' create a branch ' . $branchName . 'in card ' . "'" . $card->title . "'" . ' at ' . $card->created_at->format('Y-m-d H:i:s')
             ]);
-        }catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return response()->json(['errors' => $e], 422);
         }
-        
+
         return response()->json(['success' => 'Branch ' . $branchName . ' has successfully created.'], 201);
     }
 
@@ -185,7 +187,7 @@ class CardController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $card = Card::find($card_id);
 
-        try{
+        try {
             CardLog::create([
                 'card_id' => $card->id,
                 'state' => $request->state
@@ -194,9 +196,9 @@ class CardController extends Controller
             ProjectLog::create([
                 'user_id' => $user->id,
                 'project_id' => $project_id,
-                'log' => $user->name . ' has change state of card ' . "'". $card->title . "'" .' to ' . $request->state . ' at ' . $card->created_at->format('Y-m-d H:i:s')
+                'log' => $user->name . ' has change state of card ' . "'" . $card->title . "'" . ' to ' . $request->state . ' at ' . $card->created_at->format('Y-m-d H:i:s')
             ]);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json(['errors' => $e], 422);
         }
 

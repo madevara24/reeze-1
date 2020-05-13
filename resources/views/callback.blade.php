@@ -6,9 +6,7 @@
   </body>
   <script>
     localStorage.setItem('token', "{{$token}}")
-    localStorage.setItem('user', JSON.stringify({!! $user !!}))
     window.location.href = "/"
-
   </script>
 </head>
 <body>
