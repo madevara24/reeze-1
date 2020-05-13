@@ -8,8 +8,7 @@ export default new Vuex.Store({
     state:{
         //user
         user:{
-            isLogin: false,
-            credentials: null
+            isLogin: false
         },
     },
     methods: {
@@ -18,20 +17,12 @@ export default new Vuex.Store({
         //user
         getIsLogin(state){
             return state.user.isLogin
-        },
-        //credentials
-        getUser(state){
-            return state.user.credentials
         }
     },
     mutations:{
         //users
         setLogin(state, login){
             state.user.isLogin = login
-        },
-        //credentials
-        setUser(state, user){
-            state.user.credentials = user
         }
     }
 })

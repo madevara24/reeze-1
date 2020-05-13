@@ -9,26 +9,19 @@
           </v-btn>
         </template>
         <template v-if="!isExtended">
-          <span class="subtitle-1 d-flex align-center board-card-title">{{title}}</span>
+          <span class="subtitle-1 d-flex align-center board-card-title">{{card.title}}</span>
           <v-spacer></v-spacer>
           <v-btn class="mt-2 mr-2 d-flex align-right" color="primary" dark small>State</v-btn>
         </template>
         <template v-if="isExtended">
-          <v-text-field v-model="title" class="mr-3"></v-text-field>
+          <v-text-field v-model="title" class="mr-3" value="title"></v-text-field>
         </template>
       </v-row>
       <template v-if="isExtended">
         <v-form>
           <v-row class="my-n3">
             <v-col cols="12">
-              <v-text-field
-                class="ml-2"
-                single-line
-                dense
-                readonly
-                v-model="id"
-                hide-details
-              >
+              <v-text-field class="ml-2" single-line dense readonly v-model="card.id" hide-details>
                 <template v-slot:append-outer>
                   <v-btn icon @click="copyCardId()">
                     <v-icon>file_copy</v-icon>
@@ -38,7 +31,7 @@
                   </v-btn>
                 </template>
               </v-text-field>
-              <input type="hidden" id="cardIdSelector" :value="id" />
+              <input type="hidden" id="cardIdSelector" :value="card.id" />
             </v-col>
           </v-row>
           <v-row class="my-n3">
@@ -46,7 +39,7 @@
               <div class="caption">State</div>
             </v-col>
             <v-col cols="7" class="py-1 my-1">
-              <v-select dense :items="select.cardStates" hide-details class="pt-1">
+              <v-select dense v-model="cardState" :items="cardStates" hide-details class="pt-1">
                 <template v-slot:prepend>
                   <v-btn color="primary" dark small>State</v-btn>
                 </template>
@@ -58,7 +51,7 @@
               <div class="caption">Card Type</div>
             </v-col>
             <v-col cols="7" class="py-1 my-1">
-              <v-select dense :items="select.storyTypes" hide-details class="pt-1"></v-select>
+              <v-select dense v-model="type" :items="types" hide-details class="pt-1"></v-select>
             </v-col>
           </v-row>
           <v-row class="my-n3">
@@ -66,7 +59,7 @@
               <div class="caption">Points</div>
             </v-col>
             <v-col cols="7" class="py-1 my-1">
-              <v-select dense :items="select.points" hide-details class="pt-1"></v-select>
+              <v-select dense v-model="point" :items="points" hide-details class="pt-1"></v-select>
             </v-col>
           </v-row>
           <v-row class="my-n3">
@@ -74,7 +67,14 @@
               <div class="caption">Requester</div>
             </v-col>
             <v-col cols="7" class="py-1 my-1">
-              <v-select dense :items="select.teamMembers" hide-details class="pt-1"></v-select>
+              <v-select
+                dense
+                v-model="requester"
+                item-text="name"
+                item-value="id"
+                :items="selectedRequester"
+                class="pt-1"
+              ></v-select>
             </v-col>
           </v-row>
           <v-row class="my-n3">
@@ -82,7 +82,15 @@
               <div class="caption">Owner</div>
             </v-col>
             <v-col cols="7" class="py-1 my-1">
-              <v-select dense :items="select.teamMembers" hide-details class="pt-1"></v-select>
+              <v-select
+                dense
+                v-model="owner"
+                :items="projectMembers"
+                item-text="username"
+                item-value="user_id"
+                hide-details
+                class="pt-1"
+              ></v-select>
             </v-col>
           </v-row>
           <v-row class="my-1">
@@ -90,16 +98,13 @@
               <div class="caption">Branch</div>
             </v-col>
             <v-col cols="7" class="py-1 my-1">
-              <v-select dense :items="select.branches" hide-details class="pt-1"></v-select>
+              <v-select dense hide-details class="pt-1"></v-select>
             </v-col>
           </v-row>
           <v-row class>
             <v-col cols="12">
               <div class="caption">Description</div>
-              <v-textarea
-                outlined
-                value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
-              ></v-textarea>
+              <v-textarea v-model="description" outlined></v-textarea>
             </v-col>
           </v-row>
         </v-form>
@@ -114,60 +119,111 @@
 <script>
 /*eslint-disable */
 export default {
-    props:{
-        id: Number,
-        title: String
-    },
-    data() {
-        return {
-            isExtended: false,
-            copyCardIdSnackbar: {
-                isUp: false,
-                message: null
-            },
-            select: {
-                cardStates: ['Created','Planned','Started','Finished','Accepted','Rejected','Released'],
-                storyTypes: ['Feature','Bug'],
-                points: [0,1,3,5,8],
-                teamMembers: ['Devara','Zainokta','Masjul','Subosko','Sendiqi'],
-                branches: ['#194772-feature/make-auth','#194764-feature/make-dashboard','#194777-bug/navbar-button']
-            }
-        }
-    },
-    methods: {
-        copyCardId(){
-            console.log('Click copy')
-            let copiedCardId = document.querySelector('#cardIdSelector')
-            copiedCardId.setAttribute('type', 'text')
-            copiedCardId.select()
+  created() {
+    this.owner = { user_id: this.card.owner, username: "" };
+    this.getRequesterCreds();
+  },
+  props: {
+    card: Object,
+    projectMembers: Array,
+    user: Object
+  },
+  data() {
+    return {
+      isExtended: false,
+      copyCardIdSnackbar: {
+        isUp: false,
+        message: null
+      },
+      cardState: "",
+      cardStates: [
+        "Created",
+        "Planned",
+        "Started",
+        "Finished",
+        "Accepted",
+        "Rejected",
+        "Released"
+      ],
+      point: parseInt(this.card.points),
+      points: [0, 1, 3, 5, 8],
+      title: this.card.title,
+      description: this.card.description,
+      selectedRequester: "",
+      requester: null,
+      owner: "",
+      type: this.card.type.charAt(0).toUpperCase() + this.card.type.slice(1),
+      types: ["Feature", "Bug"]
+    };
+  },
+  methods: {
+    copyCardId() {
+      let copiedCardId = document.querySelector("#cardIdSelector");
+      copiedCardId.setAttribute("type", "text");
+      copiedCardId.select();
 
-            try {
-                var success = document.execCommand('copy')
-                var message = success ? 'successful' : 'unsuccessful';
-                this.copyCardIdSnackbar.message = 'Card ID copied to clipboard'
-            } catch (error) {
-                this.copyCardIdSnackbar.message = 'Fail to copy Card ID'
-            }
-            copiedCardId.setAttribute('type', 'hidden')
-            window.getSelection().removeAllRanges()
-            this.copyCardIdSnackbar.isUp = true
-            console.log(this.copyCardIdSnackbar)
-        }
-
+      try {
+        var success = document.execCommand("copy");
+        var message = success ? "successful" : "unsuccessful";
+        this.copyCardIdSnackbar.message = "Card ID copied to clipboard";
+      } catch (error) {
+        this.copyCardIdSnackbar.message = "Fail to copy Card ID";
+      }
+      copiedCardId.setAttribute("type", "hidden");
+      window.getSelection().removeAllRanges();
+      this.copyCardIdSnackbar.isUp = true;
     },
-}
+    getRequesterCreds() {
+      let token = localStorage.getItem("token");
+      let selectedProjectId = this.$route.params.projectId;
+
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      };
+
+      this.axios
+        .get(`${this.appUrl}/api/v1/user/${this.card.requester}`, {
+          headers
+        })
+        .then(response => {
+          this.requester = {
+            id: response.data.data.user_id,
+            name: response.data.data.username
+          };
+
+          this.selectedRequester = [this.requester];
+        });
+    }
+  },
+  computed: {
+    upperCaseWord: {
+      get() {
+        return this.card.type.charAt(0).toUpperCase() + this.card.type.slice(1);
+      },
+      set(value) {
+        this.value = value;
+      }
+    }
+  },
+  watch: {
+    user: function(value) {
+      this.user = value;
+    }
+  }
+};
 </script>
 
 <style scoped>
-    .board-card{
-        padding: 10px 10px;
-    }
+.board-card {
+  padding: 10px 10px;
+}
 
-    .board-card-title{
-        display: inline-block;
-        max-width: 60%;
-        white-space: nowrap;
-        overflow: hidden !important;
-        text-overflow: ellipsis;
-    }
+.board-card-title {
+  display: inline-block;
+  max-width: 60%;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
 </style>

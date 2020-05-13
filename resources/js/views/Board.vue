@@ -20,7 +20,13 @@
             type="transition"
             :name="!drag ? 'flip-list' : null"
           >
-            <TaskCard v-for="card in list1" :key="card.id" :title="card.title"></TaskCard>
+            <TaskCard
+              v-for="card in list1"
+              :key="card.id"
+              :card="card"
+              :projectMembers="projectMembers"
+              :user="user"
+            ></TaskCard>
           </transition-group>
         </draggable>
       </v-card>
@@ -44,7 +50,13 @@
             type="transition"
             :name="!drag ? 'flip-list' : null"
           >
-            <TaskCard v-for="card in list2" :key="card.id" :title="card.title"></TaskCard>
+            <TaskCard
+              v-for="card in list2"
+              :key="card.id"
+              :card="card"
+              :projectMembers="projectMembers"
+              :user="user"
+            ></TaskCard>
           </transition-group>
         </draggable>
       </v-card>
@@ -68,7 +80,13 @@
             type="transition"
             :name="!drag ? 'flip-list' : null"
           >
-            <TaskCard v-for="card in list3" :key="card.id" :title="card.title"></TaskCard>
+            <TaskCard
+              v-for="card in list3"
+              :key="card.id"
+              :card="card"
+              :projectMembers="projectMembers"
+              :user="user"
+            ></TaskCard>
           </transition-group>
         </draggable>
       </v-card>
@@ -79,7 +97,7 @@
         <v-toolbar-title>History</v-toolbar-title>
       </v-toolbar>
       <v-card class="card-scrollable" flat color="grey">
-        <v-card v-for="projectLog in projectLogs" :key="projectLog.id" class="my-1 mx-2 py-0 px-3 ">
+        <v-card v-for="projectLog in projectLogs" :key="projectLog.id" class="my-1 mx-2 py-0 px-3">
           <v-list-item three-line>
             <v-list-item-content>
               <v-list-item-subtitle class="font-weight-medium">{{projectLog.log}}</v-list-item-subtitle>
@@ -88,7 +106,12 @@
         </v-card>
       </v-card>
     </v-col>
-    <DialogueBoxCreateTask v-model="dialog" @update="onListUpdate" @click="dialog = true"></DialogueBoxCreateTask>
+    <DialogueBoxCreateTask
+      v-model="dialog"
+      @update="onListUpdate"
+      @click="dialog = true"
+      :user="user"
+    ></DialogueBoxCreateTask>
   </v-layout>
 </template>
 
@@ -102,10 +125,13 @@ import DialogueBoxCreateTask from "../components/DialogueBoxCreateTask.vue";
 export default {
   created() {
     this.cards = this.getCards();
+    this.getUser();
     this.getProjectLogs();
+    this.getProjectMembers();
   },
   data() {
     return {
+      user: {},
       dialog: false,
       iceboxColumn: {
         title: "Icebox"
@@ -121,7 +147,8 @@ export default {
       list1: [],
       list2: [],
       list3: [],
-      projectLogs: []
+      projectLogs: [],
+      projectMembers: []
     };
   },
   computed: {
@@ -137,9 +164,26 @@ export default {
   watch: {
     cards: function() {
       this.list1 = this.cards;
-    }
+    },
   },
   methods: {
+    getUser() {
+      let token = localStorage.getItem("token");
+      let selectedProjectId = this.$route.params.projectId;
+
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      };
+
+      this.axios
+        .get(`${this.appUrl}/api/v1/user/`, {
+          headers
+        })
+        .then(response => {
+          this.user = response.data.data;
+        });
+    },
     getCards() {
       let token = localStorage.getItem("token");
       let selectedProjectId = this.$route.params.projectId;
@@ -155,8 +199,7 @@ export default {
         })
         .then(response => {
           this.cards = response.data;
-        })
-        .catch(error => console.log(error));
+        });
     },
     getProjectLogs() {
       let token = localStorage.getItem("token");
@@ -173,9 +216,25 @@ export default {
         })
         .then(response => {
           this.projectLogs = response.data.data;
-          console.log(this.projectLogs);
-        })
-        .catch(error => console.log(error));
+        });
+    },
+    getProjectMembers() {
+      let token = localStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      };
+
+      this.axios
+        .get(
+          `${this.appUrl}/api/v1/project/` +
+            this.$route.params.projectId +
+            "/members",
+          { headers }
+        )
+        .then(response => {
+          this.projectMembers = response.data.data;
+        });
     },
     changeState() {
       console.log("hello");

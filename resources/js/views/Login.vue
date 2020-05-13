@@ -23,13 +23,6 @@ export default {
       this.$router.push({ name: "home" });
     }
   },
-  mounted() {
-    window.addEventListener("message", this.onMessage, false);
-  },
-
-  beforeDestroy() {
-    window.removeEventListener("message", this.onMessage);
-  },
 
   methods: {
     // This method call the function to launch the popup and makes the request to the controller.

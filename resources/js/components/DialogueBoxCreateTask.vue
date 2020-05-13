@@ -85,16 +85,16 @@
 /*eslint-disable */
 export default {
   created() {
-    let user = this.$store.getters.getUser;
-
-    this.requester = { id: user.id, name: user.name };
-    this.selectedRequester = [this.requester];
-
     this.getProjectMembers();
+  },
+  mounted() {
+    this.requester = { id: this.user.id, name: this.user.name };
+    this.selectedRequester = [this.requester];
   },
   props: {
     value: Boolean,
-    list1: Array
+    list1: Array,
+    user: Object
   },
   data() {
     return {
@@ -160,6 +160,14 @@ export default {
           { headers }
         )
         .then(response => (this.projectMembers = response.data.data));
+    }
+  },
+  watch: {
+    user: function(value) {
+      this.user = value;
+      this.requester = { id: this.user.id, name: this.user.name };
+      this.selectedRequester = [this.requester];
+      
     }
   }
 };

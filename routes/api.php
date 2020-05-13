@@ -22,6 +22,7 @@ Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function(){
         Route::get('/list-repo', 'ProjectController@getListRepository');
         Route::post('/logout', 'ApiController@logout');
         Route::prefix('/user')->group(function(){
+            Route::get('/', 'UserController@getAuthUser');
             Route::get('/{user_id}', 'UserController@show');
         });
         Route::prefix('/project')->group(function(){
