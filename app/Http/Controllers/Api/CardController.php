@@ -65,6 +65,8 @@ class CardController extends Controller
                 'points' => $request->points,
                 'type' => strtolower($request->type)
             ]);
+            
+            $card->state = 'Created';
 
             ProjectLog::create([
                 'user_id' => $user->id,
