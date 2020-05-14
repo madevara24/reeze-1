@@ -32,7 +32,7 @@ class ApiController extends Controller
         $token = JWTAuth::fromUser($user);
 
         return view('callback', [
-            'token' => $token,
+            'token' => $token
         ]);
     }
 

@@ -15,7 +15,6 @@ class Card extends Model
         'owner', 
         'requester', 
         'points', 
-        'iteration', 
         'type'
     ];
 

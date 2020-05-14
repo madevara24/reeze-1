@@ -12,7 +12,7 @@
                 <div class="caption">Title</div>
               </v-col>
               <v-col cols="7" class="py-1 my-1">
-                <v-text-field class="mr-3"></v-text-field>
+                <v-text-field v-model="title" class="mr-3"></v-text-field>
               </v-col>
             </v-row>
             <v-row class="my-n3">
@@ -20,7 +20,7 @@
                 <div class="caption">Card Type</div>
               </v-col>
               <v-col cols="7" class="py-1 my-1">
-                <v-select dense :items="type" hide-details class="pt-1"></v-select>
+                <v-select dense v-model="type" :items="types" hide-details class="pt-1"></v-select>
               </v-col>
             </v-row>
             <v-row class="my-n3">
@@ -28,7 +28,7 @@
                 <div class="caption">Points</div>
               </v-col>
               <v-col cols="7" class="py-1 my-1">
-                <v-select dense :items="points" hide-details class="pt-1"></v-select>
+                <v-select dense v-model="point" :items="points" hide-details class="pt-1"></v-select>
               </v-col>
             </v-row>
             <v-row class="my-n3">
@@ -36,7 +36,14 @@
                 <div class="caption">Requester</div>
               </v-col>
               <v-col cols="7" class="py-1 my-1">
-                <v-select dense :items="owner" hide-details class="pt-1"></v-select>
+                <v-select
+                  dense
+                  v-model="requester"
+                  item-text="name"
+                  item-value="id"
+                  :items="selectedRequester"
+                  class="pt-1"
+                ></v-select>
               </v-col>
             </v-row>
             <v-row class="my-n3">
@@ -44,16 +51,21 @@
                 <div class="caption">Owner</div>
               </v-col>
               <v-col cols="7" class="py-1 my-1">
-                <v-select dense :items="owner" hide-details class="pt-1"></v-select>
+                <v-select
+                  dense
+                  v-model="owner"
+                  :items="projectMembers"
+                  item-text="username"
+                  item-value="user_id"
+                  hide-details
+                  class="pt-1"
+                ></v-select>
               </v-col>
             </v-row>
             <v-row class>
               <v-col cols="12">
                 <div class="caption">Description</div>
-                <v-textarea
-                  outlined
-                  value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
-                ></v-textarea>
+                <v-textarea v-model="description" outlined></v-textarea>
               </v-col>
             </v-row>
           </v-form>
@@ -72,45 +84,90 @@
 <script>
 /*eslint-disable */
 export default {
+  created() {
+    this.getProjectMembers();
+  },
+  mounted() {
+    this.requester = { id: this.user.id, name: this.user.name };
+    this.selectedRequester = [this.requester];
+  },
   props: {
     value: Boolean,
-    list1: Array
+    list1: Array,
+    user: Object
   },
   data() {
     return {
-      newCardData: null,
+      point: 0,
       points: [0, 1, 3, 5, 8],
       title: "",
-      github_branch_name: null,
       description: "",
-      owner: [],
-      iteration: 0,
-      type: ["Feature", "Bug"]
+      selectedRequester: "",
+      requester: null,
+      owner: "",
+      projectMembers: [],
+      type: "",
+      types: ["Feature", "Bug"]
     };
   },
   methods: {
     save() {
       let token = localStorage.getItem("token");
       let selectedProjectId = this.$route.params.projectId;
+      let data = {
+        title: this.title,
+        owner: this.owner,
+        description: this.description,
+        points: this.point,
+        type: this.type
+      };
 
       const headers = {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token
       };
 
-      // this.axios
-      //   .post(`${this.appUrl}/api/v1/project/${selectedProjectId}/card/create`, data, { headers })
-      //   .then(response => {
-      //     console.log(response)
-      //   })
-      //   .catch(function(error) {
-      //     console.log(error);
-      //   });
-      // this.$emit("update", this.newCardData);
-      this.$emit("input", false);
+      this.axios
+        .post(
+          `${this.appUrl}/api/v1/project/${selectedProjectId}/card/create`,
+          data,
+          { headers }
+        )
+        .then(response => {
+          let newCardData = response.data.card;
+          this.$emit("update", newCardData);
+          this.$emit("input", false);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
     close() {
       this.$emit("input", false);
+    },
+    getProjectMembers() {
+      let token = localStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      };
+
+      this.axios
+        .get(
+          `${this.appUrl}/api/v1/project/` +
+            this.$route.params.projectId +
+            "/members",
+          { headers }
+        )
+        .then(response => (this.projectMembers = response.data.data));
+    }
+  },
+  watch: {
+    user: function(value) {
+      this.user = value;
+      this.requester = { id: this.user.id, name: this.user.name };
+      this.selectedRequester = [this.requester];
+      
     }
   }
 };

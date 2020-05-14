@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 import Vue from 'vue'
 import Router from 'vue-router'
+import axios from 'axios'
 import store from '../store/store'
 
 import Home from '../views/Home.vue'
@@ -19,87 +20,100 @@ import middlewarePipeline from './middlewarePipeline'
 Vue.use(Router)
 
 const router = new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Home,
-      meta: { 
-        middleware:[
-          auth
-        ]
-      }
-    },
-    {
-      path: '/project/:projectId',
-      name: 'project',
-      component: Project,
-      meta: { 
-        middleware:[
-          auth
-        ]
-      },
-      children: [
-        {
-          path: 'board',
-          name: 'board',
-          component: Board
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [{
+            path: '/',
+            name: 'home',
+            component: Home,
+            meta: {
+                middleware: [
+                    auth
+                ]
+            }
         },
         {
-          path: 'teamAnalytics',
-          name: 'teamAnalytics',
-          component: TeamAnalytics
+            path: '/project/:projectId',
+            name: 'project',
+            component: Project,
+            meta: {
+                middleware: [
+                    auth
+                ]
+            },
+            children: [{
+                    path: 'board',
+                    name: 'board',
+                    component: Board
+                },
+                {
+                    path: 'teamAnalytics',
+                    name: 'teamAnalytics',
+                    component: TeamAnalytics
+                },
+                {
+                    path: 'personalAnalytics/:personId?',
+                    name: 'personalAnalytics',
+                    component: PersonalAnalytics
+                },
+                {
+                    path: 'projectMerge',
+                    name: 'projectMerge',
+                    component: ProjectMerge
+                },
+                {
+                  path: 'projectSetting',
+                  name: 'projectSetting',
+                  component: ProjectSetting
+                },
+            ]
         },
         {
-          path: 'personalAnalytics/:personId?',
-          name: 'personalAnalytics',
-          component: PersonalAnalytics
+            path: '/login',
+            name: 'login',
+            component: Login,
         },
         {
-          path: 'projectMerge',
-          name: 'projectMerge',
-          component: ProjectMerge
+            path: '/create',
+            name: 'createProject',
+            component: CreateProject,
         },
-        {
-          path: 'projectSetting',
-          name: 'projectSetting',
-          component: ProjectSetting
-        },
-      ]
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: Login,
-    },
-    {
-      path: '/create',
-      name: 'createProject',
-      component: CreateProject,
-    },
-  ]
+    ]
 })
 
 router.beforeEach((to, from, next) => {
-  if (!to.meta.middleware) {
-      return next()
-  }
-  const middleware = to.meta.middleware
+    axios.interceptors.response.use((response) => {
+        return response
+    }, function (error) {
 
-  const context = {
-      to,
-      from,
-      next,
-      store
-  }
+        if (error.response.status === 401) {
+            store.commit("setLogin", false);
+            localStorage.removeItem("token");
+
+            next('/login');
+            return Promise.reject(error);
+        }
+
+        return Promise.reject(error);
+    });
+
+    if (!to.meta.middleware) {
+        return next()
+    }
+    const middleware = to.meta.middleware
+
+    const context = {
+        to,
+        from,
+        next,
+        store
+    }
 
 
-  return middleware[0]({
-      ...context,
-      next: middlewarePipeline(context, middleware, 1)
-  })
+    return middleware[0]({
+        ...context,
+        next: middlewarePipeline(context, middleware, 1)
+    })
 
 })
 

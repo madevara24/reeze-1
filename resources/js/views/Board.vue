@@ -1,80 +1,117 @@
 <template>
   <v-layout>
-      <v-col cols="12" sm="4">
-        <v-toolbar>
-            <v-toolbar-title>Icebox</v-toolbar-title>
-            <v-btn fixed right color="primary" @click="openAddTask">Add Task</v-btn>
-        </v-toolbar>
-        <v-card class="card-scrollable" color="grey">
-          <draggable
-            :list="list1"
-            group="card"
-            v-bind="dragOptions"
-            @change="changeState"
-            @start="drag = true"
-            @end="drag = false"
+    <v-col cols="12" sm="4">
+      <v-toolbar>
+        <v-toolbar-title>Icebox</v-toolbar-title>
+        <v-btn fixed right color="primary" @click="openAddTask">Add Task</v-btn>
+      </v-toolbar>
+      <v-card class="card-scrollable" color="grey">
+        <draggable
+          :list="list1"
+          group="card"
+          v-bind="dragOptions"
+          @change="changeState"
+          @start="drag = true"
+          @end="drag = false"
+        >
+          <transition-group
+            tag="div"
+            class="list-group"
+            type="transition"
+            :name="!drag ? 'flip-list' : null"
           >
-            <transition-group
-              tag="div"
-              class="list-group"
-              type="transition"
-              :name="!drag ? 'flip-list' : null"
-            >
-              <TaskCard v-for="card in list1" :key="card.id" :title="card.title"></TaskCard>
-            </transition-group>
-          </draggable>
-        </v-card>
-      </v-col>
-      <v-col cols="12" sm="4">
-        <v-toolbar>
-          <v-toolbar-title>Current Iteration/Backlog</v-toolbar-title>
-        </v-toolbar>
-        <v-card class="card-scrollable" color="grey">
-          <draggable
-            :list="list2"
-            group="card"
-            v-bind="dragOptions"
-            @change="changeState"
-            @start="drag = true"
-            @end="drag = false"
+            <TaskCard
+              v-for="card in list1"
+              :key="card.id"
+              :card="card"
+              :projectMembers="projectMembers"
+              :user="user"
+            ></TaskCard>
+          </transition-group>
+        </draggable>
+      </v-card>
+    </v-col>
+    <v-col cols="12" sm="4">
+      <v-toolbar>
+        <v-toolbar-title>Current Iteration/Backlog</v-toolbar-title>
+      </v-toolbar>
+      <v-card class="card-scrollable" color="grey">
+        <draggable
+          :list="list2"
+          group="card"
+          v-bind="dragOptions"
+          @change="changeState"
+          @start="drag = true"
+          @end="drag = false"
+        >
+          <transition-group
+            tag="div"
+            class="list-group"
+            type="transition"
+            :name="!drag ? 'flip-list' : null"
           >
-            <transition-group
-              tag="div"
-              class="list-group"
-              type="transition"
-              :name="!drag ? 'flip-list' : null"
-            >
-              <TaskCard v-for="card in list2" :key="card.id" :title="card.title"></TaskCard>
-            </transition-group>
-          </draggable>
-        </v-card>
-      </v-col>
-      <v-col cols="4" sm="4">
-        <v-toolbar>
-          <v-toolbar-title>Done</v-toolbar-title>
-        </v-toolbar>
-        <v-card class="card-scrollable" color="grey">
-          <draggable
-            :list="list3"
-            group="card"
-            v-bind="dragOptions"
-            @change="changeState"
-            @start="drag = true"
-            @end="drag = false"
+            <TaskCard
+              v-for="card in list2"
+              :key="card.id"
+              :card="card"
+              :projectMembers="projectMembers"
+              :user="user"
+            ></TaskCard>
+          </transition-group>
+        </draggable>
+      </v-card>
+    </v-col>
+    <v-col cols="12" sm="4">
+      <v-toolbar>
+        <v-toolbar-title>Done</v-toolbar-title>
+      </v-toolbar>
+      <v-card class="card-scrollable" color="grey">
+        <draggable
+          :list="list3"
+          group="card"
+          v-bind="dragOptions"
+          @change="changeState"
+          @start="drag = true"
+          @end="drag = false"
+        >
+          <transition-group
+            tag="div"
+            class="list-group"
+            type="transition"
+            :name="!drag ? 'flip-list' : null"
           >
-            <transition-group
-              tag="div"
-              class="list-group"
-              type="transition"
-              :name="!drag ? 'flip-list' : null"
-            >
-              <TaskCard v-for="card in list3" :key="card.id" :title="card.title"></TaskCard>
-            </transition-group>
-          </draggable>
-        </v-card>
-      </v-col>
+            <TaskCard
+              v-for="card in list3"
+              :key="card.id"
+              :card="card"
+              :projectMembers="projectMembers"
+              :user="user"
+            ></TaskCard>
+          </transition-group>
+        </draggable>
+      </v-card>
+    </v-col>
 
-      <DialogueBox v-model="dialog" @update="onListUpdate" @click="dialog = true"></DialogueBox>
+    <v-col cols="12" sm="4">
+      <v-toolbar>
+        <v-toolbar-title>History</v-toolbar-title>
+      </v-toolbar>
+      <v-card class="card-scrollable" flat color="grey">
+        <v-card v-for="projectLog in projectLogs" :key="projectLog.id" class="my-1 mx-2 py-0 px-3">
+          <v-list-item three-line>
+            <v-list-item-content>
+              <v-list-item-subtitle class="font-weight-medium">{{projectLog.log}}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-card>
+      </v-card>
+    </v-col>
+    <DialogueBoxCreateTask
+      v-model="dialog"
+      @update="onListUpdate"
+      @click="dialog = true"
+      :user="user"
+    ></DialogueBoxCreateTask>
   </v-layout>
 </template>
 
@@ -83,14 +120,18 @@
 import draggable from "vuedraggable";
 import BoardColumnHeader from "../components/BoardColumnHeader.vue";
 import TaskCard from "../components/TaskCard.vue";
-import DialogueBox from "../components/DialogueBox.vue";
+import DialogueBoxCreateTask from "../components/DialogueBoxCreateTask.vue";
 
 export default {
   created() {
     this.cards = this.getCards();
+    this.getUser();
+    this.getProjectLogs();
+    this.getProjectMembers();
   },
   data() {
     return {
+      user: {},
       dialog: false,
       iceboxColumn: {
         title: "Icebox"
@@ -105,7 +146,9 @@ export default {
       drag: false,
       list1: [],
       list2: [],
-      list3: []
+      list3: [],
+      projectLogs: [],
+      projectMembers: []
     };
   },
   computed: {
@@ -116,14 +159,32 @@ export default {
         disabled: false,
         ghostClass: "ghost"
       };
-    },
+    }
   },
   watch: {
     cards: function() {
       this.list1 = this.cards;
+      this.checkState();
     }
   },
   methods: {
+    getUser() {
+      let token = localStorage.getItem("token");
+      let selectedProjectId = this.$route.params.projectId;
+
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      };
+
+      this.axios
+        .get(`${this.appUrl}/api/v1/user/`, {
+          headers
+        })
+        .then(response => {
+          this.user = response.data.data;
+        });
+    },
     getCards() {
       let token = localStorage.getItem("token");
       let selectedProjectId = this.$route.params.projectId;
@@ -139,24 +200,73 @@ export default {
         })
         .then(response => {
           this.cards = response.data;
+        });
+    },
+    getProjectLogs() {
+      let token = localStorage.getItem("token");
+      let selectedProjectId = this.$route.params.projectId;
+
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      };
+
+      this.axios
+        .get(`${this.appUrl}/api/v1/project/` + selectedProjectId + "/log", {
+          headers
         })
-        .catch(error => console.log(error));
+        .then(response => {
+          this.projectLogs = response.data.data;
+        });
+    },
+    getProjectMembers() {
+      let token = localStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      };
+
+      this.axios
+        .get(
+          `${this.appUrl}/api/v1/project/` +
+            this.$route.params.projectId +
+            "/members",
+          { headers }
+        )
+        .then(response => {
+          this.projectMembers = response.data.data;
+        });
     },
     changeState() {
       console.log("hello");
     },
-    openAddTask(){
+    openAddTask() {
       this.dialog = true;
     },
-    onListUpdate(newCardData){
+    onListUpdate(newCardData) {
       this.list1.push(newCardData);
+    },
+    checkState() {
+      if (this.list1 !== undefined) {
+        for (let i = 0; i < this.list1.length; i++) {
+          if (this.list1[i].state !== "Created") {
+            if(this.list1[i].state === "Finished" || this.list1[i].state === "Released")
+            {
+              this.list3.push(this.list1[i]);
+            }else{
+              this.list2.push(this.list1[i]);
+            }
+            this.list1.splice(i, 1);
+          }
+        }
+      }
     }
   },
   components: {
     BoardColumnHeader,
     TaskCard,
     draggable,
-    DialogueBox
+    DialogueBoxCreateTask
   }
 };
 </script>
@@ -170,5 +280,9 @@ export default {
 .card-scrollable {
   height: 800px;
   overflow-y: auto;
+}
+
+.layout {
+  overflow: auto !important;
 }
 </style>

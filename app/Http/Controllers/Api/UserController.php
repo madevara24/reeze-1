@@ -21,4 +21,10 @@ class UserController extends Controller
             ->where('id', $user_id)->first();
         return response()->json(['success' => true, 'data' => $user_data]);
     }
+
+    public function getAuthUser(){
+        $user = JWTAuth::parseToken()->authenticate();
+
+        return response()->json(['data' => $user]);
+    }
 }
