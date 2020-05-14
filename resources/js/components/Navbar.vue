@@ -68,6 +68,7 @@ export default {
         { id: 2, name: 'Team',  route:"teamAnalytics"},
         { id: 3, name: 'Personal',  route:"personalAnalytics"},
         { id: 4, name: 'Project Merge',  route:"projectMerge"},
+        { id: 5, name: 'Project Setting',  route:"projectSetting"},
       ],
       active_tab: 0,
     }
@@ -111,6 +112,10 @@ export default {
         tab = 1
       }else if(this.$route.path.includes('/personalAnalytics')){
         tab = 2
+      }else if(this.$route.path.includes('/projectMerge')){
+        tab = 3
+      }else if(this.$route.path.includes('/projectSetting')){
+        tab = 4
       }
       return tab;
     }
