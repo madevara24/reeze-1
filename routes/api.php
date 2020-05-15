@@ -38,6 +38,7 @@ Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function(){
                 Route::post('/{project_id}/release', 'ProjectController@release');
 
                 Route::get('{project_id}/cards', 'CardController@index');
+                Route::get('{project_id}/cards/accepted', 'CardController@showCardReadyToRelease');
                 Route::post('{project_id}/card/create', 'CardController@store');
                 Route::put('{project_id}/card/{card_id}/edit', 'CardController@update');
                 Route::delete('{project_id}/card/{card_id}/delete', 'CardController@destroy');

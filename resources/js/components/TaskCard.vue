@@ -157,7 +157,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="close">Close</v-btn>
-          <v-btn class="primary" text @click="save">Save</v-btn>
+          <v-btn class="primary" text @click="attachBranch">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -194,8 +194,7 @@ export default {
         "Started",
         "Finished",
         "Accepted",
-        "Rejected",
-        "Released"
+        "Rejected"
       ],
       point: parseInt(this.card.points),
       points: [0, 1, 3, 5, 8],
@@ -265,7 +264,7 @@ export default {
           this.loading = false;
         });
     },
-    save() {
+    attachBranch() {
       let token = localStorage.getItem("token");
       let selectedProjectId = this.$route.params.projectId;
 

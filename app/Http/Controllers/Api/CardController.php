@@ -9,6 +9,7 @@ use App\Model\Card;
 use App\Model\CardLog;
 use App\Model\Project;
 use App\Model\ProjectLog;
+use App\User;
 use Illuminate\Http\Request;
 use JWTAuth;
 use Validator;
@@ -220,5 +221,32 @@ class CardController extends Controller
         }
 
         return response()->json(['success' => 'State updated', 'data' => $card], 204);
+    }
+
+    public function showCardReadyToRelease($project_id)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $cards = Card::where('project_id', $project_id)->get();
+
+        $acceptedCards = $cards->filter(function ($card) {
+            $cardLog = CardLog::where('card_id', $card->id)->latest()->first();
+
+            if (isset($cardLog->state)) {
+                $state = $cardLog->state;
+
+                $requester = User::find($card->requester)->name;
+                $owner = User::find($card->owner)->name;
+
+                $card->requester = $requester;
+                $card->owner = $owner;
+                $card->state = $state;
+
+                return $state === 'accepted';
+            }
+            return [];
+        })->values()->all();
+
+        return response()->json($acceptedCards, 200);
     }
 }

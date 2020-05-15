@@ -174,26 +174,7 @@ export default {
   watch: {
     cards: function() {
       this.list1 = this.cards;
-    },
-    list1: function() {
-      if (this.list1 !== undefined) {
-        let result = this.list1.filter(function(element) {
-          if (element.state == "Finished" || element.state == "Released") {
-            return element;
-          }
-        });
-        // for(let i = 0; i < result.length; i++){
-        //     this.list3.push(result[i]);
-        // }
-      }
-    },
-    list2: function() {
-      if (this.list2 !== undefined) {
-      }
-    },
-    list3: function() {
-      if (this.list3 !== undefined) {
-      }
+      this.checkState();
     }
   },
   methods: {
@@ -273,7 +254,6 @@ export default {
           element.state = cardData.state;
         }
       });
-      console.log(this.cards);
     },
     onCardUpdate(cardData) {
       this.cards.forEach(function(element) {
@@ -294,6 +274,23 @@ export default {
     },
     onListUpdate(newCardData) {
       this.list1.push(newCardData);
+    },
+    checkState() {
+      if (this.list1 !== undefined) {
+        for (let i = 0; i < this.list1.length; i++) {
+          if (this.list1[i].state !== "Created") {
+            if (
+              this.list1[i].state === "Finished" ||
+              this.list1[i].state === "Released"
+            ) {
+              this.list3.push(this.list1[i]);
+            } else {
+              this.list2.push(this.list1[i]);
+            }
+            this.list1.splice(i, 1);
+          }
+        }
+      }
     }
   },
   components: {

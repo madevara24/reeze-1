@@ -14,6 +14,9 @@
           </v-row>
 
           <v-row>
+            <v-col cols="12" md="4">
+              <v-text-field v-model="version" label="Project Version" readonly></v-text-field>
+            </v-col>
             <v-col cols="12" md="8">
               <v-text-field v-model="description" label="Description" required></v-text-field>
             </v-col>
@@ -79,7 +82,7 @@ export default {
         { text: "Saturday", day: 6 },
         { text: "Sunday", day: 0 }
       ],
-
+      version: "",
       repository: ""
     };
   },
@@ -98,7 +101,6 @@ export default {
           headers
         })
         .then(response => {
-          console.log(response.data.data);
           this.name = response.data.data.name;
           this.description = response.data.data.description;
           this.sprintDuration = {
@@ -110,6 +112,7 @@ export default {
             day: response.data.data.sprint_start_day
           };
           this.repository = response.data.data.repository;
+          this.version = response.data.data.version;
         });
     },
     submit() {

@@ -87,12 +87,12 @@ class ProjectController extends Controller
             ]);
             $projectMember = new ProjectMember(['user_id' => $user->id]);
             $project->project_member()->save($projectMember);
-            DB::commit();   
+            DB::commit();
         }catch(\Exception $e){
             DB::rollback();
             return response()->json(['errors' => $e], 422);
         }
-        
+
         return response()->json(['success' => true], 201);
     }
 
@@ -128,7 +128,7 @@ class ProjectController extends Controller
                 'sprint_duration' => $request->sprint_duration,
                 'sprint_start_day' => $request->sprint_start_day
             ]);
-            DB::commit();   
+            DB::commit();
         }catch(\Exception $e){
             DB::rollback();
             return response()->json(['errors' => $e], 422);
@@ -166,7 +166,7 @@ class ProjectController extends Controller
 
         //Get Project Release Type (Major/Minor/Patch)
         $releaseType = $request->release_type;
-        
+
         if($releaseType === "Major")
         {
             //Split project version
@@ -204,12 +204,12 @@ class ProjectController extends Controller
 
         $releaseBranchName = 'release-'. $project->version;
         $releaseBranch = ApiGithubHelper::showGithubBranch($user, $project, $releaseBranchName);
-        
+
         //Check if branch already exists
         if(is_null($releaseBranch)){
             $releaseBranch = ApiGithubHelper::createReleaseBranch($user, $project);
         }
-        
+
         $statusMergeBranch = null;
 
         for($i = 0; $i < $branchCount; $i++)
@@ -233,11 +233,11 @@ class ProjectController extends Controller
                 }else{
                     array_push($pullRequest, ApiGithubHelper::createPullRequest($user, $project, $request->card_branch[$i], $releaseBranchName));
                 }
-                
+
                 if(!empty($pullRequest))
                 {
                     $statusMergeBranch = ApiGithubHelper::mergeGithubBranch($user, $project, $pullRequest[0], $releaseBranch);
-                    
+
                     if($statusMergeBranch['merge'] !== null)
                     {
                         CardLog::create([
@@ -247,7 +247,7 @@ class ProjectController extends Controller
                         //Final merge release
                         $pullRequest = ApiGithubHelper::createPullRequest($user, $project, $releaseBranchName, 'master');
                         $statusMergeMaster = ApiGithubHelper::mergeGithubBranch($user, $project, $pullRequest);
-                        
+
                         if($statusMergeMaster['merge'] !== null)
                         {
                             $project->save();
