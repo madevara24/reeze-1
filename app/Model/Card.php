@@ -7,16 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class Card extends Model
 {
     protected $table = 'cards';
+    public $incrementing = false;
     protected $fillable = [
-        'title', 
+        'id',
+        'title',
         'project_id',
         'github_branch_name',
-        'description', 
-        'owner', 
-        'requester', 
-        'points', 
+        'description',
+        'owner',
+        'requester',
+        'points',
         'type'
     ];
+
 
     public function project()
     {
@@ -31,5 +34,10 @@ class Card extends Model
     public function requester()
     {
         return $this->belongsTo(\App\User::class, 'requester', 'id');
+    }
+
+    public function cardLog()
+    {
+        return $this->hasMany(CardLog::class, 'card_id', 'id');
     }
 }

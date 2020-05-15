@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiGithubHelper;
+use App\Helpers\CardHelper;
 use App\Http\Controllers\Controller;
 use App\Model\Card;
 use App\Model\CardLog;
@@ -27,7 +28,7 @@ class CardController extends Controller
             ->where('project_id', $project_id)
             ->get();
 
-        foreach($cards as $card){
+        foreach ($cards as $card) {
             $cardState = CardLog::where('card_id', $card->id)->latest()->first()->state;
             $card->state = ucfirst($cardState);
         }
@@ -54,8 +55,11 @@ class CardController extends Controller
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
 
+        $randomedId = CardHelper::randomNumber();
+
         try {
             $card = Card::create([
+                'id' => $randomedId,
                 'title' => $request->title,
                 'project_id' => $project_id,
                 'owner' => $request->owner,
@@ -65,7 +69,7 @@ class CardController extends Controller
                 'points' => $request->points,
                 'type' => strtolower($request->type)
             ]);
-            
+
             $card->state = 'Created';
 
             ProjectLog::create([
@@ -79,7 +83,7 @@ class CardController extends Controller
                 'state' => 'created'
             ]);
         } catch (\Exception $e) {
-            return response()->json(['errors' => "Error"], 422);
+            return response()->json(['errors' => $e], 422);
         }
 
         return response()->json(['success' => true, 'card' => $card], 201);
@@ -131,7 +135,7 @@ class CardController extends Controller
         }
 
 
-        return response()->json(['success' => true], 204);
+        return response()->json(['success' => true, 'data' => $card], 204);
     }
 
     /**
@@ -166,22 +170,32 @@ class CardController extends Controller
         $project = Project::find($project_id);
         $card = Card::find($card_id);
 
-        $branchName = ApiGithubHelper::createGithubBranch($user, $project, $request->branch_name);
+        $validator = Validator::make($request->all(), [
+            'branch_name' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
+        $branchName = $card->id . '-' . $request->branch_name;
+
+        $finalBranchName = ApiGithubHelper::createGithubBranch($user, $project, $branchName);
 
         try {
-            $card->github_branch_name = $branchName;
+            $card->github_branch_name = $finalBranchName;
             $card->save();
 
             ProjectLog::create([
                 'user_id' => $user->id,
                 'project_id' => $project_id,
-                'log' => $user->name . ' create a branch ' . $branchName . 'in card ' . "'" . $card->title . "'" . ' at ' . $card->created_at->format('Y-m-d H:i:s')
+                'log' => $user->name . ' create a branch ' . $finalBranchName . 'in card ' . "'" . $card->title . "'" . ' at ' . $card->created_at->format('Y-m-d H:i:s')
             ]);
         } catch (\Exception $e) {
             return response()->json(['errors' => $e], 422);
         }
 
-        return response()->json(['success' => 'Branch ' . $branchName . ' has successfully created.'], 201);
+        return response()->json(['success' => 'Branch ' . $finalBranchName . ' has successfully created.', 'data' => $finalBranchName], 201);
     }
 
     public function updateCardState(Request $request, $project_id, $card_id)
@@ -192,8 +206,9 @@ class CardController extends Controller
         try {
             CardLog::create([
                 'card_id' => $card->id,
-                'state' => $request->state
+                'state' => strtolower($request->state)
             ]);
+            $card->state = strtolower($request->state);
 
             ProjectLog::create([
                 'user_id' => $user->id,
@@ -204,6 +219,6 @@ class CardController extends Controller
             return response()->json(['errors' => $e], 422);
         }
 
-        return response()->json(['success' => 'State updated'], 204);
+        return response()->json(['success' => 'State updated', 'data' => $card], 204);
     }
 }

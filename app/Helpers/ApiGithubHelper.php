@@ -26,55 +26,34 @@ class ApiGithubHelper
     {
         Github::authenticate($user->github_token, null, 'http_token');
         $repository = explode('/', $projectRepository->repository);
-        
+
         $repositoryUser = $repository[0];
         $repositoryName = $repository[1];
-        
+
         try{
             $branchMasterData = Github::gitData()->references()->show($repositoryUser, $repositoryName, 'heads/master');
-        
-            $newBranchName = ApiGithubHelper::randomNumber($branchName);
-            
-            $param['ref'] = 'refs/heads/' . $newBranchName;
+
+            $param['ref'] = 'refs/heads/' . $branchName;
             $param['sha'] = $branchMasterData['object']['sha'];
-            
+
             Github::gitData()->references()->create($repositoryUser, $repositoryName, $param);
         }catch(\Exception $e){
             return null;
         }
-        
-        return $newBranchName;
+
+        return $branchName;
     }
 
-    private static function randomNumber($branchName)
-    {
-        $randomNumber = mt_rand(100000000, 999999999);
-        
-        $newBranchName = $randomNumber . '-' .$branchName;
 
-        return ApiGithubHelper::checkUnique($newBranchName);
-    }
-
-    private static function checkUnique($newBranchName)
-    {
-        $card = Card::where('github_branch_name', $newBranchName)->first();
-
-        if($card !== null)
-        {
-            ApiGithubHelper::randomNumber($newBranchName);
-        }
-
-        return $newBranchName;
-    }
 
     public static function getOpenPullRequest($user, $projectRepository)
     {
         Github::authenticate($user->github_token, null, 'http_token');
         $repository = explode('/', $projectRepository->repository);
-        
+
         $repositoryUser = $repository[0];
         $repositoryName = $repository[1];
-        
+
         try{
             $pullRequest = Github::pullRequest()->all($repositoryUser, $repositoryName, ['state' => 'open']);
             return $pullRequest;
@@ -88,10 +67,10 @@ class ApiGithubHelper
     {
         Github::authenticate($user->github_token, null, 'http_token');
         $repository = explode('/', $projectRepository->repository);
-        
+
         $repositoryUser = $repository[0];
         $repositoryName = $repository[1];
-        
+
         try{
             $pullRequest = Github::pullRequest()->create($repositoryUser, $repositoryName, [
                 'base' => $baseBranchName,
@@ -110,18 +89,18 @@ class ApiGithubHelper
     {
         Github::authenticate($user->github_token, null, 'http_token');
         $repository = explode('/', $project->repository);
-        
+
         $repositoryUser = $repository[0];
         $repositoryName = $repository[1];
 
         try{
             $branchMasterData = Github::gitData()->references()->show($repositoryUser, $repositoryName, 'heads/master');
-        
+
             $releaseBranchName = 'release-'. $project->version;
-            
+
             $param['ref'] = 'refs/heads/' . $releaseBranchName;
             $param['sha'] = $branchMasterData['object']['sha'];
-            
+
             return Github::gitData()->references()->create($repositoryUser, $repositoryName, $param);
         }catch(\Exception $e){
             return $releaseBranchName;
@@ -132,7 +111,7 @@ class ApiGithubHelper
     {
         Github::authenticate($user->github_token, null, 'http_token');
         $repository = explode('/', $project->repository);
-        
+
         $repositoryUser = $repository[0];
         $repositoryName = $repository[1];
 
@@ -148,7 +127,7 @@ class ApiGithubHelper
     {
         Github::authenticate($user->github_token, null, 'http_token');
         $repository = explode('/', $project->repository);
-        
+
         $repositoryUser = $repository[0];
         $repositoryName = $repository[1];
         try{
@@ -156,7 +135,7 @@ class ApiGithubHelper
             $data['merge'] = $merge;
             $data['code'] = 200;
             $data['message'] = "success";
-            return $data; 
+            return $data;
         }catch(\Exception $e)
         {
             $data['merge'] = null;

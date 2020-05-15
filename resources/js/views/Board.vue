@@ -1,6 +1,11 @@
 <template>
   <v-layout>
-    <v-col cols="12" sm="4">
+    <v-row v-if="loading" align="center" justify="center">
+      <div class="text-center mb-2 mt-2 pb-2 pt-2">
+        <v-progress-circular color="primary" :indeterminate="indeterminate"></v-progress-circular>
+      </div>
+    </v-row>
+    <v-col cols="12" sm="4" v-if="!loading">
       <v-toolbar>
         <v-toolbar-title>Icebox</v-toolbar-title>
         <v-btn fixed right color="primary" @click="openAddTask">Add Task</v-btn>
@@ -10,7 +15,6 @@
           :list="list1"
           group="card"
           v-bind="dragOptions"
-          @change="changeState"
           @start="drag = true"
           @end="drag = false"
         >
@@ -25,13 +29,15 @@
               :key="card.id"
               :card="card"
               :projectMembers="projectMembers"
+              @stateChanged="onChangeState"
+              @updateCard="onCardUpdate"
               :user="user"
             ></TaskCard>
           </transition-group>
         </draggable>
       </v-card>
     </v-col>
-    <v-col cols="12" sm="4">
+    <v-col cols="12" sm="4" v-if="!loading">
       <v-toolbar>
         <v-toolbar-title>Current Iteration/Backlog</v-toolbar-title>
       </v-toolbar>
@@ -40,7 +46,6 @@
           :list="list2"
           group="card"
           v-bind="dragOptions"
-          @change="changeState"
           @start="drag = true"
           @end="drag = false"
         >
@@ -55,13 +60,15 @@
               :key="card.id"
               :card="card"
               :projectMembers="projectMembers"
+              @stateChanged="onChangeState"
+              @updateCard="onCardUpdate"
               :user="user"
             ></TaskCard>
           </transition-group>
         </draggable>
       </v-card>
     </v-col>
-    <v-col cols="12" sm="4">
+    <v-col cols="12" sm="4" v-if="!loading">
       <v-toolbar>
         <v-toolbar-title>Done</v-toolbar-title>
       </v-toolbar>
@@ -70,7 +77,6 @@
           :list="list3"
           group="card"
           v-bind="dragOptions"
-          @change="changeState"
           @start="drag = true"
           @end="drag = false"
         >
@@ -85,6 +91,8 @@
               :key="card.id"
               :card="card"
               :projectMembers="projectMembers"
+              @stateChanged="onChangeState"
+              @updateCard="onCardUpdate"
               :user="user"
             ></TaskCard>
           </transition-group>
@@ -92,7 +100,7 @@
       </v-card>
     </v-col>
 
-    <v-col cols="12" sm="4">
+    <v-col cols="12" sm="4" v-if="!loading">
       <v-toolbar>
         <v-toolbar-title>History</v-toolbar-title>
       </v-toolbar>
@@ -131,6 +139,8 @@ export default {
   },
   data() {
     return {
+      indeterminate: true,
+      loading: true,
       user: {},
       dialog: false,
       iceboxColumn: {
@@ -164,7 +174,26 @@ export default {
   watch: {
     cards: function() {
       this.list1 = this.cards;
-      this.checkState();
+    },
+    list1: function() {
+      if (this.list1 !== undefined) {
+        let result = this.list1.filter(function(element) {
+          if (element.state == "Finished" || element.state == "Released") {
+            return element;
+          }
+        });
+        // for(let i = 0; i < result.length; i++){
+        //     this.list3.push(result[i]);
+        // }
+      }
+    },
+    list2: function() {
+      if (this.list2 !== undefined) {
+      }
+    },
+    list3: function() {
+      if (this.list3 !== undefined) {
+      }
     }
   },
   methods: {
@@ -200,6 +229,7 @@ export default {
         })
         .then(response => {
           this.cards = response.data;
+          this.loading = false;
         });
     },
     getProjectLogs() {
@@ -237,29 +267,33 @@ export default {
           this.projectMembers = response.data.data;
         });
     },
-    changeState() {
-      console.log("hello");
+    onChangeState(cardData) {
+      this.cards.forEach(function(element) {
+        if (element.id == cardData.id) {
+          element.state = cardData.state;
+        }
+      });
+      console.log(this.cards);
+    },
+    onCardUpdate(cardData) {
+      this.cards.forEach(function(element) {
+        if (element.id == cardData.id) {
+          element.title = cardData.data.title;
+          element.owner = cardData.data.owner;
+          element.github_branch_name = cardData.data.githubBranchName;
+          element.description = cardData.data.description;
+          element.points = cardData.data.points;
+          element.type =
+            cardData.data.type.charAt(0).toUpperCase() +
+            cardData.data.type.slice(1);
+        }
+      });
     },
     openAddTask() {
       this.dialog = true;
     },
     onListUpdate(newCardData) {
       this.list1.push(newCardData);
-    },
-    checkState() {
-      if (this.list1 !== undefined) {
-        for (let i = 0; i < this.list1.length; i++) {
-          if (this.list1[i].state !== "Created") {
-            if(this.list1[i].state === "Finished" || this.list1[i].state === "Released")
-            {
-              this.list3.push(this.list1[i]);
-            }else{
-              this.list2.push(this.list1[i]);
-            }
-            this.list1.splice(i, 1);
-          }
-        }
-      }
     }
   },
   components: {

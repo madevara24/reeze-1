@@ -75,7 +75,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" text @click="close">Close</v-btn>
-        <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+        <v-btn class="primary" text @click="save">Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -138,9 +138,6 @@ export default {
           this.$emit("update", newCardData);
           this.$emit("input", false);
         })
-        .catch(function(error) {
-          console.log(error);
-        });
     },
     close() {
       this.$emit("input", false);
@@ -167,7 +164,7 @@ export default {
       this.user = value;
       this.requester = { id: this.user.id, name: this.user.name };
       this.selectedRequester = [this.requester];
-      
+
     }
   }
 };

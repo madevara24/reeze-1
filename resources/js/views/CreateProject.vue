@@ -26,11 +26,25 @@
           </v-row>
           <v-row>
             <v-col cols="12" md="6">
-              <v-text-field v-model="sprintDuration" label="Sprint Duration" required></v-text-field>
+              <v-select
+                :items="sprintDurationOptions"
+                v-model="sprintDuration"
+                item-text="text"
+                item-value="days"
+                label="Sprint Duration"
+                class="input-group--focused"
+              ></v-select>
             </v-col>
 
             <v-col cols="12" md="6">
-              <v-text-field v-model="sprintStartDay" label="Sprint Start Day" required></v-text-field>
+              <v-select
+                :items="sprintStartDayOptions"
+                v-model="sprintStartDay"
+                item-text="text"
+                item-value="day"
+                label="Sprint Start Day"
+                class="input-group--focused"
+              ></v-select>
             </v-col>
           </v-row>
 
@@ -52,8 +66,24 @@ export default {
     return {
       name: "",
       description: "",
-      sprintDuration: 0,
-      sprintStartDay: 0,
+      sprintDuration: { text: "1 Week", days: 7 },
+      sprintDurationOptions: [
+        { text: "1 Week", days: 7 },
+        { text: "2 Weeks", days: 14 },
+        { text: "3 Weeks", days: 21 },
+        { text: "4 Weeks", days: 28 }
+      ],
+
+      sprintStartDay: { text: "Monday", day: 1 },
+      sprintStartDayOptions: [
+        { text: "Monday", day: 1 },
+        { text: "Tuesday", day: 2 },
+        { text: "Wednesday", day: 3 },
+        { text: "Thursday", day: 4 },
+        { text: "Friday", day: 5 },
+        { text: "Saturday", day: 6 },
+        { text: "Sunday", day: 0 }
+      ],
       repository: "",
       repositories: []
     };
