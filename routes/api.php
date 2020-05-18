@@ -14,28 +14,33 @@ use Illuminate\Http\Request;
 */
 
 // Route::prefix('/v1')->middleware('web')->group(function(){
-Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function(){
+Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function () {
     Route::post('/login', 'ApiController@redirectToProvider')->name('api-login');
     Route::get('/github-callback', 'ApiController@handleProviderCallback');
 
-    Route::middleware('jwt.auth')->group(function(){
+    Route::middleware('jwt.auth')->group(function () {
         Route::get('/list-repo', 'ProjectController@getListRepository');
+
+        Route::post('/search', 'ProjectController@searchMember');
         Route::post('/logout', 'ApiController@logout');
-        Route::prefix('/user')->group(function(){
+
+        Route::prefix('/user')->group(function () {
             Route::get('/', 'UserController@getAuthUser');
             Route::get('/{user_id}', 'UserController@show');
         });
-        Route::prefix('/project')->group(function(){
+        Route::prefix('/project')->group(function () {
             Route::get('/', 'ProjectController@index');
             Route::post('/create', 'ProjectController@store');
 
-            Route::middleware('user.project')->group(function(){
+            Route::middleware('user.project')->group(function () {
                 Route::get('/{project_id}', 'ProjectController@show');
                 Route::get('/{project_id}/members', 'ProjectController@member');
                 Route::get('/{project_id}/log', 'ProjectController@log');
                 Route::put('/{project_id}/edit', 'ProjectController@update');
                 Route::delete('/{project_id}/delete', 'ProjectController@destroy');
+                Route::delete('/{project_id}/remove-member', 'ProjectController@removeMember');
                 Route::post('/{project_id}/release', 'ProjectController@release');
+                Route::post('/{project_id}/add-members', 'ProjectController@addMember');
 
                 Route::get('{project_id}/cards', 'CardController@index');
                 Route::get('{project_id}/cards/accepted', 'CardController@showCardReadyToRelease');
@@ -46,7 +51,7 @@ Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function(){
                 Route::post('{project_id}/card/{card_id}/create-branch', 'CardController@createGithubBranch');
                 Route::post('{project_id}/card/{card_id}/update-state', 'CardController@updateCardState');
 
-                Route::prefix('/{project_id}/analytic')->namespace('Analytic')->group(function(){
+                Route::prefix('/{project_id}/analytic')->namespace('Analytic')->group(function () {
                     Route::get('/current-sprint-dates', 'AnalyticController@currentSprintDates');
                     Route::get('/sprint-dates', 'AnalyticController@sprintDates');
                     Route::get('/sprint-progression/{user_id?}', 'AnalyticController@sprintProgression');

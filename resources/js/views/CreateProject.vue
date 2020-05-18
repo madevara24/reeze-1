@@ -66,7 +66,7 @@ export default {
     return {
       name: "",
       description: "",
-      sprintDuration: { text: "1 Week", days: 7 },
+      sprintDuration: 7,
       sprintDurationOptions: [
         { text: "1 Week", days: 7 },
         { text: "2 Weeks", days: 14 },
@@ -74,7 +74,7 @@ export default {
         { text: "4 Weeks", days: 28 }
       ],
 
-      sprintStartDay: { text: "Monday", day: 1 },
+      sprintStartDay: 1,
       sprintStartDayOptions: [
         { text: "Monday", day: 1 },
         { text: "Tuesday", day: 2 },

@@ -9,7 +9,7 @@ class ProjectMember extends Model
     protected $primaryKey = null;
     public $incrementing = false;
     protected $table = 'project_members';
-    protected $fillable = ['user_id'];
+    protected $fillable = ['user_id', 'project_id'];
 
     public function user()
     {

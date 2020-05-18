@@ -109,7 +109,6 @@ export default {
             { headers }
           )
           .then(response => {
-            console.log(response);
             this.copyCardIdSnackbar.message =
               "Branch merged. Have a nice day ^^";
             this.copyCardIdSnackbar.isUp = true;
