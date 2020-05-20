@@ -48,6 +48,7 @@
           </v-row>
           <v-row>
             <v-col cols="12" md="6" class="py-1">
+                <v-label class="pt-1">Sprint Duration</v-label>
               <v-select
                 :items="sprintDurationOptions"
                 v-model="sprintDuration"
@@ -56,12 +57,12 @@
                 background-color="white"
                 dense
                 item-value="days"
-                label="Sprint Duration"
                 class="input-group--focused"
               ></v-select>
             </v-col>
 
             <v-col cols="12" md="6" class="py-1">
+                <v-label class="pt-1">Sprint Start Day</v-label>
               <v-select
                 :items="sprintStartDayOptions"
                 v-model="sprintStartDay"
@@ -70,7 +71,6 @@
                 background-color="white"
                 dense
                 item-value="day"
-                label="Sprint Start Day"
                 class="input-group--focused"
               ></v-select>
             </v-col>
