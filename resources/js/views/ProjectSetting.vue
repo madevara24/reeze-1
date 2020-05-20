@@ -94,9 +94,12 @@
           hide-details
           hide-selected
           solo
+          dense
           chips
           clearable
           multiple
+          flat
+          outlined
           item-text="name"
           item-value="id"
           label="Search github username"
@@ -246,7 +249,7 @@ export default {
         });
     },
     submit() {
-      this.$$refs.form.validate();
+      this.$refs.form.validate();
       if (this.valid) {
         let token = localStorage.getItem("token");
         let selectedProjectId = this.$route.params.projectId;
@@ -275,6 +278,8 @@ export default {
             this.snackbar.message = "Project setting has been updated";
             this.snackbar.isUp = true;
           });
+
+        this.add();
       }
     },
     add() {
@@ -290,19 +295,19 @@ export default {
         Authorization: "Bearer " + token
       };
 
-      this.axios
-        .post(
-          `${this.appUrl}/api/v1/project/${selectedProjectId}/add-members`,
-          data,
-          {
-            headers
-          }
-        )
-        .then(response => {
-          this.snackbar.message = "User(s) has been added to this project.";
-          this.snackbar.isUp = true;
-          this.getProjectMembers();
-        });
+      if (this.user !== null) {
+        this.axios
+          .post(
+            `${this.appUrl}/api/v1/project/${selectedProjectId}/add-members`,
+            data,
+            {
+              headers
+            }
+          )
+          .then(response => {
+            this.getProjectMembers();
+          });
+      }
     },
     deleteMember(item) {
       let token = localStorage.getItem("token");

@@ -51,7 +51,7 @@
           </v-row>
           <v-row>
             <v-col cols="12" md="6" class="py-1">
-                <v-label class="pt-1">Sprint Duration</v-label>
+              <v-label class="pt-1">Sprint Duration</v-label>
               <v-select
                 :items="sprintDurationOptions"
                 v-model="sprintDuration"
@@ -64,7 +64,7 @@
             </v-col>
 
             <v-col cols="12" md="6" class="py-1">
-                <v-label class="pt-1">Sprint Start Day</v-label>
+              <v-label class="pt-1">Sprint Start Day</v-label>
               <v-select
                 :items="sprintStartDayOptions"
                 v-model="sprintStartDay"
@@ -138,13 +138,10 @@ export default {
         .get(`${this.appUrl}/api/v1/list-repo`, { headers })
         .then(response => {
           this.repositories = response.data.data;
-        })
-        .catch(function(error) {
-          console.log(error);
         });
     },
     submit() {
-      this.$refs.form.validate()
+      this.$refs.form.validate();
       if (this.valid) {
         let token = localStorage.getItem("token");
         let data = {
@@ -164,6 +161,7 @@ export default {
           .post(`${this.appUrl}/api/v1/project/create`, data, { headers })
           .then(response => {
             this.$emit("input", false);
+            this.$forceUpdate();
           });
       }
     },
