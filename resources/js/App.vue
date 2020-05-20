@@ -1,10 +1,9 @@
 <template>
   <v-app>
-    
     <Navbar v-if="isLogin"/>
     <v-content >
       <router-view>
-        
+
       </router-view>
     </v-content>
   </v-app>
@@ -28,9 +27,15 @@ export default {
       {
         this.$store.commit('setLogin', true)
       }
-      
+
       return this.$store.getters.getIsLogin
     }
   },
 };
 </script>
+
+<style scoped>
+    .v-application{
+        background-color: #E5E5E5 !important;
+    }
+</style>

@@ -3,7 +3,6 @@
     class="pt-2"
     dense
     solo
-    prepend-icon="folder"
     label="Select Project"
     return-object
     single-line

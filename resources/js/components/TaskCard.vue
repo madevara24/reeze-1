@@ -11,7 +11,7 @@
         <template v-if="!isExtended">
           <span class="subtitle-1 d-flex align-center board-card-title">{{card.title}}</span>
           <v-spacer></v-spacer>
-          <v-btn class="mt-2 mr-2 d-flex align-right" color="primary" dark small>{{cardState}}</v-btn>
+          <v-btn class="mt-2 mr-2 d-flex align-right" depressed disabled color="primary" text small>{{cardState}}</v-btn>
         </template>
         <template v-if="isExtended">
           <v-text-field v-model="title" class="mr-3" value="title"></v-text-field>
@@ -28,9 +28,6 @@
                 <template v-slot:append-outer>
                   <v-btn icon @click="copyCardId()">
                     <v-icon>file_copy</v-icon>
-                  </v-btn>
-                  <v-btn icon>
-                    <v-icon>delete</v-icon>
                   </v-btn>
                 </template>
               </v-text-field>
@@ -51,7 +48,7 @@
                 class="pt-1"
               >
                 <template v-slot:prepend>
-                  <v-btn color="primary" dark small>{{cardState}}</v-btn>
+                  <v-btn color="info" depressed dark small>{{cardState}}</v-btn>
                 </template>
               </v-select>
             </v-col>

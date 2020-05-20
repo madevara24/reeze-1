@@ -1,62 +1,92 @@
 <template>
-  <v-container>
-    <v-card>
-      <v-card-title>Project Setting</v-card-title>
-      <v-card-text>
-        <v-form @submit.prevent>
+  <v-container fluid style="width:75%">
+    <v-row>
+      <v-col cols="12" class="pb-0">
+        <h2>Project Setting</h2>
+      </v-col>
+      <v-col cols="12" class="pt-0">
+        <h4 class="grey--text">{{name}}</h4>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="6">
+        <v-form @submit.prevent ref="form" v-model="valid">
           <v-row>
-            <v-col cols="12" md="8">
-              <v-text-field v-model="name" label="Project Name" required></v-text-field>
+            <v-col cols="12" class="py-1">
+              <v-label class="pt-1">Project Name</v-label>
+              <v-text-field
+                background-color="white"
+                outlined
+                dense
+                :rules="nameRules"
+                v-model="name"
+                placeholder="e.g My Awesome Project"
+                required
+              ></v-text-field>
             </v-col>
-            <v-col cols="12" md="4">
-              <v-text-field v-model="repository" readonly label="Project Repository"></v-text-field>
+          </v-row>
+          <v-row>
+            <v-col cols="12" class="py-1">
+              <v-label class="pt-1">Repository</v-label>
+              <v-text-field outlined readonly background-color="white" v-model="repository"></v-text-field>
             </v-col>
           </v-row>
 
           <v-row>
-            <v-col cols="12" md="4">
-              <v-text-field v-model="version" label="Project Version" readonly></v-text-field>
-            </v-col>
-            <v-col cols="12" md="8">
-              <v-text-field v-model="description" label="Description" required></v-text-field>
+            <v-col cols="12" class="py-1">
+              <v-label class="pt-1">Description</v-label>
+              <v-textarea
+                outlined
+                background-color="white"
+                dense
+                :rules="descriptionRules"
+                v-model="description"
+                placeholder="Description"
+                required
+              ></v-textarea>
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="6" class="py-1">
               <v-select
                 :items="sprintDurationOptions"
                 v-model="sprintDuration"
                 item-text="text"
+                outlined
+                background-color="white"
+                dense
                 item-value="days"
                 label="Sprint Duration"
                 class="input-group--focused"
               ></v-select>
             </v-col>
 
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="6" class="py-1">
               <v-select
                 :items="sprintStartDayOptions"
                 v-model="sprintStartDay"
                 item-text="text"
+                outlined
+                background-color="white"
+                dense
                 item-value="day"
                 label="Sprint Start Day"
                 class="input-group--focused"
               ></v-select>
             </v-col>
           </v-row>
-
-          <v-btn class="mr-4" @click="submit()" color="primary">Submit</v-btn>
+          <v-row justify="end" class="my-5">
+            <v-btn class="mr-4" @click="submit()" width="150" height="50" color="primary">Submit</v-btn>
+          </v-row>
         </v-form>
-      </v-card-text>
-    </v-card>
-    <v-snackbar v-model="snackbar.isUp" :timeout="2000">
-      {{ snackbar.message }}
-      <v-btn color="blue" text @click="snackbar.isUp = false">Close</v-btn>
-    </v-snackbar>
-
-    <v-card class="mt-3">
-      <v-card-title>Project Members</v-card-title>
-      <v-card-text>
+      </v-col>
+      <v-snackbar v-model="snackbar.isUp" :timeout="2000">
+        {{ snackbar.message }}
+        <v-btn color="blue" text @click="snackbar.isUp = false">Close</v-btn>
+      </v-snackbar>
+      <v-spacer></v-spacer>
+      <v-col cols="5" class="ml-5">
+        <h3>Project Members</h3>
         <v-autocomplete
           v-model="user"
           :items="users"
@@ -71,7 +101,6 @@
           item-value="id"
           label="Search github username"
           placeholder="Start typing to Search"
-          prepend-icon="mdi-database-search"
           return-object
         >
           <template v-slot:no-data>
@@ -101,21 +130,22 @@
             </v-list-item-content>
           </template>
         </v-autocomplete>
-        <v-btn class="mr-4 mt-4" @click="add()" color="primary">Add</v-btn>
-      </v-card-text>
-      <v-data-table
-        :headers="headers"
-        :items="projectMembers"
-        class="elevation-1 mt-4"
-        item-key="username"
-        :loading="loading"
-        loading-text="Loading... Please wait"
-      >
-        <template v-slot:item.action="{ item }">
-          <v-icon small @click="deleteMember(item)">mdi-delete</v-icon>
-        </template>
-      </v-data-table>
-    </v-card>
+        <v-data-table
+          :headers="headers"
+          :items="projectMembers"
+          hide-default-footer
+          hide-default-header
+          class="elevation-0 mt-4 transparent"
+          item-key="username"
+          :loading="loading"
+          loading-text="Loading... Please wait"
+        >
+          <template v-slot:item.action="{ item }">
+            <v-icon small @click="deleteMember(item)">mdi-delete</v-icon>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -129,6 +159,7 @@ export default {
   },
   data() {
     return {
+      valid: true,
       user: null,
       users: [],
       search: null,
@@ -137,12 +168,14 @@ export default {
 
       projectMembers: [],
       headers: [
-        { text: "Name", align: "start", value: "username" },
-        { text: "Actions", align: "end", value: "action", sortable: false }
+        { align: "start", value: "username" },
+        { align: "end", value: "action", sortable: false }
       ],
 
       name: "",
+      nameRules: [v => !!v || "Project name is required"],
       description: "",
+      descriptionRules: [v => !!v || "Description is required"],
 
       sprintDuration: 7,
       sprintDurationOptions: [
@@ -213,29 +246,36 @@ export default {
         });
     },
     submit() {
-      let token = localStorage.getItem("token");
-      let selectedProjectId = this.$route.params.projectId;
+      this.$$refs.form.validate();
+      if (this.valid) {
+        let token = localStorage.getItem("token");
+        let selectedProjectId = this.$route.params.projectId;
 
-      let data = {
-        name: this.name,
-        description: this.description,
-        sprint_duration: this.sprintDuration,
-        sprint_start_day: this.sprintStartDay
-      };
+        let data = {
+          name: this.name,
+          description: this.description,
+          sprint_duration: this.sprintDuration,
+          sprint_start_day: this.sprintStartDay
+        };
 
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-      };
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        };
 
-      this.axios
-        .put(`${this.appUrl}/api/v1/project/${selectedProjectId}/edit`, data, {
-          headers
-        })
-        .then(response => {
-          this.snackbar.message = "Project setting has been updated";
-          this.snackbar.isUp = true;
-        });
+        this.axios
+          .put(
+            `${this.appUrl}/api/v1/project/${selectedProjectId}/edit`,
+            data,
+            {
+              headers
+            }
+          )
+          .then(response => {
+            this.snackbar.message = "Project setting has been updated";
+            this.snackbar.isUp = true;
+          });
+      }
     },
     add() {
       let token = localStorage.getItem("token");
@@ -279,7 +319,8 @@ export default {
 
       this.axios
         .delete(
-          `${this.appUrl}/api/v1/project/${selectedProjectId}/remove-member`,{
+          `${this.appUrl}/api/v1/project/${selectedProjectId}/remove-member`,
+          {
             headers,
             data
           }

@@ -3,11 +3,9 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="6" lg="4">
         <v-card flat>
-          <v-card-actions>
-            <v-btn block @click="login()" color="primary">
-              <v-icon dark left>person</v-icon>Login with Github
-            </v-btn>
-          </v-card-actions>
+          <v-btn block @click="login()" color="primary">
+            <v-icon dark left>person</v-icon>Login with Github
+          </v-btn>
         </v-card>
       </v-col>
     </v-row>
