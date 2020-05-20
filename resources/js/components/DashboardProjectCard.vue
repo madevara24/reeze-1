@@ -1,5 +1,5 @@
 <template>
-  <v-hover v-slot:default="{ hover }">
+  <v-hover class="mr-5" v-slot:default="{ hover }">
     <v-card
       class="mb-5"
       flat

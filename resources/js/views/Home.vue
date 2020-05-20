@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container class="my-5 py-5" fluid style="width: 80%">
+    <v-container>
       <v-row class="mt-5 pt-5" justify="space-between">
         <h1>My Projects</h1>
         <v-btn class="white--text" @click="dialog = true">
@@ -12,15 +12,14 @@
       </v-row>
       <v-row class="mt-5 pt-5">
         <v-col
-          class="mr-4"
           cols="12"
-          sm="6"
-          md="4"
+          sm="3"
+          md="3"
           lg="3"
           xl="2"
           v-for="project in projects"
           :key="project.id"
-          style="padding:0"
+          style="padding:0;"
         >
           <DashboardProjectCard :projectData="project" />
         </v-col>
