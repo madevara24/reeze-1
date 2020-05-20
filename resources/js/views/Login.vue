@@ -1,19 +1,29 @@
 <template>
-  <v-container class="fill-height" fluid>
-    <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="6" lg="4">
-        <v-card flat>
-          <v-btn block @click="login()" color="primary">
-            <v-icon dark left>person</v-icon>Login with Github
-          </v-btn>
-        </v-card>
+  <v-container fluid fill-height class="pa-0">
+    <v-layout style="background-color:#2F82E2" align-center>
+      <v-col cols="12" align-self="center">
+        <v-row justify="center" align="center">
+          <h1 class="white--text display-4">REEZE</h1>
+        </v-row>
       </v-col>
-    </v-row>
+    </v-layout>
+    <v-col cols="6" align-self="center">
+      <v-row justify="center" align="center">
+        <v-col cols="6">
+          <v-card flat>
+            <v-btn width="150" height="50" block @click="login()" color="primary">
+              <v-icon large dark left>{{ githubIcon }}</v-icon>Login with Github
+            </v-btn>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-col>
   </v-container>
 </template>
 
 <script>
 import store from "../store/store";
+import { mdiGithub } from "@mdi/js";
 /* eslint-disable no-console */
 export default {
   created() {
@@ -21,9 +31,13 @@ export default {
       this.$router.push({ name: "home" });
     }
   },
+  data() {
+    return {
+      githubIcon: mdiGithub
+    };
+  },
 
   methods: {
-    // This method call the function to launch the popup and makes the request to the controller.
     login() {
       this.axios
         .post(`${this.appUrl}/api/v1/login`)
@@ -38,3 +52,4 @@ export default {
   }
 };
 </script>
+
