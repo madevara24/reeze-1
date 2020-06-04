@@ -47,6 +47,24 @@ class AnalyticHelper{
         return $sprint_dates;
     }
 
+    public function getCurrentDayOfSprint($project_id){
+        $project = Project::where('id', $project_id)->first();
+        $current_day = 0;
+        
+        $sprint_date = $this->getProjectSprintDates($project_id, 1)[0];
+        $start_date = new Carbon($sprint_date[0]);
+
+        for ($i=0; $i < $project['sprint_duration']; $i++) {
+            if($start_date->eq(Carbon::createMidnightDate(Carbon::now()->year, Carbon::now()->month, Carbon::now()->day))){
+                $current_day = $i;
+                break;
+            }
+            $start_date->addDay();
+        }
+        
+        return $current_day + 1;
+    }
+
     public function getProjectCurrentSprintDates($project_id){
         $sprint_dates = array();
 

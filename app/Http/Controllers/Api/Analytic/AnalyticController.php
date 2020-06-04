@@ -22,6 +22,12 @@ class AnalyticController extends Controller
         return response()->json(['success' => true, 'data' => $formated_dates]);
     }
 
+    public function currentSprintDay($project_id){
+        $analytic_helper = new AnalyticHelper();
+        $sprint_day = $analytic_helper->getCurrentDayOfSprint($project_id);
+        return response()->json(['success' => true, 'data' => $sprint_day]);
+    }
+
     public function sprintDates($project_id){
         $analytic_helper = new AnalyticHelper();
         $sprint_dates = $analytic_helper->getProjectSprintDates($project_id);

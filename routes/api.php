@@ -54,6 +54,7 @@ Route::prefix('/v1')->middleware('api')->namespace('Api')->group(function () {
                 Route::prefix('/{project_id}/analytic')->namespace('Analytic')->group(function () {
                     Route::get('/current-sprint-dates', 'AnalyticController@currentSprintDates');
                     Route::get('/sprint-dates', 'AnalyticController@sprintDates');
+                    Route::get('/sprint-day', 'AnalyticController@currentSprintDay');
                     Route::get('/sprint-progression/{user_id?}', 'AnalyticController@sprintProgression');
                     Route::get('/deliverability/{user_id?}', 'AnalyticController@deliverability');
                     Route::get('/rejection/{user_id?}', 'AnalyticController@rejection');

@@ -30,7 +30,7 @@
             class="font-weight-medium"
             cols="12"
             sm="12"
-          >Sprint Progression : {{projectData.sprintProgress}}/{{projectData.sprintDuration}}</v-col>
+          >Sprint day {{sprintDays.currentDay}} of {{sprintDays.totalDays}}</v-col>
         </v-row>
         <v-row class="ml-auto">
           <v-col
@@ -48,8 +48,21 @@
 <script>
 /* eslint-disable */
 export default {
+  created() {
+    this.getSprintDays();
+    this.getSprintProgression();
+  },
   props: {
     projectData: null
+  },
+  data() {
+    return{
+      sprintDays: {
+        currentDay: 0,
+        totalDays: 0
+      },
+      sprintProgression: null
+    }
   },
   methods: {
     selectProject(id) {
@@ -58,6 +71,36 @@ export default {
           this.projectData.id
       );
       this.$router.push({ name: "board", params: { projectId: id } });
+    },
+    getSprintDays(){
+      let token = localStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      };
+
+      this.axios
+        .get(`${this.appUrl}/api/v1/project/${this.projectData.id}/analytic/sprint-day`, { headers })
+        .then(response => (this.formatSprintDays(response.data)));
+    },
+    formatSprintDays(data){
+      console.log(data.data);
+      this.sprintDays.currentDay = data.data;
+      this.sprintDays.totalDays = this.projectData.sprint_duration
+    },
+    getSprintProgression(){
+      let token = localStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      };
+
+      this.axios
+        .get(`${this.appUrl}/api/v1/project/${this.projectData.id}/analytic/sprint-progression/`, { headers })
+        .then(response => (this.formatSprintDays(response.data.data)));
+    },
+    formatSprintProgression(data){
+      console.log(data);
     }
   }
 };
