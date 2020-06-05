@@ -37,7 +37,7 @@
             class="font-weight-medium"
             cols="12"
             sm="12"
-          >Task Progression : {{projectData.completedTasks}}/{{projectData.totalTasks}}</v-col>
+          >Task Progression : {{sprintProgression}}%</v-col>
         </v-row>
       </v-card-text>
       <v-card-actions></v-card-actions>
@@ -61,7 +61,7 @@ export default {
         currentDay: 0,
         totalDays: 0
       },
-      sprintProgression: null
+      sprintProgression: 0
     }
   },
   methods: {
@@ -84,7 +84,6 @@ export default {
         .then(response => (this.formatSprintDays(response.data)));
     },
     formatSprintDays(data){
-      console.log(data.data);
       this.sprintDays.currentDay = data.data;
       this.sprintDays.totalDays = this.projectData.sprint_duration
     },
@@ -97,10 +96,17 @@ export default {
 
       this.axios
         .get(`${this.appUrl}/api/v1/project/${this.projectData.id}/analytic/sprint-progression/`, { headers })
-        .then(response => (this.formatSprintDays(response.data.data)));
+        .then(response => (this.formatSprintProgression(response.data.data)));
     },
     formatSprintProgression(data){
-      console.log(data);
+      let currentDay = this.sprintDays.currentDay - 1;
+      let totalPoints = data[0][1];
+      let finished_points = totalPoints - data[currentDay][0];
+      if(totalPoints <= 0 || finished_points < 0){
+        this.sprintProgression = 0;
+      }else{
+        this.sprintProgression = (finished_points/totalPoints * 100).toFixed();
+      }
     }
   }
 };
