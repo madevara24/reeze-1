@@ -67,23 +67,16 @@ class AnalyticHelper{
 
     public function getProjectCurrentSprintDates($project_id){
         $sprint_dates = array();
+        $current_sprint_start_date = $this->getProjectSprintDates($project_id, 1)[0][0];
 
         //Get the project
         $project = Project::where('id', $project_id)->first();
-
-        //Set fisrt sprint start and end date
-        $date = new Carbon();
-        $date->setWeekStartsAt($project['sprint_start_day']);
-        $date->setWeekEndsAt(
-            $project['sprint_start_day'] == 0 ? 6 : $project['sprint_start_day'] -1
-        );
-        $date->startOfWeek();
-
+        
         for ($i=0; $i < $project['sprint_duration']; $i++) {
             $dates = [];
-            array_push($dates, new Carbon($date));
-            $date->addDay();
-            array_push($dates, new Carbon($date));
+            array_push($dates, new Carbon($current_sprint_start_date));
+            $current_sprint_start_date->addDay();
+            array_push($dates, new Carbon($current_sprint_start_date));
             array_push($sprint_dates, $dates);
         }
         return $sprint_dates;
