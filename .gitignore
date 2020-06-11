@@ -12,3 +12,5 @@ npm-debug.log
 yarn-error.log
 deploy_key
 /public/js/app.js
+/dummy_data
+*.code-workspace
