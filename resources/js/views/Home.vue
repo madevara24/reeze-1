@@ -25,8 +25,8 @@
         </v-col>
       </v-row>
     </v-container>
-    <PageNoProjects v-if="checkProjects" />
-    <CreateProject v-model="dialog" />
+    <PageNoProjects v-if="checkProjects" dialog="dialog" @update="openDialog" />
+    <CreateProject v-model="dialog" @getProjects="getProjects"/>
   </div>
 </template>
 
@@ -66,7 +66,10 @@ export default {
       this.axios
         .get(`${this.appUrl}/api/v1/project`, { headers })
         .then(response => (this.projects = response.data.data));
-    }
+    },
+    openDialog(value) {
+        this.dialog = true
+    },
   },
   components: {
     DashboardProjectCard,

@@ -161,7 +161,7 @@ export default {
           .post(`${this.appUrl}/api/v1/project/create`, data, { headers })
           .then(response => {
             this.$emit("input", false);
-            this.$forceUpdate();
+            this.$emit("getProjects");
           });
       }
     },
