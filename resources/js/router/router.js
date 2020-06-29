@@ -15,6 +15,10 @@ import ProjectMerge from '../views/ProjectMerge.vue'
 import ProjectSetting from '../views/ProjectSetting.vue'
 import CreateProject from '../views/CreateProject.vue'
 
+//dummy route
+import DummyTeamAnalytics from '../views/dummy/DummyTeamAnalytics.vue'
+import DummyPersonalAnalytics from '../views/dummy/DummyPersonalAnalytics.vue'
+
 import auth from './middleware/auth'
 import middlewarePipeline from './middlewarePipeline'
 Vue.use(Router)
@@ -56,6 +60,18 @@ const router = new Router({
                     name: 'personalAnalytics',
                     component: PersonalAnalytics
                 },
+                // dummy start
+                {
+                    path: 'dummyTeamAnalytics',
+                    name: 'teamAnalytics',
+                    component: DummyTeamAnalytics
+                },
+                {
+                    path: 'dummyPersonalAnalytics',
+                    name: 'personalAnalytics',
+                    component: DummyPersonalAnalytics
+                },
+                // dummy end
                 {
                     path: 'projectMerge',
                     name: 'projectMerge',
