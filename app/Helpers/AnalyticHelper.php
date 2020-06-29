@@ -113,8 +113,8 @@ class AnalyticHelper{
         $name = '#' . $card_info['id'] . ' - ' . $card_info['title'];
         $state = ucfirst(strtolower($card_log['state']));
         $colour = $this->getCardStateColour($card_log['state']);
-        $start = new Carbon($card_log['created_at']);
-        $end = new Carbon($end_date);
+        $start = new Carbon($card_log['created_at'], 'Asia/Jakarta');
+        $end = new Carbon($end_date, 'Asia/Jakarta');
         // $start = json_encode(date($card_log['created_at']));
         // $end = json_encode(date($end_date));
         $data = [$name, $state, $colour, $start, $end];
