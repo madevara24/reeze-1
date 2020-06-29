@@ -37,7 +37,7 @@
             <router-link
               v-for="tab of tabs"
               :key="tab.id"
-              :to="tab.route"
+              :to="{ name: tab.route}"
               tag="v-tab"
               class="white--text"
             >{{tab.name}}</router-link>
