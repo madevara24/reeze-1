@@ -19,9 +19,9 @@ class CardsTableSeeder extends Seeder
                 'project_id' => 1,
                 'owner' => 1,
                 'requester' => 1,
-                'title' => 'login',
-                'github_branch_name' => 'feature/login',
-                'description' => 'login',
+                'title' => 'Set Up Project',
+                'github_branch_name' => 'feature/set-up',
+                'description' => 'Set up project environment and boilerplate code',
                 'points' => '3',
                 'type' =>'feature',
             ],
@@ -29,20 +29,20 @@ class CardsTableSeeder extends Seeder
                 'project_id' => 1,
                 'owner' => 2,
                 'requester' => 2,
-                'title' => 'login gagal',
-                'github_branch_name' => 'bug/login',
-                'description' => 'login gagal',
+                'title' => 'Research DB Connection',
+                'github_branch_name' => 'feature/set-up-db-connection',
+                'description' => 'Research DB connection with both relational and non relational DB',
                 'points' => '5',
                 
-                'type' => 'bug'
+                'type' => 'feature'
             ],
             [
                 'project_id' => 1,
                 'owner' => 5,
                 'requester' => 1,
-                'title' => 'Make search bar on projects page to search for project by name',
-                'github_branch_name' => 'feature/make-search-bar',
-                'description' => 'Make search bar on projects page to search for project by name',
+                'title' => 'Interview Client for Product Overview',
+                'github_branch_name' => 'feature/client-interview',
+                'description' => 'Interview client for product overview and make the coresponding document',
                 'points' => '3',
                 
                 'type' => 'feature'
@@ -51,9 +51,9 @@ class CardsTableSeeder extends Seeder
                 'project_id' => 1,
                 'owner' => 2,
                 'requester' => 1,
-                'title' => 'Make CRUD query for cards',
-                'github_branch_name' => 'feature/make-card-query',
-                'description' => 'Make CRUD query for cards',
+                'title' => 'Make Auth',
+                'github_branch_name' => 'feature/make-auth',
+                'description' => 'Make authentication system',
                 'points' => '3',
                 
                 'type' => 'feature'
@@ -150,9 +150,9 @@ class CardsTableSeeder extends Seeder
                 'project_id' => 1,
                 'owner' => 2,
                 'requester' => 1,
-                'title' => 'Fix project member query keeps showing non-member',
-                'github_branch_name' => 'bug/fix-project-members-query',
-                'description' => 'Fix project member query keeps showing non-member',
+                'title' => 'Fix DB Connection for MongoDB',
+                'github_branch_name' => 'bug/fix-mongodb-connecion',
+                'description' => 'Fix MongoDB connection cannot connect after authentication',
                 'points' => '3',
                 'type' => 'bug'
             ],
@@ -160,8 +160,8 @@ class CardsTableSeeder extends Seeder
                 'project_id' => 1,
                 'owner' => 5,
                 'requester' => 1,
-                'title' => 'Make ui design for login page',
-                'github_branch_name' => 'feature/make-login-UI',
+                'title' => 'Make UI Design for Login Page',
+                'github_branch_name' => 'feature/make-login-ui',
                 'description' => 'Make ui design for login page',
                 'points' => '1',
                 'type' => 'feature'
@@ -170,29 +170,29 @@ class CardsTableSeeder extends Seeder
                 'project_id' => 1,
                 'owner' => 5,
                 'requester' => 1,
-                'title' => 'Add color code to cards based on card types',
-                'github_branch_name' => 'feature/add-card-color-code',
-                'description' => 'Add color code to cards based on card types',
+                'title' => 'Make UI Design for Homepage',
+                'github_branch_name' => 'feature/make-homepage-ui',
+                'description' => 'Make UI design for homepage',
                 'points' => '1',
-                'type' => 'feature'
-            ],
-            [
-                'project_id' => 1,
-                'owner' => 1,
-                'requester' => 1,
-                'title' => 'Make api for cards based on query',
-                'github_branch_name' => 'feature/make-cards-api',
-                'description' => 'Make api for cards based on query',
-                'points' => '3',
                 'type' => 'feature'
             ],
             [
                 'project_id' => 1,
                 'owner' => 2,
                 'requester' => 1,
-                'title' => 'Make query for card log table',
-                'github_branch_name' => 'feature/make-card-log-query',
-                'description' => 'Make query for card log table',
+                'title' => 'Set Up Web Routes',
+                'github_branch_name' => 'feature/set-up-web-routes',
+                'description' => 'Set up web routes for navigations',
+                'points' => '3',
+                'type' => 'feature'
+            ],
+            [
+                'project_id' => 1,
+                'owner' => 1,
+                'requester' => 1,
+                'title' => 'Make Biome Creation Feature',
+                'github_branch_name' => 'feature/make-biome-creation-feature',
+                'description' => 'Make biome creation feature',
                 'points' => '3',
                 'type' => 'feature'
             ],
@@ -275,7 +275,107 @@ class CardsTableSeeder extends Seeder
                 'description' => 'Make api for payment with midtrans',
                 'points' => '5',
                 'type' => 'feature'
-            ]
+            ],
+            [
+                'project_id' => 1,
+                'owner' => 2,
+                'requester' => 1,
+                'title' => 'Make Setting Page',
+                'github_branch_name' => 'feature/make-setting-page',
+                'description' => 'Make setting page for user',
+                'points' => '3',
+                'type' => 'feature'
+            ],
+            [
+                'project_id' => 1,
+                'owner' => 2,
+                'requester' => 2,
+                'title' => 'Fix Bug Google Login',
+                'github_branch_name' => 'bug/google-login',
+                'description' => 'Fix cannot authenticate with google login',
+                'points' => '3',
+                'type' => 'bug'
+            ],
+            [
+                'project_id' => 1,
+                'owner' => 5,
+                'requester' => 1,
+                'title' => 'Make UI Design for Biome Creation Page',
+                'github_branch_name' => 'feature/make-biome-creation-ui',
+                'description' => 'Make ui design for biome creation page',
+                'points' => '1',
+                'type' => 'feature'
+            ],
+            [
+                'project_id' => 1,
+                'owner' => 5,
+                'requester' => 1,
+                'title' => 'Make UI Design for Biome Cards',
+                'github_branch_name' => 'feature/make-biome-creation-cards-ui',
+                'description' => 'Make ui design for biome cards',
+                'points' => '1',
+                'type' => 'feature'
+            ],
+            [
+                'project_id' => 1,
+                'owner' => 5,
+                'requester' => 1,
+                'title' => 'Make UI Design for Setting Page',
+                'github_branch_name' => 'feature/make-setting-page-ui',
+                'description' => 'Make ui design for setting page',
+                'points' => '1',
+                'type' => 'feature'
+            ],
+            [
+                'project_id' => 1,
+                'owner' => 1,
+                'requester' => 1,
+                'title' => 'Make Biome Lifecycle Feature',
+                'github_branch_name' => 'feature/make-biome-lifecycle-feature',
+                'description' => 'Make biome lifecycle feature',
+                'points' => '3',
+                'type' => 'feature'
+            ],
+            [
+                'project_id' => 1,
+                'owner' => 2,
+                'requester' => 1,
+                'title' => 'Make Homepage',
+                'github_branch_name' => 'feature/make-homepage',
+                'description' => 'Make homepage',
+                'points' => '1',
+                'type' => 'feature'
+            ],
+            [
+                'project_id' => 1,
+                'owner' => 2,
+                'requester' => 1,
+                'title' => 'Make Navigation System',
+                'github_branch_name' => 'feature/make-navigation',
+                'description' => 'Make navigation',
+                'points' => '1',
+                'type' => 'feature'
+            ],
+            [
+                'project_id' => 1,
+                'owner' => 5,
+                'requester' => 1,
+                'title' => 'Make UI Design for Navigation',
+                'github_branch_name' => 'feature/make-navigation-ui',
+                'description' => 'Make UI design for navbar and sidebar',
+                'points' => '1',
+                'type' => 'feature'
+            ],
+            [
+                'project_id' => 1,
+                'owner' => 1,
+                'requester' => 1,
+                'title' => 'Make Biome Alteration Feature',
+                'github_branch_name' => 'feature/make-biome-alteration-feature',
+                'description' => 'Make biome alteration feature',
+                'points' => '3',
+                'type' => 'feature'
+            ],
         ]);
     }
 }
