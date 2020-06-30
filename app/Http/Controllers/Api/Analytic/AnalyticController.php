@@ -323,7 +323,11 @@ class AnalyticController extends Controller
         
         foreach ($task_lifecycle as $state => $state_duration) {
             $div = count($state_duration);
-            $task_lifecycle[$state] = array($state, round(array_sum($state_duration) / ($div * 60), 1));
+            if($div == 0){
+                $task_lifecycle[$state] = array($state, 0);
+            }else{
+                $task_lifecycle[$state] = array($state, round(array_sum($state_duration) / ($div * 60), 1));
+            }
         }
 
         return response()->json(['success' => true, 'data' => array_values($task_lifecycle)]);
