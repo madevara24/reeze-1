@@ -232,7 +232,7 @@ export default {
       }
 
       this.axios
-        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/formated-chart-dates', {headers})
+        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/sprint-dates', {headers})
         .then((response) => {this.formatDeliverability(response.data.data, null, null, null, null)});
 
       this.axios
