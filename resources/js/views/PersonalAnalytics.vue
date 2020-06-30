@@ -201,10 +201,16 @@ export default {
       };
 
       this.taskLifecycle.chartData = [['State', 'Avg. Hours']]
-
-      this.axios
-        .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/task-lifecycle', {headers})
-        .then(response => (this.taskLifecycle.chartData = this.taskLifecycle.chartData.concat(response.data.data)))
+      
+      if(this.$route.params.personId){
+        this.axios
+          .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/task-lifecycle/' + this.$route.params.personId, {headers})
+          .then(response => (this.taskLifecycle.chartData = this.taskLifecycle.chartData.concat(response.data.data)))
+      }else{
+        this.axios
+          .get(`${this.appUrl}/api/v1/project/` + this.$route.params.projectId + '/analytic/task-lifecycle', {headers})
+          .then(response => (this.taskLifecycle.chartData = this.taskLifecycle.chartData.concat(response.data.data)))
+      }
     },
     getDeliverability(){
       console.log("View Analytics (method) : Get deliverability " + this.$route.params.projectId +"/"+ this.$route.params.personId)
