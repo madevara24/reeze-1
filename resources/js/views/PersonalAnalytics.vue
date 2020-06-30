@@ -320,9 +320,7 @@ export default {
     formatCardTimeline(data){
       data.forEach(element => {
         let row = [element[0], element[1], element[2], new Date(element[3]), new Date(element[4])]
-        console.log(row);
         this.cardTimeline.chartData.push(row)
-        console.log(this.cardTimeline.chartData);
       });
     }
   }
