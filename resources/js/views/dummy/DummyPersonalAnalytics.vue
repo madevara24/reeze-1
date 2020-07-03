@@ -24,8 +24,17 @@
           </v-card>
         </v-col>
         <v-col cols=12 xs=12>
-          <v-card flat class="px-3 mb-5">
-            <v-card-title>Sprint Progression</v-card-title>
+          <v-card flat class="px-3">
+            <v-card-title>Sprint Progression
+              <v-tooltip right>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn small icon v-bind="attrs" v-on="on">
+                    <v-icon color="grey darken-1">mdi-information-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span>Sprint progression shows you how much of the tasks points have been done and released</span>
+              </v-tooltip>
+            </v-card-title>
             <v-card-text>
               <GChart
                 style="height: 400px;"
@@ -37,8 +46,17 @@
           </v-card>
         </v-col>
         <v-col cols=12 xs=12>
-          <v-card flat class="px-3 mb-5">
-            <v-card-title>Deliverabillity</v-card-title>
+          <v-card flat class="px-3">
+            <v-card-title>Deliverabillity & Rejection
+              <v-tooltip right>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn small icon v-bind="attrs" v-on="on">
+                    <v-icon color="grey darken-1">mdi-information-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span>Deliverability and rejection rate shows you the percentage of completed and rejected tasks from the total tasks that was planned for the sprint</span>
+              </v-tooltip>
+            </v-card-title>
             <v-card-text>
               <GChart
                 style="height: 400px;"
@@ -50,8 +68,17 @@
           </v-card>
         </v-col>
         <v-col cols=12 xs=12>
-          <v-card flat class="px-3 mb-5">
-            <v-card-title>Card Timeline</v-card-title>
+          <v-card flat class="px-3">
+            <v-card-title>Card Timeline
+              <v-tooltip right>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn small icon v-bind="attrs" v-on="on">
+                    <v-icon color="grey darken-1">mdi-information-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span>Card timeline shows you how each task progresses during the sprint</span>
+              </v-tooltip>
+            </v-card-title>
             <v-card-text>
               <GChart
                 :settings="{ packages: ['timeline'] }"
@@ -64,8 +91,17 @@
           </v-card>
         </v-col>
         <v-col cols=12 xs=12>
-          <v-card flat class="px-3 mb-5">
-            <v-card-title>Task Lifecycle</v-card-title>
+          <v-card flat class="px-3">
+            <v-card-title>Task Lifecycle
+              <v-tooltip right>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn small icon v-bind="attrs" v-on="on">
+                    <v-icon color="grey darken-1">mdi-information-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span>Task lifecycle shows you how long your tasks spends in each state on average</span>
+              </v-tooltip>
+            </v-card-title>
             <v-card-text>
               <GChart
                 style="height: 500px;"
@@ -360,7 +396,6 @@ export default {
       burndown: {
         chartData: null,
         chartOptions: {
-          title: 'Burndown Chart',
           subtitle: 'Points Remaining',
           colors: ['#1e88e5','#e53935','#6ab7ff','#ff6f60'],
           vAxis : {
@@ -371,7 +406,6 @@ export default {
       deliverability:{
         chartData: null,
         chartOptions: {
-          title: 'Deliverability',
           vAxis : {
             maxValue : 100,
             minValue : 0
@@ -382,13 +416,11 @@ export default {
       cardTimeline: {
         chartData: null,
         chartOptions: {
-          title: 'Card Timeline'
         }
       },
       taskLifecycle:{
         chartData: null,
         chartOptions: {
-          title: 'Task Lifecycle',
           pieHole: 0.4,
           colors: ['#dbdbdb','#f08000','#203e64','#629200','#a71f39']
         }
