@@ -355,7 +355,11 @@ class AnalyticController extends Controller
 
         $velocity = (int)round(array_sum($released_cards_points)/(count($sprint_dates) - 1), 0);
 
-        $average_card_points = array_sum($released_cards_points)/count($released_cards_points);
+        if(count($released_cards_points) == 0){
+            $average_card_points = 0;
+        }else{
+            $average_card_points = array_sum($released_cards_points)/count($released_cards_points);
+        }
 
         $unfinished_cards_points = Card::whereIn('id', array_diff($project_card_ids, $released_card_ids))->pluck('points')->toArray();
 
@@ -368,7 +372,11 @@ class AnalyticController extends Controller
 
         $unfinished_cards_points = (int)round(array_sum($unfinished_cards_points), 0);
 
-        $estimated_sprints_left = (int)round($unfinished_cards_points/$velocity);
+        if($velocity ==0){
+            $estimated_sprints_left = 0;
+        }else{
+            $estimated_sprints_left = (int)round($unfinished_cards_points/$velocity);
+        }
 
         return response()->json(['success' => true, 'data' => ['velocity' => $velocity, 'estimate' => $estimated_sprints_left]]);
     }
