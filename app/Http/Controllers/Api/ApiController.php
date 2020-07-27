@@ -13,7 +13,7 @@ class ApiController extends Controller
 {
     public function redirectToProvider()
     {
-        return response(Socialite::driver('github')->setScopes(['read:user', 'repo', 'admin:org_hook'])->stateless()->redirect()->getTargetUrl());
+        return response(Socialite::driver('github')->setScopes(['read:user', 'repo'])->stateless()->redirect()->getTargetUrl());
     }
 
     public function handleProviderCallback()

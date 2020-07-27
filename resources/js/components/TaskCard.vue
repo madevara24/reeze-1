@@ -193,8 +193,8 @@ export default {
         "Accepted",
         "Rejected"
       ],
-      point: parseInt(this.card.points),
-      points: [0, 1, 3, 5, 8],
+      point: this.card.points,
+      points: ['1', '3', '5', '8'],
       title: this.card.title,
       description: this.card.description,
       selectedRequester: "",

@@ -101,8 +101,8 @@ export default {
   data() {
     return {
       valid: true,
-      point: 0,
-      points: [0, 1, 3, 5, 8],
+      point: '1',
+      points: ['1', '3', '5', '8'],
       title: "",
       titleRules: [v => !!v || "Task title is required"],
       description: "",
