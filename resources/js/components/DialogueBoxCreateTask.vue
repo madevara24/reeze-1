@@ -102,7 +102,7 @@ export default {
     return {
       valid: true,
       point: '1',
-      points: ['1', '3', '5', '8'],
+      points: ['1', '3', '5', '8', '13'],
       title: "",
       titleRules: [v => !!v || "Task title is required"],
       description: "",

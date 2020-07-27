@@ -19,6 +19,14 @@
       <div class="flex-grow-1"></div>
 
       <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn small icon v-bind="attrs" @click="dialogUser = true">
+            <v-icon color="white">mdi-help-circle</v-icon>
+          </v-btn>
+        </template>
+      </v-menu>
+
+      <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on">
             <v-icon color="white">person</v-icon>
@@ -45,12 +53,14 @@
         </v-toolbar-items>
       </template>
     </v-toolbar>
+    <DialogueGuide v-model="dialogUser" v-if="isOnBoardPage"/>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
 import ProjectSelector from "../components/ProjectSelector";
+import DialogueGuide from "../components/DialogueGuide";
 
 export default {
   created() {
@@ -58,6 +68,7 @@ export default {
   },
   data() {
     return {
+      dialogUser: localStorage.getItem("user_dialog") === null ? true : false,
       sideDrawer: false,
       links: [
         { icon: "dashboard", text: "Dashboard", route: "/" },
@@ -66,21 +77,25 @@ export default {
         { icon: "person", text: "Individual", route: "/individuals" }
       ],
       tabs: [
-        { id: 1, name: "Board", route: "board" },
-        { id: 2, name: "Team Report", route: "teamAnalytics" },
-        { id: 3, name: "Personal Report", route: "personalAnalytics" },
-        { id: 4, name: "Project Merge", route: "projectMerge" },
-        { id: 5, name: "Project Setting", route: "projectSetting" }
+        { id: 1, name: "Board", route: "board"},
+        { id: 2, name: "Team Report", route: "teamAnalytics"},
+        { id: 3, name: "Personal Report", route: "personalAnalytics"},
+        { id: 4, name: "Project Merge", route: "projectMerge"},
+        { id: 5, name: "Project Setting", route: "projectSetting"}
       ],
       active_tab: 0
     };
   },
   components: {
-    ProjectSelector
+    ProjectSelector,
+    DialogueGuide
   },
   computed: {
     isOnProjectPage() {
       return this.$route.path.includes("/project");
+    },
+    isOnBoardPage() {
+      return this.$route.path.includes("/board");
     }
   },
   methods: {

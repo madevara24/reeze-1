@@ -113,6 +113,12 @@ export default {
               "Branch merged. Have a nice day ^^";
             this.copyCardIdSnackbar.isUp = true;
             this.release = false;
+            this.getCards();
+          }).catch(error => {
+            this.copyCardIdSnackbar.message = "Something went wrong, check your github if there's a conflict in your merge"
+            this.copyCardIdSnackbar.isUp = true
+            this.release = false
+            this.getCards();
           });
       }
     },
