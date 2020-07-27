@@ -9,7 +9,7 @@
                     <v-icon color="grey darken-1">mdi-information-outline</v-icon>
                   </v-btn>
                 </template>
-                <span>Sprint progression shows you how much of the tasks points have been done and released</span>
+                <span>{{this.tooltip.burndown.tooltip}}</span>
               </v-tooltip>
             </v-card-title>
             <v-card-text>
@@ -20,6 +20,15 @@
                 :options="burndown.chartOptions"
               />
             </v-card-text>
+             <v-divider></v-divider>
+            <v-expansion-panels multiple flat>
+            <v-expansion-panel>
+              <v-expansion-panel-header>How do I read this chart?</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                {{this.tooltip.burndown.help}}
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
           </v-card>
         </v-col>
         <v-col cols=12 xs=12>
@@ -31,7 +40,7 @@
                     <v-icon color="grey darken-1">mdi-information-outline</v-icon>
                   </v-btn>
                 </template>
-                <span>Deliverability and rejection rate shows you the percentage of completed and rejected tasks from the total tasks that was planned for the sprint</span>
+                <span>{{this.tooltip.deliverability.tooltip}}</span>
               </v-tooltip>
             </v-card-title>
             <v-card-text>
@@ -42,6 +51,15 @@
                 :options="deliverability.chartOptions"
               />
             </v-card-text>
+             <v-divider></v-divider>
+            <v-expansion-panels multiple flat>
+            <v-expansion-panel>
+              <v-expansion-panel-header>How do I read this chart?</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                {{this.tooltip.deliverability.help}}
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
           </v-card>
         </v-col>
         <v-col cols=12 xs=12>
@@ -53,7 +71,7 @@
                     <v-icon color="grey darken-1">mdi-information-outline</v-icon>
                   </v-btn>
                 </template>
-                <span>Task lifecycle shows you how long your tasks spends in each state on average</span>
+                <span>{{this.tooltip.taskLifecycle.tooltip}}</span>
               </v-tooltip>
             </v-card-title>
             <v-card-text>
@@ -64,6 +82,15 @@
                 :options="taskLifecycle.chartOptions"
               />
             </v-card-text>
+             <v-divider></v-divider>
+            <v-expansion-panels multiple flat>
+            <v-expansion-panel>
+              <v-expansion-panel-header>How do I read this chart?</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                {{this.tooltip.taskLifecycle.help}}
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
           </v-card>
         </v-col>
         <v-col cols=12 xs=12>
@@ -76,7 +103,7 @@
                     <v-icon color="grey darken-1">mdi-information-outline</v-icon>
                   </v-btn>
                 </template>
-                <span>The average velocity of your team, how much tasks points your team can finish on one sprint</span>
+                <span>{{this.tooltip.estimation.velocityTooltip}}</span>
               </v-tooltip>
               </v-card-title>
               <v-card-text>
@@ -94,7 +121,7 @@
                     <v-icon color="grey darken-1">mdi-information-outline</v-icon>
                   </v-btn>
                 </template>
-                <span>Estimated number of sprints required to finish the remaining tasks based on your team velocity</span>
+                <span>{{this.tooltip.estimation.estimationTooltip}}</span>
               </v-tooltip>
               </v-card-title>
               <v-card-text>
@@ -104,6 +131,17 @@
                 </v-row>
               </v-card-text>
             </v-card>
+          </v-row>
+          <v-row>
+            <v-divider></v-divider>
+            <v-expansion-panels multiple flat>
+              <v-expansion-panel>
+                <v-expansion-panel-header>How do I read this chart?</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  {{this.tooltip.estimation.help}}
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
           </v-row>
         </v-col>
       </v-row>
@@ -134,6 +172,25 @@ export default {
   },
   data() {
     return {
+      tooltip: {
+        burndown:{
+          tooltip:"Sprint progression shows you how much of the tasks points have been done and released",
+          help:"Sprint progression shows you how much of the tasks points have been done and released. The blue line sums up the total task points that haven't been finished each day. The value goes down when a task is completed and goes up when a task is rejected or a new task is added to the current iteration. The red line represents the ideal graph for the current sprint where the tasks were completed evenly each day until the end of the sprint. Ideally the blue line should be moving downwards towards the end of the chart, moving parallel or below the red line."
+        },
+        deliverability:{
+          tooltip:"Deliverability and rejection rate shows you the percentage of completed and rejected tasks from the total tasks that was planned for the sprint",
+          help:"Deliverability and rejection rate shows you the percentage of completed and rejected tasks from the total tasks that was planned for the sprint. Deliverability rate shows you the percentage of task points your team has completed out of all task points planned in the begining of the sprint. Rejection rate shows you the percentage of time that the tasks spent on being rejected. Ideally the deliverability rate should be on 100% and the rejection rate on 0%. Low deliverability sometimes means the team can't complete the task they have planned, where high rejection means the team's tasks were often rejected and have to be started over."
+        },
+        taskLifecycle:{
+          tooltip:"Task lifecycle shows you how long your tasks spends in each state on average",
+          help:"Task lifecycle shows you how long your tasks spends in each state on average. This chart could tell you about bottlenecks on the development process by looking which state the tasks spends the most. For instance if the Planned state dominates the chart then it means you have planned way too many tasks, or if it's the Finished state then your tasks testing might be taking too much time."
+        },
+        estimation:{
+          velocityTooltip:"The average velocity of your team, how much tasks points your team can finish on one sprint",
+          estimationTooltip:"Estimated number of sprints required to finish the remaining tasks based on your team velocity",
+          help:"The velocity shows you how much task points on average your team can complete in one sprint. The number is calculated based on the total task points your team has completed every sprint within up to the last five sprints. Velocity is then calculated on the average of the total completed task points. Estimation number shows you the estimated number of sprints left to complete the unfinished tasks in the backlog and the current iteration. It is calculated by dividing the total task points of unfinished tasks and dividing them by your current velocity."
+        },
+      },
       burndown: {
         chartData: [
           ['Day', 'Points Remaining', 'Ideal Burndown'],

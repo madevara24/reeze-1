@@ -32,7 +32,7 @@
                     <v-icon color="grey darken-1">mdi-information-outline</v-icon>
                   </v-btn>
                 </template>
-                <span>Sprint progression shows you how much of the tasks points have been done and released</span>
+                <span>{{this.tooltip.burndown.tooltip}}</span>
               </v-tooltip>
             </v-card-title>
             <v-card-text>
@@ -43,6 +43,15 @@
                 :options="burndown.chartOptions"
               />
             </v-card-text>
+             <v-divider></v-divider>
+            <v-expansion-panels multiple flat>
+            <v-expansion-panel>
+              <v-expansion-panel-header>How do I read this chart?</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                {{this.tooltip.burndown.help}}
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
           </v-card>
         </v-col>
         <v-col cols=12 xs=12>
@@ -54,7 +63,7 @@
                     <v-icon color="grey darken-1">mdi-information-outline</v-icon>
                   </v-btn>
                 </template>
-                <span>Deliverability and rejection rate shows you the percentage of completed and rejected tasks from the total tasks that was planned for the sprint</span>
+                <span>{{this.tooltip.deliverability.tooltip}}</span>
               </v-tooltip>
             </v-card-title>
             <v-card-text>
@@ -65,6 +74,15 @@
                 :options="deliverability.chartOptions"
               />
             </v-card-text>
+             <v-divider></v-divider>
+            <v-expansion-panels multiple flat>
+            <v-expansion-panel>
+              <v-expansion-panel-header>How do I read this chart?</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                {{this.tooltip.deliverability.help}}
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
           </v-card>
         </v-col>
         <v-col cols=12 xs=12>
@@ -76,7 +94,7 @@
                     <v-icon color="grey darken-1">mdi-information-outline</v-icon>
                   </v-btn>
                 </template>
-                <span>Card timeline shows you how each task progresses during the sprint</span>
+                <span>{{this.tooltip.cardTimeline.tooltip}}</span>
               </v-tooltip>
             </v-card-title>
             <v-card-text>
@@ -88,6 +106,15 @@
                 style="height: 500px"
               />
             </v-card-text>
+             <v-divider></v-divider>
+            <v-expansion-panels multiple flat>
+            <v-expansion-panel>
+              <v-expansion-panel-header>How do I read this chart?</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                {{this.tooltip.cardTimeline.help}}
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
           </v-card>
         </v-col>
         <v-col cols=12 xs=12>
@@ -99,7 +126,7 @@
                     <v-icon color="grey darken-1">mdi-information-outline</v-icon>
                   </v-btn>
                 </template>
-                <span>Task lifecycle shows you how long your tasks spends in each state on average</span>
+                <span>{{this.tooltip.taskLifecycle.tooltip}}</span>
               </v-tooltip>
             </v-card-title>
             <v-card-text>
@@ -110,6 +137,15 @@
                 :options="taskLifecycle.chartOptions"
               />
             </v-card-text>
+             <v-divider></v-divider>
+            <v-expansion-panels multiple flat>
+            <v-expansion-panel>
+              <v-expansion-panel-header>How do I read this chart?</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                {{this.tooltip.taskLifecycle.help}}
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
           </v-card>
         </v-col>
       </v-row>
@@ -132,6 +168,24 @@ export default {
   },
   data() {
     return {
+      tooltip: {
+        burndown:{
+          tooltip:"Sprint progression shows you how much of the tasks points have been done and released",
+          help:"Sprint progression shows you how much of the tasks points have been done and released. The blue line sums up the total task points that haven't been finished each day. The value goes down when a task is completed and goes up when a task is rejected or a new task is added to the current iteration. The red line represents the ideal graph for the current sprint where the tasks were completed evenly each day until the end of the sprint. Ideally the blue line should be moving downwards towards the end of the chart, moving parallel or below the red line. Personal burndown shows you the progression of an individual team member while comparing them with the team's progression."
+        },
+        deliverability:{
+          tooltip:"Deliverability and rejection rate shows you the percentage of completed and rejected tasks from the total tasks that was planned for the sprint",
+          help:"Deliverability and rejection rate shows you the percentage of completed and rejected tasks from the total tasks that was planned for the sprint. Deliverability rate shows you the percentage of task points your team or a team member has completed out of all task points planned in the begining of the sprint. Rejection rate shows you the percentage of time that the tasks spent on being rejected. Ideally the deliverability rate should be on 100% and the rejection rate on 0%. Low deliverability sometimes means the team or team member can't complete the task they have planned, where high rejection means the team or team member's tasks were often rejected and have to be started over."
+        },
+        taskLifecycle:{
+          tooltip:"Task lifecycle shows you how long your tasks spends in each state on average",
+          help:"Task lifecycle shows you how long your tasks spends in each state on average. This chart could tell you about bottlenecks on the development process by looking which state the tasks spends the most. For instance if the Planned state dominates the chart then it means you have planned way too many tasks, or if it's the Finished state then your tasks testing might be taking too much time."
+        },
+        cardTimeline:{
+          tooltip:"Card timeline shows you how each task progresses during the sprint",
+          help:"Card timeline shows you how each task progresses during the sprint. This chart shows you the journey of each task from the start of the sprint until the end. You can also see how each team member tasks progresses by using the person selector on the top left of the page."
+        },
+      },
       personSelections: [
         { "user_id": 0, "username": "Whole Team" },
         { "user_id": 1, "username": "zainokta" },
@@ -144,20 +198,20 @@ export default {
           burndown:[
             ["Day","Points Remaining","Ideal Burndown"],
             ["29 Jun",29,29],
-            ["30 Jun",29,24.17],
-            ["01 Jul",29,19.33],
-            ["02 Jul",29,14.5],
-            ["03 Jul",0,9.67],
+            ["30 Jun",24,24.17],
+            ["01 Jul",15,19.33],
+            ["02 Jul",14,14.5],
+            ["03 Jul",6,9.67],
             ["04 Jul",0,4.83],
             ["05 Jul",0,0]
           ],
           deliverability:[
             ['Iteration','Team Deliver Rate','Team Rejection Rate'],
-            [null,0,0],
-            [null,0,0],
-            [null,0,0],
-            [null,0,0],
-            [null,100,15.3]
+            ["29 Jun - 06 Jul",100,7],
+            ["06 Jul - 13 Jul",84,3],
+            ["15 Jul - 22 Jul",91,11],
+            ["13 Jul - 20 Jul",100,9],
+            ["20 Jul - 27 Jul",100,15.3]
           ],
           taskLifecycle:[
             ['State','Avg. Hours'],
@@ -243,20 +297,20 @@ export default {
           burndown:[
             ["Day","Team Points Remaining","Team Ideal Burndown","Personal Points Remaining","Personal Ideal Burndown"],
             ["29 Jun",29,29,9,9],
-            ["30 Jun",29,24.17,9,7.5],
-            ["01 Jul",29,19.33,9,6],
-            ["02 Jul",29,14.5,9,4.5],
-            ["03 Jul",0,9.67,0,3],
+            ["30 Jun",24,24.17,6,7.5],
+            ["01 Jul",15,19.33,3,6],
+            ["02 Jul",14,14.5,6,4.5],
+            ["03 Jul",6,9.67,3,3],
             ["04 Jul",0,4.83,0,1.5],
             ["05 Jul",0,0,0,0]
           ],
           deliverability:[
             ["Iteration","Team Deliver Rate","Team Rejection Rate","Personal Deliver Rate","Personal Rejection Rate"],
-            [null,0,0,0,0],
-            [null,0,0,0,0],
-            [null,0,0,0,0],
-            [null,100,15.3,100,15.3],
-            [null,100,0,100,0]
+            ["29 Jun - 06 Jul",100,7,100,5],
+            ["06 Jul - 13 Jul",84,3,77,0],
+            ["15 Jul - 22 Jul",91,11,80,3],
+            ["13 Jul - 20 Jul",100,9,100,6],
+            ["20 Jul - 27 Jul",100,15.3,100,15.3]
           ],
           taskLifecycle:[ ["State","Avg. Hours"], ["planned",30.3], ["started",22.5], ["finished",0.4], ["accepted",30.4], ["rejected",16.6] ],
           cardTimeline:[
@@ -288,20 +342,20 @@ export default {
           burndown:[
             ["Day","Team Points Remaining","Team Ideal Burndown","Personal Points Remaining","Personal Ideal Burndown"],
             ["29 Jun",29,29,14,14],
-            ["30 Jun",29,24.17,14,11.67],
-            ["01 Jul",29,19.33,14,9.33],
-            ["02 Jul",29,14.5,14,7],
-            ["03 Jul",0,9.67,0,4.67],
+            ["30 Jun",24,24.17,13,11.67],
+            ["01 Jul",15,19.33,8,9.33],
+            ["02 Jul",14,14.5,5,7],
+            ["03 Jul",6,9.67,0,4.67],
             ["04 Jul",0,4.83,0,2.33],
             ["05 Jul",0,0,0,0]
           ],
           deliverability: [
             ["Iteration","Team Deliver Rate","Team Rejection Rate","Personal Deliver Rate","Personal Rejection Rate"],
-            ["01-08 Jun",0,0,0,0],
-            ["08-15 Jun",0,0,0,0],
-            ["15-22 Jun",0,0,0,0],
-            ["22-29 Jun",100,15.3,100,0],
-            ["29-06 Jul",100,0,100,0]
+            ["29 Jun - 06 Jul",100,7,100,0],
+            ["06 Jul - 13 Jul",84,3,100,0],
+            ["15 Jul - 22 Jul",91,11,100,0],
+            ["13 Jul - 20 Jul",100,9,100,0],
+            ["20 Jul - 27 Jul",100,15.3,100,0]
           ],
           taskLifecycle: [ ["State","Avg. Hours"], ["planned",42.9], ["started",10.6], ["finished",0.9], ["accepted",30.6], ["rejected",0] ],
           cardTimeline: [
@@ -342,20 +396,20 @@ export default {
           burndown:[
             ["Day","Team Points Remaining","Team Ideal Burndown","Personal Points Remaining","Personal Ideal Burndown"],
             ["29 Jun",29,29,6,6],
-            ["30 Jun",29,24.17,6,5],
-            ["01 Jul",29,19.33,6,4],
-            ["02 Jul",29,14.5,6,3],
-            ["03 Jul",0,9.67,0,2],
+            ["30 Jun",24,24.17,5,5],
+            ["01 Jul",15,19.33,4,4],
+            ["02 Jul",14,14.5,3,3],
+            ["03 Jul",6,9.67,3,2],
             ["04 Jul",0,4.83,0,1],
             ["05 Jul",0,0,0,0]
           ],
           deliverability: [
             ["Iteration","Team Deliver Rate","Team Rejection Rate","Personal Deliver Rate","Personal Rejection Rate"],
-            ["01-08 Jun",0,0,0,0],
-            ["08-15 Jun",0,0,0,0],
-            ["15-22 Jun",0,0,0,0],
-            ["22-29 Jun",100,15.3,100,0],
-            ["29-06 Jul",100,0,100,0]
+            ["29 Jun - 06 Jul",100,7,100,2],
+            ["06 Jul - 13 Jul",84,3,76,3],
+            ["15 Jul - 22 Jul",91,11,88,8],
+            ["13 Jul - 20 Jul",100,9,100,3],
+            ["20 Jul - 27 Jul",100,15.3,100,0]
           ],
           taskLifecycle: [ ["State","Avg. Hours"], ["planned",43.5], ["started",6.7], ["finished",1.9], ["accepted",48.4], ["rejected",18.4] ],
           cardTimeline: [
