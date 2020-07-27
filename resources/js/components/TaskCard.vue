@@ -194,7 +194,7 @@ export default {
         "Rejected"
       ],
       point: this.card.points,
-      points: ['1', '3', '5', '8'],
+      points: ['1', '3', '5', '8', '13'],
       title: this.card.title,
       description: this.card.description,
       selectedRequester: "",
